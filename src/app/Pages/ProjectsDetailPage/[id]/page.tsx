@@ -7,6 +7,7 @@ import { ProjectHero } from "@/components/Pages/ProjectsDetailPage/ProjectHero"
 import { ProjectImage } from "@/components/Pages/ProjectsDetailPage/ProjectImage"
 import { useSubSections } from "@/lib/subSections/use-subSections"
 import { ProjectInfo } from "@/components/Pages/ProjectsDetailPage/ProjectInfo"
+import { ProjectFiles } from "@/components/Pages/ProjectsDetailPage/ProjectFiles"
 import { ProjectGallery } from "@/components/Pages/ProjectsDetailPage/ProjectGallery"
 import { SectionSkeleton } from "@/components/Skeleton/SectionSkeleton"
 
@@ -20,7 +21,6 @@ export default function ProjectDetailPage({ params }: { params: Promise<{ id: st
   const { data: projectData, error: projectError } = useGetCompleteById(projectId)
   const { data: sectionData, error: sectionError } = useGetBySectionItemIds([projectData?.data?.sectionItem?._id])
 
-
   // Handle errors or loading states
   if (projectError || sectionError) {
     console.error("Errors:", projectError, sectionError)
@@ -30,6 +30,8 @@ export default function ProjectDetailPage({ params }: { params: Promise<{ id: st
     return <SectionSkeleton variant="default" className="py-20"/>
   }
 
+  console.log("ProjectDetailPage rendered with projectData:", sectionData)
+
   // Find the main project section and clients section from the data
   const projectSection = sectionData?.data.find((section: any) =>
     section.elements.some((element: any) => element.name === "Title")
@@ -38,12 +40,16 @@ export default function ProjectDetailPage({ params }: { params: Promise<{ id: st
   const clientsSection = sectionData?.data.find((section: any) =>
     section.elements.some((element: any) => element.name === "Technologies")
   )
+  const filesSection = sectionData?.data.find((section: any) =>
+    section.elements.some((element: any) => element.type === "file")
+  )
 
   return (
     <div className="min-h-screen bg-wtheme-background" dir={direction}>
       <ProjectHero project={projectSection} clients={clientsSection || { elements: [] }} />
       <ProjectImage project={projectSection} />
       <ProjectInfo project={projectSection} clients={clientsSection || { elements: [] }} />
+      <ProjectFiles project={filesSection} clients={clientsSection || { elements: [] }} />
       <ProjectGallery project={projectSection} clients={clientsSection || { elements: [] }} />
     </div>
   )
