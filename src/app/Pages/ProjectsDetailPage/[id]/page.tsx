@@ -34,7 +34,7 @@ export default function ProjectDetailPage({ params }: { params: Promise<{ id: st
 
   // Find the main project section and clients section from the data
   const projectSection = sectionData?.data.find((section: any) =>
-    section.elements.some((element: any) => element.name === "Title")
+    section.elements.some((element: any) => element.name === "Background Image")
   )
 
   const clientsSection = sectionData?.data.find((section: any) =>
@@ -44,12 +44,14 @@ export default function ProjectDetailPage({ params }: { params: Promise<{ id: st
     section.elements.some((element: any) => element.type === "file")
   )
 
+
+
   return (
     <div className="min-h-screen bg-wtheme-background" dir={direction}>
       <ProjectHero project={projectSection} clients={clientsSection || { elements: [] }} />
       <ProjectImage project={projectSection} />
       <ProjectInfo project={projectSection} clients={clientsSection || { elements: [] }} />
-      <ProjectFiles project={filesSection} clients={clientsSection || { elements: [] }} />
+      <ProjectFiles project={filesSection}  />
       <ProjectGallery project={projectSection} clients={clientsSection || { elements: [] }} />
     </div>
   )

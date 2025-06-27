@@ -1,0 +1,44 @@
+import React from "react"
+import { motion } from "framer-motion"
+import { getTranslatedContent } from "@/utils/getTranslatedContent"
+import { useLanguage } from "@/contexts/language-context"
+
+interface ProductContentProps {
+  product: {
+    _id: string
+    elements: {
+      _id: string
+      name: string
+      type: string
+      defaultContent: string
+      imageUrl?: string // Add imageUrl to the type
+      translations: {
+        _id: string
+        content: string
+        language: {
+          languageID: string
+        }
+      }[]
+    }[]
+  }
+}
+
+export const ProductContent: React.FC<ProductContentProps> = ({ product }) => {
+  const { direction, language } = useLanguage()
+  
+  const contentElement = product.elements.find((e) => e.name === "Content")
+  const content = getTranslatedContent(contentElement, language)
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 40 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.8, delay: 0.2 }}
+      className={`prose max-w-none dark:prose-invert mb-14 ${direction === "rtl" ? "text-right" : ""}`}
+    >
+      <p className="text-lg leading-relaxed text-muted-foreground">
+        {content}
+      </p>
+    </motion.div>
+  )
+}

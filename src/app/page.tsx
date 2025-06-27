@@ -20,6 +20,7 @@ import { useWebSite } from "@/lib/webSite/use-WebSite";
 import { useSections } from "@/lib/section/use-Section";
 import { useScrollToSection } from "@/hooks/use-scroll-to-section";
 import { SectionSkeleton } from "@/components/Skeleton/SectionSkeleton";
+import ProductsSection from "@/components/Pages/Home/sections/ProductsSection/ProductsSection";
 
 // Custom hook for intersection observer
 function useIntersectionObserver(threshold = 0.1, rootMargin = "200px") {
@@ -171,6 +172,8 @@ export default function LandingPage() {
     Partners: (id: string, websiteId?: string) => <PartnersSectionComponent websiteId={websiteId} sectionId={id} />,
     FAQ: (id: string, websiteId?: string) => <FaqSection websiteId={websiteId} sectionId={id} />,
     Blog: (id: string, websiteId?: string) => <BlogSection websiteId={websiteId} sectionId={id} />,
+    Products: (id: string, websiteId?: string) => <ProductsSection websiteId={websiteId} sectionId={id} />,
+
     Contact: (id: string, websiteId?: string) => <ContactSection websiteId={websiteId} sectionId={id} />,
   };
 

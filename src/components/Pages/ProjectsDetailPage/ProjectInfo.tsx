@@ -124,9 +124,9 @@ export const ProjectInfo: React.FC<ProjectInfoProps> = ({ project, clients }) =>
                   <h3 className="text-sm font-medium text-wtheme-text uppercase tracking-wide bg-wtheme-background">{TechnologiesName}</h3>
                   <div className="flex flex-wrap gap-1 bg-wtheme-background">
                     {technologies.map((tech, i) => (
-                      <Badge key={i} className="text-xs bg-wtheme-background border-0 shadow-none">
+                        <>
                         <span className="bg-wtheme-background text-wtheme-text">{tech}</span>
-                      </Badge>
+                        </>
                     ))}
                   </div>
                 </div>
