@@ -3,9 +3,7 @@
 
 import React from "react"
 import { motion } from "framer-motion"
-import { Eye } from "lucide-react"
-import { Badge } from "@/components/ui/badge"
-import { useRouter } from "next/navigation"
+import { cn } from "@/lib/utils" // Adjust import path as needed
 
 interface Product {
   id: string;
@@ -25,91 +23,81 @@ interface ProductCardProps {
   isInView: boolean;
   isRTL: boolean;
   onImageClick: (imageUrl: string) => void;
+  className?: string; // Added className prop
 }
 
-export function ProductCard({ product, index, isInView, isRTL, onImageClick }: ProductCardProps) {
-  const router = useRouter();
-
-  const handleProductClick = () => {
-    router.push(`/Pages/ProductDetailPage/${product.id}`);
-  };
-
+export function ProductCard({ 
+  product, 
+  index, 
+  isInView, 
+  isRTL, 
+  onImageClick,
+  className 
+}: ProductCardProps) {
   return (
     <motion.div
-      className="group relative bg-white/50 backdrop-blur-sm border border-white/20 rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 cursor-pointer"
-      whileHover={{ scale: 1.02 }}
-      transition={{ type: "spring", stiffness: 300, damping: 30 }}
-      onClick={handleProductClick}
+      className={cn(
+        "group relative bg-white dark:bg-gray-800 rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-200 dark:border-gray-700",
+        "flex flex-col h-full", // Key: flex flex-col h-full for equal heights
+        className
+      )}
+      whileHover={{ y: -5, scale: 1.02 }}
+      transition={{ type: "spring", stiffness: 400, damping: 25 }}
     >
-      {/* Product Image */}
-      <div className="relative aspect-square overflow-hidden">
-        <motion.img
+      {/* Image Section */}
+      <div className="relative overflow-hidden aspect-square">
+        <img
           src={product.image}
           alt={product.title}
-          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 cursor-pointer"
-          whileHover={{ scale: 1.05 }}
+          className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110 cursor-pointer"
           onClick={() => onImageClick(product.image)}
         />
         
-        {/* Image Overlay */}
-        <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-          <motion.button
-            initial={{ scale: 0 }}
-            whileHover={{ scale: 1.1 }}
-            className="bg-white/90 backdrop-blur-sm text-gray-800 p-3 rounded-full shadow-lg hover:bg-white transition-colors"
-            onClick={(e) => {
-              e.stopPropagation();
-              onImageClick(product.image);
-            }}
-          >
-            <Eye className="w-5 h-5" />
-          </motion.button>
-        </div>
-
         {/* Category Badge */}
         {product.category && (
-          <div className="absolute top-3 left-3">
-            <Badge 
-              variant="secondary" 
-              className="bg-white/90 backdrop-blur-sm text-gray-800 border-0 text-xs font-medium"
-            >
+          <div className="absolute top-3 left-3 z-10">
+            <span className="px-3 py-1 text-xs font-medium bg-primary/90 text-white rounded-full backdrop-blur-sm">
               {product.category}
-            </Badge>
+            </span>
           </div>
         )}
+
+        {/* Gradient Overlay */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
       </div>
 
-      {/* Product Info */}
-      <div className="p-4 space-y-3">
+      {/* Content Section - This will expand to fill remaining space */}
+      <div className="p-4 flex flex-col flex-1">
         {/* Title */}
-        <h3 className="font-heading font-semibold text-lg leading-tight text-wtheme-text group-hover:text-primary transition-colors line-clamp-2">
+        <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2 line-clamp-2 group-hover:text-primary transition-colors duration-200">
           {product.title}
         </h3>
-
-        {/* Description */}
-        <p className="text-sm text-gray-600 line-clamp-2 leading-relaxed">
+        
+        {/* Description - This will expand to fill available space */}
+        <p className="text-sm text-gray-600 dark:text-gray-300 mb-4 line-clamp-3 flex-1">
           {product.excerpt}
         </p>
-
-        {/* Price and Action */}
-        <div className="flex items-center justify-between pt-2">
-          {product.price && (
+        
+        {/* Footer Section - This stays at the bottom */}
+        <div className="mt-auto">
+          {/* Price */}
+          <div className="flex items-center justify-between mb-3">
             <span className="text-xl font-bold text-primary">
               {product.price}
             </span>
-          )}
-        </div>
-
-        {/* Date */}
-        {product.date && (
-          <div className="text-xs text-gray-500 pt-1 border-t border-gray-100">
-            {new Date(product.date).toLocaleDateString()}
+            {product.date && (
+              <span className="text-xs text-gray-500 dark:text-gray-400">
+                {new Date(product.date).toLocaleDateString()}
+              </span>
+            )}
           </div>
-        )}
+          
+          {/* Action Button */}
+          <button className="w-full bg-primary hover:bg-primary/90 text-white py-2 px-4 rounded-lg transition-colors duration-200 text-sm font-medium">
+            View Details
+          </button>
+        </div>
       </div>
-
-      {/* Hover Glow Effect */}
-      <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-primary/5 to-secondary/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
     </motion.div>
   );
 }
