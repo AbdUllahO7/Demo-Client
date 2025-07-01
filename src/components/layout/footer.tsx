@@ -6,7 +6,7 @@ import Image from "next/image"
 import { motion } from "@/components/ui/framer-motion"
 import { useScrollAnimation } from "@/hooks/use-scroll-animation"
 import { useSectionContent } from "@/hooks/useSectionContent"
-import { Phone } from "lucide-react"
+import { useScrollToSection } from "@/hooks/use-scroll-to-section"
 
 // Types
 interface ContentItem {
@@ -36,7 +36,13 @@ interface SocialLink {
 
 interface FooterColumnProps {
   title: string
-  links: { label: string; href: string; image?: string }[] // Added image to links
+  links: { 
+    label: string; 
+    href: string; 
+    image?: string;
+    isInternal?: boolean;
+    sectionId?: string;
+  }[]
 }
 
 /**
@@ -51,10 +57,11 @@ const generateFieldMappings = (isSpecial: boolean): Record<string, string> => {
   }
 
   if (isSpecial) {
-    for (let x = 1; x <= 8; x++) { // Increased to 5 to support more dynamic columns
+    for (let x = 1; x <= 8; x++) {
       mappings[`socialLink${x}}`] = `Special Footer ${x} - Title`
-      for (let y = 1; y <= 8; y++) { // Increased to 5 to support more links per column
+      for (let y = 1; y <= 8; y++) {
         mappings[`socialLink${x}_${y}`] = `Special Footer ${x} - SocialLink ${y} - Url`
+        mappings[`sectionId${x}_${y}`] = `Special Footer ${x} - SocialLink ${y} - SectionId` // Added sectionId mapping
         mappings[`image${x}_${y}`] = `Special Footer ${x} - SocialLink ${y} - Image`
         mappings[`LinkName${x}_${y}`] = `Special Footer ${x} - SocialLink ${y} - LinkName`
       }
@@ -74,6 +81,7 @@ const generateFieldMappings = (isSpecial: boolean): Record<string, string> => {
  */
 export default function Footer({ sectionId, logo = "/assets/iDIGITEK.webp", subName, websiteId }: FooterProps) {
   const { ref, isInView } = useScrollAnimation()
+  const scrollToSection = useScrollToSection()
 
   // Field mappings
   const fieldMappings = useMemo(() => generateFieldMappings(false), [])
@@ -84,7 +92,11 @@ export default function Footer({ sectionId, logo = "/assets/iDIGITEK.webp", subN
     [1, 2, 3, 4].some((i) => item[`socialLink${i}`]?.trim())
 
   const SpecialFeatureFilter = (item: SpecialItem) =>
-    [1, 2, 3, 4, 5 ,6 , 7 , 8 ].some((x) => [1, 2, 3, 4, 5, 6 , 7, 8 ].some((y) => item[`socialLink${x}_${y}`]?.trim()))
+    [1, 2, 3, 4, 5, 6, 7, 8].some((x) => 
+      [1, 2, 3, 4, 5, 6, 7, 8].some((y) => 
+        item[`socialLink${x}_${y}`]?.trim() || item[`sectionId${x}_${y}`]?.trim()
+      )
+    )
 
   // Fetch content
   const { contentItems, isLoading: itemsLoading, error: itemsError } = useSectionContent({
@@ -104,7 +116,7 @@ export default function Footer({ sectionId, logo = "/assets/iDIGITEK.webp", subN
   const dynamicFallbackSocialMedia = useMemo(
     () =>
       contentItems.flatMap((item) =>
-        [1, 2, 3, 4,5,6,7,8].map((i) => ({
+        [1, 2, 3, 4, 5, 6, 7, 8].map((i) => ({
           socialLink: item[`socialLink${i}`] || "",
           image: item[`image${i}`],
           label: `Social ${i}`,
@@ -113,23 +125,40 @@ export default function Footer({ sectionId, logo = "/assets/iDIGITEK.webp", subN
     [contentItems]
   )
 
-  // Dynamic columns generation - NOW INCLUDING IMAGES
+  // Enhanced dynamic columns generation with section support
   const dynamicColumns = useMemo(() => {
     if (!Special[0]) return []
     
     const columns = []
-    for (let x = 1; x <= 5; x++) {
+    for (let x = 1; x <= 8; x++) {
       const title = Special[0][`socialLink${x}}`]
       if (title) {
-        const links = [1, 2, 3, 4, 5]
-          .map((y) => ({
-            label: Special[0][`LinkName${x}_${y}`] || "",
-            href: Special[0][`socialLink${x}_${y}`]?.startsWith("http")
-              ? Special[0][`socialLink${x}_${y}`]
-              : `https://${Special[0][`socialLink${x}_${y}`]}` || "#",
-            image: Special[0][`image${x}_${y}`] || "", // Added image field
-          }))
-          .filter((link) => link.label && link.href !== "#")
+        const links = [1, 2, 3, 4, 5, 6, 7, 8]
+          .map((y) => {
+            const linkName = Special[0][`LinkName${x}_${y}`]
+            const url = Special[0][`socialLink${x}_${y}`]
+            const sectionId = Special[0][`sectionId${x}_${y}`]
+            const image = Special[0][`image${x}_${y}`]
+
+            if (!linkName) return null
+
+            // Determine if this is an internal link (has sectionId) or external link (has URL)
+            const isInternal = Boolean(sectionId && sectionId.trim())
+            const href = isInternal 
+              ? `#${sectionId}` // Use sectionId for internal links
+              : url?.startsWith("http") 
+                ? url 
+                : url ? `https://${url}` : "#"
+
+            return {
+              label: linkName,
+              href: href,
+              image: image || "",
+              isInternal: isInternal,
+              sectionId: sectionId || undefined
+            }
+          })
+          .filter((link) => link !== null && link.label && link.href !== "#")
         
         if (links.length > 0) {
           columns.push({ title, links })
@@ -138,7 +167,15 @@ export default function Footer({ sectionId, logo = "/assets/iDIGITEK.webp", subN
     }
     return columns
   }, [Special])
+
   
+
+  console.log('Footer Debug:', {
+    Special: Special[0],
+    dynamicColumns,
+    SpecialLoading,
+    SpecialError
+  })
 
   return (
     <motion.footer
@@ -194,9 +231,14 @@ export default function Footer({ sectionId, logo = "/assets/iDIGITEK.webp", subN
             </div>
           </motion.div>
 
-          {/* Dynamic columns rendering */}
+          {/* Dynamic columns rendering with enhanced props */}
           {dynamicColumns.map((column, index) => (
-            <FooterColumn key={`${column.title}-${index}`} title={column.title} links={column.links} />
+            <FooterColumn 
+              key={`${column.title}-${index}`} 
+              title={column.title} 
+              links={column.links}
+              scrollToSection={scrollToSection}
+            />
           ))}
         </div>
       </div>
@@ -205,15 +247,25 @@ export default function Footer({ sectionId, logo = "/assets/iDIGITEK.webp", subN
 }
 
 /**
- * Footer column component - NOW WITH IMAGE SUPPORT
+ * Enhanced Footer column component with section scrolling support
  */
-function FooterColumn({ title, links }: FooterColumnProps) {
+function FooterColumn({ title, links, scrollToSection }: FooterColumnProps & { scrollToSection: (sectionId: string) => void }) {
+  const handleLinkClick = (link: FooterColumnProps['links'][0]) => {
+    if (link.isInternal && link.sectionId) {
+      // Prevent default link behavior for internal links
+      scrollToSection(link.sectionId)
+    }
+    // For external links, let the default Link behavior handle it
+  }
+
+  console.log("title", title)
+
   return (
     <motion.div
       variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0, transition: { duration: 0.5 } } }}
       className="space-y-4"
     >
-      <h3 className="text-lg font-heading   text-primary">{title}</h3>
+      <h3 className="text-lg font-heading text-primary">{title}</h3>
       <ul className="space-y-2">
         {links.length > 0 ? (
           links.map((link) => (
@@ -222,18 +274,40 @@ function FooterColumn({ title, links }: FooterColumnProps) {
               whileHover={{ x: 5 }}
               transition={{ type: "spring", stiffness: 400, damping: 10 }}
             >
-              <Link href={link.href}  className=" font-body text-wtheme-text hover:text-wtheme-hover flex items-center gap-2">
-                {link.image && (
-                  <Image 
-                    src={link.image} 
-                    alt={link.label} 
-                    width={16} 
-                    height={16} 
-                    className="w-4 h-4 object-contain"
-                  />
-                )}
-                {link.label}
-              </Link>
+              {link.isInternal ? (
+                <button
+                  onClick={() => handleLinkClick(link)}
+                  className="font-body text-wtheme-text hover:text-wtheme-hover flex items-center gap-2 text-left"
+                >
+                  {link.image && (
+                    <Image 
+                      src={link.image} 
+                      alt={link.label} 
+                      width={16} 
+                      height={16} 
+                      className="w-4 h-4 object-contain"
+                    />
+                  )}
+                  {link.label}
+                </button>
+              ) : (
+                <Link 
+                  href={link.href} 
+                  target={link.href.startsWith('http') ? "_blank" : undefined}
+                  className="font-body text-wtheme-text hover:text-wtheme-hover flex items-center gap-2"
+                >
+                  {link.image && (
+                    <Image 
+                      src={link.image} 
+                      alt={link.label} 
+                      width={16} 
+                      height={16} 
+                      className="w-4 h-4 object-contain"
+                    />
+                  )}
+                  {link.label}
+                </Link>
+              )}
             </motion.li>
           ))
         ) : (

@@ -41,11 +41,11 @@ export default function HeroSection({ sectionId, websiteId }: HeroSectionProps) 
   // Define field mappings for Hero section with dynamic {index}
   const heroFieldMappings = {
     id: (subsection: any, index?: number) => `${subsection._id}-${index || 0}`, 
-    image: "Hero {index} - Image",
-    title: "Hero {index} - Title",
-    excerpt: "Hero {index} - Description",
-    exploreButton:"Hero {index} - ExploreButton",  
-    requestButton: "Hero {index} - RequestButton",
+    image: "section {index} - Image",
+    title: "section {index} - Title",
+    excerpt: "section {index} - Description",
+    exploreButton:"section {index} - ExploreButton",  
+    requestButton: "section {index} - RequestButton",
     
     // URL fields should always use primary language content
     exploreButtonType: (subsection: any, index?: number) => {

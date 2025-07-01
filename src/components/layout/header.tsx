@@ -14,6 +14,7 @@ import { useRouter, usePathname } from "next/navigation"
 import { ThemeToggle } from "../theme-toggle"
 import { useSubSections } from "@/lib/subSections/use-subSections"
 
+// Define interfaces for type safety
 interface SubNavItem {
   id: string
   label: string
@@ -68,9 +69,8 @@ export default function Header({
     const translation = element?.translations?.find((t: any) => t.language.languageID === language)
     const content = translation?.content || element?.defaultContent || ""
     
-    // Handle multilingual objects like {en: "text", ar: "text", tr: "text"}
-    if (typeof content === 'object' && content !== null) {
-      return content[language] || content['en'] || Object.values(content)[0] || ""
+    if (typeof content === "object" && content !== null) {
+      return content[language] || content["en"] || Object.values(content)[0] || ""
     }
     
     return content || ""
@@ -78,32 +78,42 @@ export default function Header({
 
   // Helper function to get multilingual section name
   const getMultilingualSectionName = (section: any, language: string) => {
-    if (typeof section?.name === 'object' && section?.name !== null) {
-      return section?.name[language] || section?.name['en'] || Object.values(section?.name)[0] || ""
+    if (typeof section?.name === "object" && section?.name !== null) {
+      return section?.name[language] || section?.name["en"] || Object.values(section?.name)[0] || ""
     }
     return section?.name || ""
+  }
+
+  // Helper function to check if navigation is visible
+  const isNavigationVisible = (navigationData: any) => {
+    if (!navigationData) return true
+
+    const allElements = [...(navigationData.elements || []), ...(navigationData.contentElements || [])]
+    
+    const visibilityElement = allElements.find(
+      (el: any) => el.name === "Navigation Visibility" && el.type === "boolean"
+    )
+
+    return visibilityElement ? visibilityElement.defaultContent === "true" || visibilityElement.defaultContent === true : true
   }
 
   // Helper function to check if a section has addSubNavigation enabled
   const hasAddSubNavigation = (section: any) => {
     const allElements = [...(section.elements || []), ...(section.contentElements || [])]
-
-    const addSubNavElement = allElements.find((el: any) => el.name === "Add SubNavigation" && el.type === "boolean")
-
+    const addSubNavElement = allElements.find(
+      (el: any) => el.name === "Add SubNavigation" && el.type === "boolean"
+    )
     return addSubNavElement?.defaultContent === "true" || addSubNavElement?.defaultContent === true
   }
 
   // Helper function to get section title
   const getSectionTitle = (section: any, language: string) => {
     const allElements = [...(section.elements || []), ...(section.contentElements || [])]
-
     const titleElement = allElements.find((el: any) => el.name === "Title" && el.type === "text")
-
     const title = titleElement ? getTranslatedContent(titleElement, language) : ""
     
-    // Ensure we return a string, not an object
-    if (typeof title === 'object' && title !== null) {
-      return title[language] || title['en'] || Object.values(title)[0] || ""
+    if (typeof title === "object" && title !== null) {
+      return title[language] || title["en"] || Object.values(title)[0] || ""
     }
     
     return title || ""
@@ -112,15 +122,13 @@ export default function Header({
   // Helper function to get dynamic URL from section
   const getDynamicUrl = (section: any) => {
     const allElements = [...(section.elements || []), ...(section.contentElements || [])]
-
     const dynamicUrlElement = allElements.find((el: any) => el.name === "Dynamic URL" && el.type === "text")
-
     return dynamicUrlElement?.defaultContent || null
   }
 
   // Helper function to generate fallback URL from section
   const generateFallbackSectionUrl = (section: any) => {
-    const sectionName = getMultilingualSectionName(section, language);
+    const sectionName = getMultilingualSectionName(section, language)
     return section.slug ? `#${section.slug}` : `#${sectionName.toLowerCase().replace(/\s+/g, "-")}`
   }
 
@@ -132,7 +140,7 @@ export default function Header({
       const hasSubNav = hasAddSubNavigation(section)
       if (!hasSubNav) return false
       
-      const parentName = getMultilingualSectionName(section.sectionItem?.section, language);
+      const parentName = getMultilingualSectionName(section.sectionItem?.section, language)
       return parentName === parentSectionName
     })
 
@@ -154,39 +162,42 @@ export default function Header({
       .filter((item: SubNavItem) => item.label)
   }
 
-  // 🎯 UPDATED: Process navigation items properly from sectionsData (parent sections)
+  // Process navigation items with visibility check
   const navItems: NavItem[] = sectionsData
-    ?.filter((section: any) => section.subName !== "Header" && section.subName !== "Footer") // Exclude Header and Footer from navigation
-    ?.map((section: any) => {
-      // Find corresponding navigation data for this section
+    ?.filter((section: any) => {
+      if (section.subName === "Header" || section.subName === "Footer") {
+        return false
+      }
+
       const navigationData = sections?.data?.find(
         (navSection: any) => navSection.section?.name === section.name || navSection.section?.subName === section.subName
-      );
+      )
 
-      // Get navigation-specific elements if available
-      let navLabel = getMultilingualSectionName(section, language); // Use multilingual helper
-      let navHref = `#${section.subName || navLabel.toLowerCase().replace(/\s+/g, "-")}`;
+      return navigationData ? isNavigationVisible(navigationData) : true
+    })
+    ?.map((section: any) => {
+      const navigationData = sections?.data?.find(
+        (navSection: any) => navSection.section?.name === section.name || navSection.section?.subName === section.subName
+      )
+
+      let navLabel = getMultilingualSectionName(section, language)
+      let navHref = `#${section.subName || navLabel.toLowerCase().replace(/\s+/g, "-")}`
 
       if (navigationData) {
-        const nameElement = navigationData.elements?.find((el: any) => el.name === "name");
-        const urlElement = navigationData.elements?.find((el: any) => el.name === "url");
+        const nameElement = navigationData.elements?.find((el: any) => el.name === "name")
+        const urlElement = navigationData.elements?.find((el: any) => el.name === "url")
         
         if (nameElement) {
-          const customLabel = getTranslatedContent(nameElement, language);
-          if (customLabel) {
-            navLabel = customLabel;
-          }
+          const customLabel = getTranslatedContent(nameElement, language)
+          if (customLabel) navLabel = customLabel
         }
         
         if (urlElement) {
-          const customUrl = getTranslatedContent(urlElement, language);
-          if (customUrl && customUrl !== "#") {
-            navHref = customUrl;
-          }
+          const customUrl = getTranslatedContent(urlElement, language)
+          if (customUrl && customUrl !== "#") navHref = customUrl
         }
       }
 
-      // Get sub-navigation items from navigation data
       const existingSubNavItems = navigationData?.elements
         ?.filter((el: any) => el.metadata?.isSubNavigation && el.metadata?.fieldType === "title")
         ?.map((titleEl: any) => {
@@ -195,10 +206,10 @@ export default function Header({
               el.metadata?.isSubNavigation &&
               el.metadata?.subNavId === titleEl.metadata?.subNavId &&
               el.metadata?.fieldType === "url"
-          );
+          )
           
-          const subNavLabel = getTranslatedContent(titleEl, language);
-          const subNavHref = getTranslatedContent(urlEl, language) || "#";
+          const subNavLabel = getTranslatedContent(titleEl, language)
+          const subNavHref = getTranslatedContent(urlEl, language) || "#"
           
           return {
             id: titleEl._id,
@@ -206,14 +217,12 @@ export default function Header({
             href: subNavHref,
             source: "navigation" as const,
             isDynamicUrl: false,
-          };
+          }
         })
-        ?.filter((item: any) => item.label) // Only include items with valid labels
-        || [];
+        ?.filter((item: any) => item.label) || []
 
-      // Get additional sub-navigation items from sections with addSubNavigation enabled
-      const additionalSubNavItems = getAdditionalSubNavItems(getMultilingualSectionName(section, language), language);
-      const allSubNavItems = [...existingSubNavItems, ...additionalSubNavItems];
+      const additionalSubNavItems = getAdditionalSubNavItems(getMultilingualSectionName(section, language), language)
+      const allSubNavItems = [...existingSubNavItems, ...additionalSubNavItems]
 
       return {
         id: section._id,
@@ -222,16 +231,26 @@ export default function Header({
         order: section.order || 0,
         subNavItems: allSubNavItems,
         sectionName: getMultilingualSectionName(section, language),
-      };
+      }
     })
-    ?.filter((item: NavItem | null) => item !== null && item.label) // Only include items with valid labels
-    ?.sort((a, b) => a.order - b.order) || [];
+    ?.filter((item: NavItem | null) => item !== null && item.label)
+    ?.sort((a, b) => a.order - b.order) || []
 
-  // Hover handlers with improved UX
-  const handleMouseEnter = (navId: string) => {
-    if (timeoutRef.current) {
-      clearTimeout(timeoutRef.current)
+  // Debug logging for navigation visibility
+  useEffect(() => {
+    if (sections?.data) {
+      console.log("🧭 Navigation sections data:", sections.data)
+      sections.data.forEach((navSection: any) => {
+        const visible = isNavigationVisible(navSection)
+        const sectionName = getMultilingualSectionName(navSection.section, language)
+        console.log(`🧭 Navigation for "${sectionName}": ${visible ? "VISIBLE" : "HIDDEN"}`)
+      })
     }
+  }, [sections?.data, language])
+
+  // Hover handlers
+  const handleMouseEnter = (navId: string) => {
+    if (timeoutRef.current) clearTimeout(timeoutRef.current)
     setHoveredNavId(navId)
   }
 
@@ -242,9 +261,7 @@ export default function Header({
   }
 
   const handleDropdownMouseEnter = () => {
-    if (timeoutRef.current) {
-      clearTimeout(timeoutRef.current)
-    }
+    if (timeoutRef.current) clearTimeout(timeoutRef.current)
   }
 
   const handleDropdownMouseLeave = () => {
@@ -258,7 +275,6 @@ export default function Header({
     const handleScroll = () => {
       setScrolled(window.scrollY > 10)
     }
-
     window.addEventListener("scroll", handleScroll)
     return () => window.removeEventListener("scroll", handleScroll)
   }, [])
@@ -291,9 +307,7 @@ export default function Header({
   // Cleanup timeout
   useEffect(() => {
     return () => {
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current)
-      }
+      if (timeoutRef.current) clearTimeout(timeoutRef.current)
     }
   }, [])
 
@@ -302,27 +316,21 @@ export default function Header({
     if (sectionsData && sectionsData.length > 0) {
       const matchingSection = sectionsData.find(
         (section: any) => {
-          const sectionNameStr = getMultilingualSectionName(section, language);
-          return sectionNameStr === sectionName || section.subName === sectionName;
+          const sectionNameStr = getMultilingualSectionName(section, language)
+          return sectionNameStr === sectionName || section.subName === sectionName
         }
       )
-
-      if (matchingSection) {
-        return matchingSection._id
-      }
+      if (matchingSection) return matchingSection._id
     }
 
     if (sections?.data) {
       const matchingNavSection = sections.data.find(
         (section: any) => {
-          const sectionNameStr = getMultilingualSectionName(section.section, language);
-          return sectionNameStr === sectionName || section.section?.subName === sectionName;
+          const sectionNameStr = getMultilingualSectionName(section.section, language)
+          return sectionNameStr === sectionName || section.section?.subName === sectionName
         }
       )
-
-      if (matchingNavSection) {
-        return matchingNavSection.section?._id
-      }
+      if (matchingNavSection) return matchingNavSection.section?._id
     }
 
     return null
@@ -332,17 +340,16 @@ export default function Header({
     e: React.MouseEvent<HTMLAnchorElement>,
     href: string,
     isDynamicUrl?: boolean,
-    navItem?: NavItem,
+    navItem?: NavItem
   ) => {
     e.preventDefault()
 
-    // Handle section navigation
     if (href.startsWith("#") || href === "#") {
       const sectionIdentifier = href === "#" && navItem?.sectionName 
         ? navItem.sectionName 
-        : href.substring(1);
+        : href.substring(1)
 
-      const sectionId = findSectionIdBySectionName(sectionIdentifier);
+      const sectionId = findSectionIdBySectionName(sectionIdentifier)
 
       if (sectionId) {
         if (pathname === "/") {
@@ -351,7 +358,6 @@ export default function Header({
           router.push(`/#${sectionIdentifier.toLowerCase()}`)
         }
       } else {
-        // Fallback to using the identifier directly
         if (pathname === "/") {
           scrollToSection(sectionIdentifier)
         } else {
@@ -362,7 +368,6 @@ export default function Header({
       return
     }
 
-    // Handle external URLs
     if (isDynamicUrl) {
       window.open(href, "_self")
     } else {
@@ -386,7 +391,7 @@ export default function Header({
       }`}
       dir={direction}
     >
-      <div className=" mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between">
           {/* Logo */}
           <motion.div
@@ -419,7 +424,7 @@ export default function Header({
                 <Link
                   href={item.href}
                   onClick={(e) => handleNavClick(e, item.href, false, item)}
-                  className="flex items-center gap-1  px-1 py-1 text-wtheme-text font-bold hover:text-wtheme-hover transition-colors duration-200"
+                  className="flex items-center gap-1 px-1 py-1 text-wtheme-text font-bold hover:text-wtheme-hover transition-colors duration-200"
                 >
                   {item.label}
                   {item.subNavItems.length > 0 && (
@@ -522,7 +527,7 @@ interface MobileNavProps {
     e: React.MouseEvent<HTMLAnchorElement>,
     href: string,
     isDynamicUrl?: boolean,
-    navItem?: NavItem,
+    navItem?: NavItem
   ) => void
   direction: string
 }

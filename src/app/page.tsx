@@ -21,6 +21,7 @@ import { useSections } from "@/lib/section/use-Section";
 import { useScrollToSection } from "@/hooks/use-scroll-to-section";
 import { SectionSkeleton } from "@/components/Skeleton/SectionSkeleton";
 import ProductsSection from "@/components/Pages/Home/sections/ProductsSection/ProductsSection";
+import Footer from "@/components/layout/footer";
 
 // Custom hook for intersection observer
 function useIntersectionObserver(threshold = 0.1, rootMargin = "200px") {
@@ -173,8 +174,8 @@ export default function LandingPage() {
     FAQ: (id: string, websiteId?: string) => <FaqSection websiteId={websiteId} sectionId={id} />,
     Blog: (id: string, websiteId?: string) => <BlogSection websiteId={websiteId} sectionId={id} />,
     Products: (id: string, websiteId?: string) => <ProductsSection websiteId={websiteId} sectionId={id} />,
-
     Contact: (id: string, websiteId?: string) => <ContactSection websiteId={websiteId} sectionId={id} />,
+    Footer: (id: string, websiteId?: string) => <Footer websiteId={websiteId} sectionId={id} />, // Added Footer component
   };
 
   // Handle loading and error states
@@ -211,12 +212,21 @@ export default function LandingPage() {
   }
 
   const sortedSections = sectionsData.data.sort((a: Section, b: Section) => a.order - b.order);
+  
+  // Separate footer sections from other sections
+  const footerSections = sortedSections.filter((section: Section) => 
+    section.subName.toLowerCase() === 'footer'
+  );
+  const otherSections = sortedSections.filter((section: Section) => 
+    section.subName.toLowerCase() !== 'footer'
+  );
 
   return (
     <AnimatePresence>
       <div className="flex min-h-screen flex-col" dir={direction}>
         <main>
-          {sortedSections.map((section: Section, index: number) => {
+          {/* Render all sections except footer */}
+          {otherSections.map((section: Section, index: number) => {
             // Always load the first section (Hero) immediately
             if (index === 0) {
               return (
@@ -237,6 +247,8 @@ export default function LandingPage() {
             );
           })}
         </main>
+        
+      
       </div>
     </AnimatePresence>
   );
