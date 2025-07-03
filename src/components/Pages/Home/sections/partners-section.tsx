@@ -205,12 +205,12 @@ function PartnersCarousel({ partners, isInView, isRTL, containerRef }: PartnersC
   return (
     <>
       <style jsx>{`
-        @keyframes scroll-left {
+        @keyframes scroll-ltr {
           0% { transform: translateX(0); }
           100% { transform: translateX(-33.333%); }
         }
         
-        @keyframes scroll-right {
+        @keyframes scroll-rtl {
           0% { transform: translateX(-33.333%); }
           100% { transform: translateX(0); }
         }
@@ -219,28 +219,47 @@ function PartnersCarousel({ partners, isInView, isRTL, containerRef }: PartnersC
           overflow: hidden;
           position: relative;
           width: 100%;
-          mask-image: linear-gradient(
-            to right,
-            transparent 0%,
-            black 5%,
-            black 95%,
-            transparent 100%
-          );
-          -webkit-mask-image: linear-gradient(
-            to right,
-            transparent 0%,
-            black 5%,
-            black 95%,
-            transparent 100%
-          );
+          mask-image: ${isRTL 
+            ? `linear-gradient(
+                to left,
+                transparent 0%,
+                black 5%,
+                black 95%,
+                transparent 100%
+              )`
+            : `linear-gradient(
+                to right,
+                transparent 0%,
+                black 5%,
+                black 95%,
+                transparent 100%
+              )`
+          };
+          -webkit-mask-image: ${isRTL 
+            ? `linear-gradient(
+                to left,
+                transparent 0%,
+                black 5%,
+                black 95%,
+                transparent 100%
+              )`
+            : `linear-gradient(
+                to right,
+                transparent 0%,
+                black 5%,
+                black 95%,
+                transparent 100%
+              )`
+          };
         }
         
         .marquee-content {
           display: flex;
-          animation: ${isRTL ? "scroll-right" : "scroll-left"} ${config.duration}s linear infinite;
+          animation: ${isRTL ? "scroll-rtl" : "scroll-ltr"} ${config.duration}s linear infinite;
           animation-play-state: ${isPaused ? "paused" : "running"};
           width: fit-content;
           will-change: transform;
+          ${isRTL ? 'flex-direction: row;' : ''}
         }
         
         .marquee-content:hover {
@@ -267,7 +286,7 @@ function PartnersCarousel({ partners, isInView, isRTL, containerRef }: PartnersC
         <div className="marquee-content">
           {duplicatedPartners.map((partner, index) => (
             <div key={`partner-${index}`} className={`flex-shrink-0 ${config.padding} ${config.logoWidth}`}>
-              <PartnerLogo partner={partner} index={index} heightClass={config.logoHeight} screenSize={screenSize} />
+              <PartnerLogo partner={partner} index={index} heightClass={config.logoHeight} screenSize={screenSize} isRTL={isRTL} />
             </div>
           ))}
         </div>
@@ -283,9 +302,10 @@ interface PartnerLogoProps {
   index: number
   heightClass: string
   screenSize: string
+  isRTL: boolean
 }
 
-function PartnerLogo({ partner, index, heightClass, screenSize }: PartnerLogoProps) {
+function PartnerLogo({ partner, index, heightClass, screenSize, isRTL }: PartnerLogoProps) {
   const getImageSize = () => {
     switch (screenSize) {
       case "mobile":
@@ -322,7 +342,9 @@ function PartnerLogo({ partner, index, heightClass, screenSize }: PartnerLogoPro
         alt={partner.image || `Partner ${index + 1}`}
         width={imageConfig.width}
         height={imageConfig.height}
-        className={`h-auto ${imageConfig.maxHeight} w-auto max-w-full object-contain shadow-sm shadow-primary transition-all duration-500 hover:grayscale-0`}
+        className={`h-auto ${imageConfig.maxHeight} w-auto max-w-full object-contain shadow-sm shadow-primary transition-all duration-500 hover:grayscale-0 ${
+          isRTL ? 'transform scale-x-[-1]' : ''
+        }`}
         loading="lazy"
       />
     </motion.div>

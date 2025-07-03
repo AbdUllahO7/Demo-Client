@@ -14,6 +14,7 @@ import { useSectionContent } from "@/hooks/useSectionContent"
 
 export default function ProjectsSection({ sectionId, websiteId }) {
   const { direction } = useLanguage()
+  const isRTL = direction === "rtl"
   const [currentIndex, setCurrentIndex] = useState(1) // Start at 1 (middle set)
   const [isTransitioning, setIsTransitioning] = useState(false)
   const [isMobile, setIsMobile] = useState(false)
@@ -93,11 +94,12 @@ export default function ProjectsSection({ sectionId, websiteId }) {
     return () => stopAutoPlay()
   }, [validProjects.length])
 
-  // Navigation functions
+  // Navigation functions - Fixed for RTL
   const nextSlide = () => {
     if (isTransitioning) return
     setIsTransitioning(true)
-    setCurrentIndex(prev => prev + 1)
+    // In RTL, "next" means moving left (decreasing index)
+    setCurrentIndex(prev => isRTL ? prev - 1 : prev + 1)
     
     setTimeout(() => setIsTransitioning(false), 500)
   }
@@ -105,39 +107,82 @@ export default function ProjectsSection({ sectionId, websiteId }) {
   const prevSlide = () => {
     if (isTransitioning) return
     setIsTransitioning(true)
-    setCurrentIndex(prev => prev - 1)
+    // In RTL, "previous" means moving right (increasing index)
+    setCurrentIndex(prev => isRTL ? prev + 1 : prev - 1)
     
     setTimeout(() => setIsTransitioning(false), 500)
   }
 
-  // Handle infinite loop reset
+  // Handle infinite loop reset - Fixed for RTL
   useEffect(() => {
     if (validProjects.length === 0) return
     
-    if (currentIndex <= 0) {
-      setTimeout(() => {
-        setCurrentIndex(validProjects.length * 2)
-      }, 500)
-    } else if (currentIndex >= validProjects.length * 2 + 1) {
-      setTimeout(() => {
-        setCurrentIndex(1)
-      }, 500)
+    if (isRTL) {
+      // RTL logic: when we go too far left (index too low), reset to right side
+      if (currentIndex <= 0) {
+        setTimeout(() => {
+          setCurrentIndex(validProjects.length * 2)
+        }, 500)
+      } else if (currentIndex >= validProjects.length * 2 + 1) {
+        setTimeout(() => {
+          setCurrentIndex(1)
+        }, 500)
+      }
+    } else {
+      // LTR logic (original)
+      if (currentIndex <= 0) {
+        setTimeout(() => {
+          setCurrentIndex(validProjects.length * 2)
+        }, 500)
+      } else if (currentIndex >= validProjects.length * 2 + 1) {
+        setTimeout(() => {
+          setCurrentIndex(1)
+        }, 500)
+      }
     }
-  }, [currentIndex, validProjects.length])
+  }, [currentIndex, validProjects.length, isRTL])
 
-  // Get current slide for dots
+  // Get current slide for dots - Fixed for RTL
   const getCurrentSlide = () => {
     if (validProjects.length === 0) return 0
-    return ((currentIndex - 1) % validProjects.length)
+    let slideIndex = ((currentIndex - 1) % validProjects.length)
+    
+    // In RTL, we need to reverse the slide index for display
+    if (isRTL) {
+      slideIndex = validProjects.length - 1 - slideIndex
+    }
+    
+    return slideIndex
   }
 
-  // Calculate transform for responsive design
+  // Calculate transform for responsive design - Fixed for RTL
   const getTransform = () => {
     const itemsPerView = getItemsPerView()
     const percentage = 100 / itemsPerView
     const gap = isMobile ? 16 : 24 // 16px for mobile, 24px for desktop
     const gapOffset = (currentIndex * gap) / itemsPerView
-    return `calc(-${currentIndex * percentage}% + ${gapOffset}px)`
+    
+    if (isRTL) {
+      // In RTL, we reverse the direction of movement
+      return `calc(${currentIndex * percentage}% - ${gapOffset}px)`
+    } else {
+      // LTR (original)
+      return `calc(-${currentIndex * percentage}% + ${gapOffset}px)`
+    }
+  }
+
+  // Handle dot navigation - Fixed for RTL
+  const handleDotClick = (index) => {
+    if (isTransitioning) return
+    stopAutoPlay()
+    
+    // In RTL, reverse the index mapping
+    const targetIndex = isRTL 
+      ? validProjects.length - 1 - index
+      : index
+    
+    setCurrentIndex(validProjects.length + targetIndex + 1)
+    setTimeout(startAutoPlay, 5000)
   }
 
   // Handle errors
@@ -214,32 +259,40 @@ export default function ProjectsSection({ sectionId, websiteId }) {
             </motion.div>
           </div>
 
-          {/* Navigation Arrows */}
-          <div className="absolute inset-y-0 left-0 flex items-center">
+          {/* Navigation Arrows - Fixed for RTL */}
+          <div className={`absolute inset-y-0 ${isRTL ? 'right-0' : 'left-0'} flex items-center`}>
             <Button
               variant="outline"
               size={isMobile ? "sm" : "icon"}
               onClick={prevSlide}
               disabled={isTransitioning}
               className={`${
-                isMobile ? 'ml-1 w-8 h-8' : 'ml-2 w-10 h-10'
-              } rounded-full bg-white/90 backdrop-blur border shadow-lg hover:bg-white`}
+                isMobile ? 'w-8 h-8' : 'w-10 h-10'
+              } ${isRTL ? 'mr-2' : 'ml-2'} rounded-full bg-white/90 backdrop-blur border shadow-lg hover:bg-white`}
             >
-              <ChevronLeft className={`${isMobile ? 'w-4 h-4' : 'w-5 h-5'}`} />
+              {isRTL ? (
+                <ChevronRight className={`${isMobile ? 'w-4 h-4' : 'w-5 h-5'}`} />
+              ) : (
+                <ChevronLeft className={`${isMobile ? 'w-4 h-4' : 'w-5 h-5'}`} />
+              )}
             </Button>
           </div>
           
-          <div className="absolute inset-y-0 right-0 flex items-center">
+          <div className={`absolute inset-y-0 ${isRTL ? 'left-0' : 'right-0'} flex items-center`}>
             <Button
               variant="outline"
               size={isMobile ? "sm" : "icon"}
               onClick={nextSlide}
               disabled={isTransitioning}
               className={`${
-                isMobile ? 'mr-1 w-8 h-8' : 'mr-2 w-10 h-10'
-              } rounded-full bg-white/90 backdrop-blur border shadow-lg hover:bg-white`}
+                isMobile ? 'w-8 h-8' : 'w-10 h-10'
+              } ${isRTL ? 'ml-2' : 'mr-2'} rounded-full bg-white/90 backdrop-blur border shadow-lg hover:bg-white`}
             >
-              <ChevronRight className={`${isMobile ? 'w-4 h-4' : 'w-5 h-5'}`} />
+              {isRTL ? (
+                <ChevronLeft className={`${isMobile ? 'w-4 h-4' : 'w-5 h-5'}`} />
+              ) : (
+                <ChevronRight className={`${isMobile ? 'w-4 h-4' : 'w-5 h-5'}`} />
+              )}
             </Button>
           </div>
 
@@ -248,12 +301,7 @@ export default function ProjectsSection({ sectionId, websiteId }) {
             {validProjects.map((_, index) => (
               <button
                 key={index}
-                onClick={() => {
-                  if (isTransitioning) return
-                  stopAutoPlay()
-                  setCurrentIndex(validProjects.length + index + 1)
-                  setTimeout(startAutoPlay, 5000)
-                }}
+                onClick={() => handleDotClick(index)}
                 className={`${
                   isMobile ? 'w-2 h-2' : 'w-3 h-3'
                 } rounded-full transition-all duration-300 ${
@@ -282,7 +330,7 @@ function ProjectCard({ project, viewCaseStudyText, isMobile }) {
   const isRTL = direction === "rtl"
 
   return (
-    <div className=" rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 group">
+    <div className="rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 group">
       {/* Image */}
       <div className={`relative ${isMobile ? 'h-40' : 'h-48'} overflow-hidden`}>
         <Image
@@ -292,7 +340,7 @@ function ProjectCard({ project, viewCaseStudyText, isMobile }) {
           className="object-cover group-hover:scale-105 transition-transform duration-500"
         />
         {project.category && (
-          <div className={`absolute top-3 ${isMobile ? 'left-3' : 'left-4'}`}>
+          <div className={`absolute top-3 ${isRTL ? 'right-3 md:right-4' : 'left-3 md:left-4'}`}>
             <span className={`bg-primary text-white ${
               isMobile ? 'px-2 py-1 text-xs' : 'px-3 py-1 text-xs'
             } rounded-full font-medium`}>
@@ -342,7 +390,7 @@ function ProjectCard({ project, viewCaseStudyText, isMobile }) {
             className={`w-4 h-4 ${
               isMobile ? 'ml-1' : 'ml-1'
             } transition-transform group-hover:translate-x-1 ${
-              isRTL ? "rotate-180" : ""
+              isRTL ? "rotate-180 mr-1 ml-0" : ""
             }`} 
           />
         </Link>
