@@ -49,7 +49,7 @@ export default function HeroSection({ sectionId, websiteId }: HeroSectionProps) 
     
     // URL fields should always use primary language content
     exploreButtonType: (subsection: any, index?: number) => {
-      const element = subsection.elements?.find(el => el.name === `Hero ${index !== undefined ? index + 1 : 1} - ExploreButtonType`);
+      const element = subsection.elements?.find(el => el.name === `section ${index !== undefined ? index + 1 : 1} - ExploreButtonType`);
       if (!element) return "default";
       
       // Always use the first translation (primary language) for URL fields
@@ -58,7 +58,7 @@ export default function HeroSection({ sectionId, websiteId }: HeroSectionProps) 
     },
     
     requestButtonType: (subsection: any, index?: number) => {
-      const element = subsection.elements?.find(el => el.name === `Hero ${index !== undefined ? index + 1 : 1} - RequestButtonType`);
+      const element = subsection.elements?.find(el => el.name === `section ${index !== undefined ? index + 1 : 1} - RequestButtonType`);
       if (!element) return "default";
       
       // Always use the first translation (primary language) for URL fields
@@ -67,7 +67,7 @@ export default function HeroSection({ sectionId, websiteId }: HeroSectionProps) 
     },
     
     exploreButtonUrl: (subsection: any, index?: number) => {
-      const element = subsection.elements?.find(el => el.name === `Hero ${index !== undefined ? index + 1 : 1} - ExploreButtonUrl`);
+      const element = subsection.elements?.find(el => el.name === `section ${index !== undefined ? index + 1 : 1} - ExploreButtonUrl`);
       if (!element) return "";
       
       // Always use the first translation (primary language) for URL fields
@@ -76,7 +76,7 @@ export default function HeroSection({ sectionId, websiteId }: HeroSectionProps) 
     },
     
     requestButtonUrl: (subsection: any, index?: number) => {
-      const element = subsection.elements?.find(el => el.name === `Hero ${index !== undefined ? index + 1 : 1} - RequestButtonUrl`);
+      const element = subsection.elements?.find(el => el.name === `section ${index !== undefined ? index + 1 : 1} - RequestButtonUrl`);
       if (!element) return "";
       
       // Always use the first translation (primary language) for URL fields
@@ -100,6 +100,8 @@ export default function HeroSection({ sectionId, websiteId }: HeroSectionProps) 
     maxItemsPerSubsection: 10, 
     filter: slideFilter
   })
+
+  console.log("slides" , slides)
 
 
   const handleNavClick = useCallback((e: React.MouseEvent<HTMLAnchorElement>, sectionId: string) => {

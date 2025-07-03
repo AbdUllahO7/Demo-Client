@@ -32,19 +32,30 @@ export default function ProjectDetailPage({ params }: { params: Promise<{ id: st
 
   console.log("ProjectDetailPage rendered with projectData:", sectionData)
 
-  // Find the main project section and clients section from the data
+  // Find the main project section (contains Background Image, Title, Description, etc.)
   const projectSection = sectionData?.data.find((section: any) =>
     section.elements.some((element: any) => element.name === "Background Image")
   )
 
+  // Find the clients/info section (contains Technologies, Client, Industry, Year)
   const clientsSection = sectionData?.data.find((section: any) =>
     section.elements.some((element: any) => element.name === "Technologies")
   )
+
+  // Find the gallery section (contains multiple images)
+  const gallerySection = sectionData?.data.find((section: any) =>
+    section.name === "Multi Image Section" || 
+    section.elements.some((element: any) => element.type === "image" && element.name.startsWith("Image"))
+  )
+
+  // Find the files section
   const filesSection = sectionData?.data.find((section: any) =>
     section.elements.some((element: any) => element.type === "file")
   )
 
-
+  console.log("projectSection", projectSection)
+  console.log("clientsSection", clientsSection)
+  console.log("gallerySection", gallerySection)
 
   return (
     <div className="min-h-screen bg-wtheme-background" dir={direction}>
@@ -52,7 +63,7 @@ export default function ProjectDetailPage({ params }: { params: Promise<{ id: st
       <ProjectImage project={projectSection} />
       <ProjectInfo project={projectSection} clients={clientsSection || { elements: [] }} />
       <ProjectFiles project={filesSection}  />
-      <ProjectGallery project={projectSection} clients={clientsSection || { elements: [] }} />
+      <ProjectGallery project={projectSection} clients={gallerySection || { elements: [] }} />
     </div>
   )
 }

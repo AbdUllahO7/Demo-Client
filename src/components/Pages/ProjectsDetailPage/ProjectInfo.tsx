@@ -96,7 +96,7 @@ export const ProjectInfo: React.FC<ProjectInfoProps> = ({ project, clients }) =>
 
   return (
     <section className="container px-4 md:px-6 mb-12">
-      <div className="max-w-7xl mx-auto space-y-8">
+      <div className="max-w-5xl mx-auto space-y-8">
         {/* Project Info Grid */}
         <Card className="shadow-none border-0">
           <CardContent className="shadow-0 border-0 bg-wtheme-background">
