@@ -34,6 +34,12 @@ export function ProductCard({ product, index, isInView, isRTL, onImageClick }: P
     router.push(`/Pages/ProductDetailPage/${product.id}`);
   };
 
+  // Check if price should be displayed (not empty, not "0", and not 0)
+  const shouldShowPrice = product.price && 
+    product.price !== "0" && 
+    product.price !== "0.00" && 
+    parseFloat(product.price) !== 0;
+
   return (
     <motion.div
       className="group relative  backdrop-blur-sm border border-white/20 rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 cursor-pointer"
@@ -56,7 +62,7 @@ export function ProductCard({ product, index, isInView, isRTL, onImageClick }: P
           <motion.button
             initial={{ scale: 0 }}
             whileHover={{ scale: 1.1 }}
-            className="bg-white/90 backdrop-blur-sm text-gray-800 p-3 rounded-full shadow-lg hover:bg-white transition-colors"
+            className="bg-white/90 backdrop-blur-sm  p-3 rounded-full shadow-lg hover:bg-white transition-colors"
             onClick={(e) => {
               e.stopPropagation();
               onImageClick(product.image);
@@ -87,13 +93,13 @@ export function ProductCard({ product, index, isInView, isRTL, onImageClick }: P
         </h3>
 
         {/* Description */}
-        <p className="text-sm text-gray-600 line-clamp-2 leading-relaxed">
+        <p className="text-sm text-wtheme-text line-clamp-2 leading-relaxed">
           {product.excerpt}
         </p>
 
         {/* Price and Action */}
         <div className="flex items-center justify-between pt-2">
-          {product.price && (
+          {shouldShowPrice && (
             <span className="text-xl font-bold text-primary">
               {product.price}
             </span>

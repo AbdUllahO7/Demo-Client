@@ -62,6 +62,12 @@ export const ProductHeader: React.FC<ProductHeaderProps> = ({ product }) => {
   const date = getTranslatedContent(dateElement, language)
   const price = getTranslatedContent(priceElement, language)
 
+  // Check if price should be displayed (not empty, not "0", and not 0)
+  const shouldShowPrice = price && 
+    price !== "0" && 
+    price !== "0.00" && 
+    parseFloat(price) !== 0;
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 30 }}
@@ -85,7 +91,7 @@ export const ProductHeader: React.FC<ProductHeaderProps> = ({ product }) => {
       </p>
       
       {/* Price Display */}
-      {price && (
+      {shouldShowPrice && (
         <div className={`mb-6 ${direction === "rtl" ? "text-right" : ""}`}>
           <div className="flex items-center gap-2 text-2xl font-bold text-primary">
             <DollarSign className="w-6 h-6" />

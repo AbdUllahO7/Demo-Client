@@ -53,9 +53,7 @@ export default function ProjectDetailPage({ params }: { params: Promise<{ id: st
     section.elements.some((element: any) => element.type === "file")
   )
 
-  console.log("projectSection", projectSection)
-  console.log("clientsSection", clientsSection)
-  console.log("gallerySection", gallerySection)
+
 
   return (
     <div className="min-h-screen bg-wtheme-background" dir={direction}>
