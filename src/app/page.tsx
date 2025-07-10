@@ -1,6 +1,6 @@
 "use client";
 
-import { JSX, useEffect, useState } from "react";
+import { JSX, useEffect } from "react";
 import ServicesSection from "@/components/Pages/Home/sections/services-section";
 import ProcessSection from "@/components/Pages/Home/sections/process-section";
 import TestimonialsSection from "@/components/Pages/Home/sections/testimonials-section";
@@ -22,70 +22,6 @@ import { useScrollToSection } from "@/hooks/use-scroll-to-section";
 import { SectionSkeleton } from "@/components/Skeleton/SectionSkeleton";
 import ProductsSection from "@/components/Pages/Home/sections/ProductsSection/ProductsSection";
 import Footer from "@/components/layout/footer";
-
-// Custom hook for intersection observer
-function useIntersectionObserver(threshold = 0.1, rootMargin = "200px") {
-  const [isIntersecting, setIsIntersecting] = useState(false);
-  const [targetRef, setTargetRef] = useState<HTMLDivElement | null>(null);
-
-  useEffect(() => {
-    if (!targetRef) return;
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setIsIntersecting(true);
-          observer.disconnect(); // Only trigger once
-        }
-      },
-      { threshold, rootMargin }
-    );
-
-    observer.observe(targetRef);
-
-    return () => observer.disconnect();
-  }, [targetRef, threshold, rootMargin]);
-
-  return { isIntersecting, targetRef: setTargetRef };
-}
-
-// Lazy Section Component
-function LazySection({ 
-  section, 
-  websiteId, 
-  sectionComponents 
-}: { 
-  section: Section;
-  websiteId?: string;
-  sectionComponents: { [key: string]: (id: string, websiteId?: string) => JSX.Element };
-}) {
-  const { isIntersecting, targetRef } = useIntersectionObserver();
-  const [hasLoaded, setHasLoaded] = useState(false);
-
-  useEffect(() => {
-    if (isIntersecting && !hasLoaded) {
-      setHasLoaded(true);
-    }
-  }, [isIntersecting, hasLoaded]);
-
-  // Get the original component key by removing duplicate suffix
-  const getOriginalSubName = (subName: string): string => {
-    // Remove duplicate suffix like "-duplicate-1", "-duplicate-2", etc.
-    return subName.replace(/-duplicate-\d+.*$/, '');
-  };
-
-  const originalSubName = getOriginalSubName(section.subName);
-
-  return (
-    <div ref={targetRef} id={section._id}>
-      {hasLoaded ? (
-        sectionComponents[originalSubName]?.(section._id, websiteId) || null
-      ) : (
-        <SectionSkeleton variant="default" className="py-20" />
-      )}
-    </div>
-  );
-}
 
 // Define TypeScript interfaces for data
 interface Website {
@@ -260,26 +196,13 @@ export default function LandingPage() {
       <div className="flex min-h-screen flex-col" dir={direction}>
         <main>
           {/* Render all sections except footer */}
-          {otherSections.map((section: Section, index: number) => {
+          {otherSections.map((section: Section) => {
             const originalSubName = getOriginalSubName(section.subName);
             
-            // Always load the first section (usually Hero) immediately
-            if (index === 0) {
-              return (
-                <div key={section._id} id={section._id}>
-                  {sectionComponents[originalSubName]?.(section._id, websiteId) || null}
-                </div>
-              );
-            }
-
-            // Lazy load other sections
             return (
-              <LazySection
-                key={section._id}
-                section={section}
-                websiteId={websiteId}
-                sectionComponents={sectionComponents}
-              />
+              <div key={section._id} id={section._id}>
+                {sectionComponents[originalSubName]?.(section._id, websiteId) || null}
+              </div>
             );
           })}
         </main>

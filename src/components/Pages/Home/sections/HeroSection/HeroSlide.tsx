@@ -97,35 +97,7 @@ export default function HeroSlide({
             </Button>
           )}
 
-          {/* Request Button */}
-          {slide.requestButton && (
-            <Button 
-              asChild 
-              variant="outline"
-              size="lg" 
-              className={`${isExternalUrl(slide.exploreButtonUrl) ? ' border-2 border-primary' : 'border-2 border-primary'} dark:bg-primary text-wtheme-text`}
-            >
-              {isExternalUrl(slide.requestButtonUrl) ? (
-                <a 
-                  href={slide.requestButtonUrl} 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                >
-                  {slide.requestButton}
-                </a>
-              ) : (
-                <Link 
-                  href={slide.requestButtonUrl || "#"} 
-                  onClick={slide.requestButtonUrl && !isExternalUrl(slide.requestButtonUrl) 
-                    ? (e) => handleNavClick(e, slide.requestButtonUrl.replace('#', '')) 
-                    : undefined
-                  }
-                >
-                  {slide.requestButton}
-                </Link>
-              )}
-            </Button>
-          )}
+      
         </div>
       </SlideContent>
 
