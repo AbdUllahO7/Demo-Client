@@ -28,11 +28,12 @@ export default function TestimonialsSection({ websiteId, sectionId }) {
     websiteId,
     itemsKey: "clientComments",
   })
+
   const featureFilter = (item: { title: string }) => item.title && item.title.trim() !== ""
 
   const ContentItemsMappings = {
     id: (subsection: any, index?: number) => `${subsection._id}-${index || 0}`,
-    date : "createdAt",
+    date: "createdAt",
     icon: (subsection: any, index?: number) =>
       subsection.elements?.find((el) => el.name === `ClientComments ${index !== undefined ? index + 1 : 1} - Icon`)
         ?.defaultContent || null,
@@ -75,13 +76,11 @@ export default function TestimonialsSection({ websiteId, sectionId }) {
   const handleMouseLeave = () => setIsAutoPlaying(true)
 
   const nextTestimonial = () => setActiveIndex((prev) => (prev === contentItems.length - 1 ? 0 : prev + 1))
-
   const prevTestimonial = () => setActiveIndex((prev) => (prev === 0 ? contentItems.length - 1 : prev - 1))
 
   const getVisibleItems = () => {
     const items = contentItems
     if (items.length <= 3) return items
-
     const prevIndex = activeIndex === 0 ? items.length - 1 : activeIndex - 1
     const nextIndex = activeIndex === items.length - 1 ? 0 : activeIndex + 1
     return [items[prevIndex], items[activeIndex], items[nextIndex]]
@@ -91,11 +90,7 @@ export default function TestimonialsSection({ websiteId, sectionId }) {
   const error = sectionError || itemsError
 
   return (
-    <section
-      className="relative w-full py-20 overflow-hidden bg-wtheme-background"
-      id="testimonials"
-      dir={direction}
-    >
+    <section className="relative w-full py-20 overflow-hidden bg-wtheme-background" id="testimonials" dir={direction}>
       {/* Background elements */}
       <div className="absolute inset-0">
         <div className="absolute top-0 left-1/4 w-72 h-72 bg-secondary/10 rounded-full blur-3xl"></div>
@@ -106,13 +101,13 @@ export default function TestimonialsSection({ websiteId, sectionId }) {
       <div className="container relative z-10 px-4 md:px-6">
         <div ref={ref} className="flex flex-col items-center justify-center space-y-6 text-center mb-16">
           <motion.span
-              initial={{ opacity: 0, y: 20 }}
-              animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-              transition={{ duration: 0.5 }}
-              className="inline-block mb-2 text-body  text-primary tracking-wider  uppercase"
-            >
-              {content.sectionLabel}
-            </motion.span>
+            initial={{ opacity: 0, y: 20 }}
+            animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+            transition={{ duration: 0.5 }}
+            className="inline-block mb-2 text-body text-primary tracking-wider uppercase"
+          >
+            {content.sectionLabel}
+          </motion.span>
 
           <motion.h2
             initial={{ opacity: 0, y: 20 }}
@@ -127,7 +122,7 @@ export default function TestimonialsSection({ websiteId, sectionId }) {
             initial={{ opacity: 0, y: 20 }}
             animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
             transition={{ duration: 0.6, delay: 0.2 }}
-            className="max-w-2xl text-wtheme-text font-body  leading-relaxed"
+            className="max-w-2xl text-wtheme-text font-body leading-relaxed"
           >
             {content.sectionDescription ||
               "Discover what our satisfied clients have to say about their experience working with us."}
@@ -155,24 +150,66 @@ export default function TestimonialsSection({ websiteId, sectionId }) {
           </div>
         ) : (
           <>
-            {/* Desktop view: Grid layout */}
-            <div
-              ref={carouselRef}
-              className="hidden md:block relative"
-              onMouseEnter={handleMouseEnter}
-              onMouseLeave={handleMouseLeave}
-            >
-              <div className="relative">
-                <AnimatePresence mode="wait">
-                  <motion.div
-                    key={`desktop-${activeIndex}`}
-                    className="grid grid-cols-1 lg:grid-cols-3 gap-8"
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -20 }}
-                    transition={{ duration: 0.5 }}
+            {/* Desktop view: Grid layout with external arrows */}
+            <div className="hidden md:block">
+              {contentItems.length > 3 ? (
+                <div className="flex items-center gap-8" dir="rtl">
+                  {/* Left Arrow */}
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    className="flex-shrink-0 rounded-full bg-wtheme-background/90 backdrop-blur-sm border-2 shadow-lg hover:bg-wtheme-background hover:scale-110 transition-all duration-200"
+                    onClick={direction === "rtl" ? nextTestimonial : prevTestimonial}
                   >
-                    {getVisibleItems().map((testimonial, index) => (
+                    <ChevronRight className="h-5 w-5" />
+                    <span className="sr-only">{content.previous || "Previous"}</span>
+                  </Button>
+
+                  {/* Testimonials Container */}
+                  <div
+                    ref={carouselRef}
+                    className="flex-1"
+                    onMouseEnter={handleMouseEnter}
+                    onMouseLeave={handleMouseLeave}
+                  >
+                    <AnimatePresence mode="wait">
+                      <motion.div
+                        key={`desktop-${activeIndex}`}
+                        className="grid grid-cols-1 lg:grid-cols-3 gap-8"
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -20 }}
+                        transition={{ duration: 0.5 }}
+                      >
+                        {getVisibleItems().map((testimonial, index) => (
+                          <TestimonialCard
+                            key={`${testimonial.id}-${index}`}
+                            testimonial={testimonial}
+                            index={index}
+                            isInView={isInView}
+                            direction={direction}
+                            formatDate={formatDate}
+                          />
+                        ))}
+                      </motion.div>
+                    </AnimatePresence>
+                  </div>
+
+                  {/* Right Arrow */}
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    className="flex-shrink-0 rounded-full bg-wtheme-background/90 backdrop-blur-sm border-2 shadow-lg hover:bg-wtheme-background hover:scale-110 transition-all duration-200"
+                    onClick={direction === "rtl" ? prevTestimonial : nextTestimonial}
+                  >
+                    <ChevronLeft className="h-5 w-5" />
+                    <span className="sr-only">{content.next || "Next"}</span>
+                  </Button>
+                </div>
+              ) : (
+                <div ref={carouselRef} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
+                  <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    {contentItems.map((testimonial, index) => (
                       <TestimonialCard
                         key={`${testimonial.id}-${index}`}
                         testimonial={testimonial}
@@ -182,65 +219,21 @@ export default function TestimonialsSection({ websiteId, sectionId }) {
                         formatDate={formatDate}
                       />
                     ))}
-                  </motion.div>
-                </AnimatePresence>
-              </div>
-
-              {contentItems.length > 3 && (
-                <div className="absolute top-1/2 -translate-y-1/2 left-0 right-0 flex justify-between items-center px-4 z-20 pointer-events-none">
-                  <Button
-                    variant="outline"
-                    size="icon"
-                    className="pointer-events-auto rounded-full bg-wtheme-background/90 backdrop-blur-sm border-2 shadow-lg hover:bg-wtheme-background hover:scale-110 transition-all duration-200"
-                    onClick={direction === "rtl" ? nextTestimonial : prevTestimonial}
-                  >
-                    <ChevronLeft className="h-5 w-5" />
-                    <span className="sr-only">{content.previous || "Previous"}</span>
-                  </Button>
-
-                  <Button
-                    variant="outline"
-                    size="icon"
-                    className="pointer-events-auto rounded-full bg-wtheme-background/90 backdrop-blur-sm border-2 shadow-lg hover:bg-wtheme-background hover:scale-110 transition-all duration-200"
-                    onClick={direction === "rtl" ? prevTestimonial : nextTestimonial}
-                  >
-                    <ChevronRight className="h-5 w-5" />
-                    <span className="sr-only">{content.next || "Next"}</span>
-                  </Button>
+                  </div>
                 </div>
               )}
             </div>
 
-            {/* Mobile view: Carousel */}
-            <div className="md:hidden relative" onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
-              <div className="overflow-hidden">
-                <AnimatePresence mode="wait">
-                  <motion.div
-                    key={`mobile-${activeIndex}`}
-                    initial={{ opacity: 0, x: direction === "rtl" ? -100 : 100 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    exit={{ opacity: 0, x: direction === "rtl" ? 100 : -100 }}
-                    transition={{ type: "spring", stiffness: 300, damping: 30 }}
-                    className="w-full"
-                  >
-                    <TestimonialCard
-                      testimonial={contentItems[activeIndex]}
-                      index={0}
-                      isInView={true}
-                      direction={direction}
-                      formatDate={formatDate}
-                    />
-                  </motion.div>
-                </AnimatePresence>
-              </div>
-
-              {contentItems.length > 1 && (
-                <>
-                  <div className="absolute top-1/2 -translate-y-1/2 left-0 right-0 flex justify-between items-center px-4 z-20 pointer-events-none">
+            {/* Mobile view: Carousel with external arrows */}
+            <div className="md:hidden">
+              {contentItems.length > 1 ? (
+                <div className="space-y-6">
+                  {/* Arrows Row */}
+                  <div className="flex justify-between items-center px-4">
                     <Button
                       variant="outline"
                       size="icon"
-                      className="pointer-events-auto rounded-full bg-wtheme-background/90 backdrop-blur-sm border-2 shadow-lg hover:bg-wtheme-background"
+                      className="rounded-full bg-wtheme-background/90 backdrop-blur-sm border-2 shadow-lg hover:bg-wtheme-background"
                       onClick={direction === "rtl" ? nextTestimonial : prevTestimonial}
                     >
                       {direction === "rtl" ? <ChevronRight className="h-5 w-5" /> : <ChevronLeft className="h-5 w-5" />}
@@ -250,7 +243,7 @@ export default function TestimonialsSection({ websiteId, sectionId }) {
                     <Button
                       variant="outline"
                       size="icon"
-                      className="pointer-events-auto rounded-full bg-wtheme-background/90 backdrop-blur-sm border-2 shadow-lg hover:bg-wtheme-background"
+                      className="rounded-full bg-wtheme-background/90 backdrop-blur-sm border-2 shadow-lg hover:bg-wtheme-background"
                       onClick={direction === "rtl" ? prevTestimonial : nextTestimonial}
                     >
                       <ChevronRight className="h-5 w-5" />
@@ -258,21 +251,53 @@ export default function TestimonialsSection({ websiteId, sectionId }) {
                     </Button>
                   </div>
 
+                  {/* Testimonial Container */}
+                  <div onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
+                    <div className="overflow-hidden">
+                      <AnimatePresence mode="wait">
+                        <motion.div
+                          key={`mobile-${activeIndex}`}
+                          initial={{ opacity: 0, x: direction === "rtl" ? -100 : 100 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          exit={{ opacity: 0, x: direction === "rtl" ? 100 : -100 }}
+                          transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                          className="w-full"
+                        >
+                          <TestimonialCard
+                            testimonial={contentItems[activeIndex]}
+                            index={0}
+                            isInView={true}
+                            direction={direction}
+                            formatDate={formatDate}
+                          />
+                        </motion.div>
+                      </AnimatePresence>
+                    </div>
+                  </div>
+
                   {/* Dots navigation */}
-                  <div className="flex justify-center gap-2 mt-8">
+                  <div className="flex justify-center gap-2">
                     {contentItems.map((_, index) => (
                       <button
                         key={index}
                         onClick={() => setActiveIndex(index)}
                         className={`h-2 rounded-full transition-all duration-300 ${
-                          activeIndex === index
-                            ? "bg-primary w-8"
-                            : "bg-wtheme-text/30 w-2 hover:bg-wtheme-text/50"
+                          activeIndex === index ? "bg-primary w-8" : "bg-wtheme-text/30 w-2 hover:bg-wtheme-text/50"
                         }`}
                       />
                     ))}
                   </div>
-                </>
+                </div>
+              ) : (
+                <div onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
+                  <TestimonialCard
+                    testimonial={contentItems[0]}
+                    index={0}
+                    isInView={true}
+                    direction={direction}
+                    formatDate={formatDate}
+                  />
+                </div>
               )}
             </div>
           </>
@@ -289,10 +314,10 @@ function TestimonialCard({ testimonial, index, isInView, direction, formatDate }
 
   const renderIcon = () => {
     if (React.isValidElement(testimonial.icon)) {
-      return testimonial.icon; // If it's already a React element, use it
+      return testimonial.icon // If it's already a React element, use it
     }
-    return iconMap[testimonial.icon as string] || null; // Map string to component, fallback to null
-  };
+    return iconMap[testimonial.icon as string] || null // Map string to component, fallback to null
+  }
 
   const renderStars = () => {
     return Array.from({ length: 5 }, (_, i) => <Star key={i} className="w-4 h-4 fill-yellow-400 text-yellow-400" />)
@@ -380,14 +405,7 @@ function TestimonialCard({ testimonial, index, isInView, direction, formatDate }
             <h4 className="font-heading font-semibold text-wtheme-text group-hover:text-wtheme-hover transition-colors duration-300">
               {testimonial.title || "Client Name"}
             </h4>
-            <div className="flex items-center text-xs text-wtheme-text font-body mb-2">
-              <Calendar className="h-3 w-3 mr-1" />
-              {new Date(testimonial.date).toLocaleDateString("en-US", {
-                year: "numeric",
-                month: "short",
-                day: "numeric",
-              })}
-            </div>
+          
           </div>
         </motion.div>
       </div>
