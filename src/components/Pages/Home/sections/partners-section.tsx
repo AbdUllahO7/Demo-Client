@@ -468,7 +468,7 @@ function PartnerLogo({ partner, index, heightClass, screenSize, isRTL }: Partner
           h-auto ${imageConfig.maxHeight} w-auto max-w-full 
           object-contain filter
           transition-all duration-700 ease-out
-          group-hover:scale-110 relative z-10
+          group-hover:scale-110 relative z-10 bg-white
           ${isRTL ? '' : ''}
         `}
         loading="lazy"
