@@ -112,7 +112,6 @@ function applyThemeToCSS(theme: WebSiteTheme) {
   document.body.className = document.body.className.replace(/theme-\w+/g, '')
   document.body.classList.add(`theme-${theme._id}`)
   
-  console.log('Theme applied:', theme.themeName)
 }
 
 // Utility functions for color manipulation

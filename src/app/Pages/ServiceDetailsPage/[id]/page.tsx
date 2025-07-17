@@ -310,7 +310,6 @@ export default function SmartDriveThroughPage({ params }: { params: Promise<{ id
     const { data: serviceData, error: serviceError } = useGetCompleteById(projectId)
     const { data: sectionData, error: sectionError } = useGetBySectionItemIds([serviceData?.data?.sectionItem?._id])
 
-    console.log("Section Data:", sectionData)
 
     // Find sections by name
     const overviewSection = sectionData?.data?.find((section: any) =>

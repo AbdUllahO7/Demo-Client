@@ -20,6 +20,8 @@ import { useWebSite } from "@/lib/webSite/use-WebSite";
 import { useSections } from "@/lib/section/use-Section";
 import { useScrollToSection } from "@/hooks/use-scroll-to-section";
 import { SectionSkeleton } from "@/components/Skeleton/SectionSkeleton";
+import ProductsSection from "@/components/Pages/Home/sections/ProductsSection/ProductsSection";
+import Footer from "@/components/layout/footer";
 
 // Define TypeScript interfaces for data
 interface Website {
@@ -51,8 +53,21 @@ interface Section {
   name: string;
   subName: string;
   order: number;
+  isActive: boolean;
   sectionItems: SectionItem[];
+  // Properties for duplicated sections
+  originalSectionId?: string;
+  duplicateIndex?: number;
+  isDuplicate?: boolean;
+  duplicateOf?: string;
+  uniqueIdentifier?: string;
 }
+
+// Helper function to get the original component key for duplicated sections
+const getOriginalSubName = (subName: string): string => {
+  // Remove duplicate suffix like "-duplicate-1", "-duplicate-2", etc.
+  return subName.replace(/-duplicate-\d+.*$/, '');
+};
 
 export default function LandingPage() {
   const { direction } = useLanguage();
@@ -67,7 +82,9 @@ export default function LandingPage() {
     false,
   );
 
-  localStorage.setItem("websiteId", websiteId || "");
+  if (websiteId) {
+    localStorage.setItem("websiteId", websiteId);
+  }
 
   // Set smooth scrolling globally
   useEffect(() => {
@@ -84,7 +101,14 @@ export default function LandingPage() {
       if (hash) {
         const subName = hash.substring(1);
         const targetSection = sectionsData.data.find(
-          (section: Section) => section.subName.toLowerCase() === subName.toLowerCase()
+          (section: Section) => {
+            const originalSubName = getOriginalSubName(section.subName);
+            return (
+              (section.subName.toLowerCase() === subName.toLowerCase() || 
+               originalSubName.toLowerCase() === subName.toLowerCase()) && 
+              section.isActive
+            );
+          }
         );
         if (targetSection) {
           setTimeout(() => {
@@ -113,6 +137,7 @@ export default function LandingPage() {
     Partners: (id: string, websiteId?: string) => <PartnersSectionComponent websiteId={websiteId} sectionId={id} />,
     FAQ: (id: string, websiteId?: string) => <FaqSection websiteId={websiteId} sectionId={id} />,
     Blog: (id: string, websiteId?: string) => <BlogSection websiteId={websiteId} sectionId={id} />,
+    Products: (id: string, websiteId?: string) => <ProductsSection websiteId={websiteId} sectionId={id} />,
     Contact: (id: string, websiteId?: string) => <ContactSection websiteId={websiteId} sectionId={id} />,
   };
 
@@ -149,19 +174,48 @@ export default function LandingPage() {
     );
   }
 
+  // Filter active sections only (including duplicates)
+  const activeSections = sectionsData.data.filter((section: Section) => section.isActive);
+  
+  // Sort by order - this will show original and duplicated sections in the correct order
+  const sortedSections = activeSections.sort((a: Section, b: Section) => a.order - b.order);
+  
+  // Separate footer sections from other sections
+  const footerSections = sortedSections.filter((section: Section) => {
+    const originalSubName = getOriginalSubName(section.subName);
+    return originalSubName.toLowerCase() === 'footer';
+  });
+  
+  const otherSections = sortedSections.filter((section: Section) => {
+    const originalSubName = getOriginalSubName(section.subName);
+    return originalSubName.toLowerCase() !== 'footer';
+  });
+
   return (
     <AnimatePresence>
       <div className="flex min-h-screen flex-col" dir={direction}>
         <main>
-          {/* Render all sections sorted by order */}
-          {sectionsData.data
-            .sort((a: Section, b: Section) => a.order - b.order)
-            .map((section: Section) => (
+          {/* Render all sections except footer */}
+          {otherSections.map((section: Section) => {
+            const originalSubName = getOriginalSubName(section.subName);
+            
+            return (
               <div key={section._id} id={section._id}>
-                {sectionComponents[section.subName]?.(section._id, websiteId) || null}
+                {sectionComponents[originalSubName]?.(section._id, websiteId) || null}
               </div>
-            ))}
+            );
+          })}
         </main>
+        
+        {/* Render footer sections if any */}
+        {footerSections.map((section: Section) => {
+          const originalSubName = getOriginalSubName(section.subName);
+          return (
+            <div key={section._id} id={section._id}>
+              {sectionComponents[originalSubName]?.(section._id, websiteId) || null}
+            </div>
+          );
+        })}
       </div>
     </AnimatePresence>
   );

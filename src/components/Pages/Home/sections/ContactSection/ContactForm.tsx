@@ -214,7 +214,6 @@ export function ContactForm({ content, isRTL, direction }: ContactFormProps) {
         setErrors({});
         setTouched({});
         
-        console.log('Contact form submitted successfully:', result);
       }
     } catch (error) {
       console.error('Failed to send message:', error);

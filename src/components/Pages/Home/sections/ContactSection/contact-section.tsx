@@ -57,7 +57,6 @@ export default function ContactSection({ websiteId, sectionId }: { websiteId: st
   // Split contentItems into SendMessageSection and InfoItemsSection
   const SendMessageSection = contentItems.filter(item => !!item.subjects) // Items with 'subjects' are for the form
   const InfoItemsSection = contentItems.filter(item => !!item.phoneValue) // Items with 'phoneValue' are for contact info
-  console.log(SendMessageSection)
   const isRTL = direction === "rtl"
 
   return (

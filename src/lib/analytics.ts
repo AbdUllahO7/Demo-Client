@@ -40,7 +40,6 @@ export class CookieAnalytics {
     }
 
     // Initialize other analytics tools here
-    this.handleCustomAnalytics(preferences);
   }
 
   public updateConsent(preferences: CookiePreferences): void {
@@ -64,26 +63,6 @@ export class CookieAnalytics {
       }
     }
 
-    this.handleCustomAnalytics(preferences);
   }
 
-  private handleCustomAnalytics(preferences: CookiePreferences): void {
-    // Add your custom analytics initialization here
-    // Example: Hotjar, Mixpanel, custom tracking, etc.
-    
-    if (preferences.analytics) {
-      // Initialize custom analytics
-      console.log('Analytics enabled');
-    }
-
-    if (preferences.marketing) {
-      // Initialize marketing tools
-      console.log('Marketing tools enabled');
-    }
-
-    if (preferences.functional) {
-      // Initialize functional tools
-      console.log('Functional tools enabled');
-    }
-  }
 }

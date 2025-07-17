@@ -41,11 +41,7 @@ export function useContactForm() {
         return data;
       },
       onSuccess: (data) => {
-        // Optional: You can add success side effects here
-        console.log('Contact form submitted successfully:', data);
-        
-        // Optional: Invalidate any related queries if needed
-        // queryClient.invalidateQueries({ queryKey: ['contacts'] });
+      
       },
       onError: (error) => {
         // Optional: You can add error handling here

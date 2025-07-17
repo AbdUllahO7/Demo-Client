@@ -9,6 +9,7 @@ import QueryProvider from "@/providers/QueryProvider"
 import RootLayoutClient from "./RootLayoutClient"
 import { WebsiteThemeProvider } from "@/contexts/WebsiteThemeContext"
 import CookieConsentProvider from "@/providers/cookie-consent-provider"
+import { SpeedInsights } from "@vercel/speed-insights/next"
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -33,7 +34,7 @@ export default function RootLayout({
               {/* NEW: Add WebsiteThemeProvider for dynamic themes */}
               <WebsiteThemeProvider>
                   <CookieConsentProvider>
-
+                  <SpeedInsights/>
                 <RootLayoutClient>{children}</RootLayoutClient>
                 </CookieConsentProvider>
               </WebsiteThemeProvider>
