@@ -21,6 +21,8 @@ interface SubNavItem {
   href: string
   source: "navigation" | "section"
   isDynamicUrl?: boolean
+  isInternal?: boolean
+  sectionId?: string
 }
 
 interface NavItem {
@@ -135,6 +137,19 @@ export default function Header({
     return section.slug ? `#${section.slug}` : `#${sectionName.toLowerCase().replace(/\s+/g, "-")}`
   }
 
+  // Helper function to determine if a link is internal
+  const isInternalLink = (href: string) => {
+    return href.startsWith("#") || href === "#"
+  }
+
+  // Helper function to extract sectionId from href
+  const extractSectionId = (href: string) => {
+    if (href.startsWith("#")) {
+      return href.substring(1)
+    }
+    return null
+  }
+
   // Function to find sections with addSubNavigation enabled
   const getAdditionalSubNavItems = (parentSectionName: string, language: string): SubNavItem[] => {
     if (!allSections?.data) return []
@@ -153,6 +168,7 @@ export default function Header({
         const fallbackUrl = generateFallbackSectionUrl(section)
         const finalUrl = dynamicUrl || fallbackUrl
         const title = getSectionTitle(section, language)
+        const isInternal = isInternalLink(finalUrl)
 
         return {
           id: section._id,
@@ -160,6 +176,8 @@ export default function Header({
           href: finalUrl,
           source: "section" as const,
           isDynamicUrl: !!dynamicUrl,
+          isInternal: isInternal,
+          sectionId: isInternal ? extractSectionId(finalUrl) : undefined,
         }
       })
       .filter((item: SubNavItem) => item.label)
@@ -213,6 +231,7 @@ export default function Header({
           
           const subNavLabel = getTranslatedContent(titleEl, language)
           const subNavHref = getTranslatedContent(urlEl, language) || "#"
+          const isInternal = isInternalLink(subNavHref)
           
           return {
             id: titleEl._id,
@@ -220,6 +239,8 @@ export default function Header({
             href: subNavHref,
             source: "navigation" as const,
             isDynamicUrl: false,
+            isInternal: isInternal,
+            sectionId: isInternal ? extractSectionId(subNavHref) : undefined,
           }
         })
         ?.filter((item: any) => item.label) || []
@@ -368,6 +389,16 @@ export default function Header({
     setIsOpen(false)
   }
 
+  // Enhanced subnav link handler like footer
+  const handleSubNavClick = (subItem: SubNavItem) => {
+    if (subItem.isInternal && subItem.sectionId) {
+      // Use scrollToSection for internal links
+      scrollToSection(subItem.sectionId)
+      setIsOpen(false)
+    }
+    // For external links, let the Link component handle it normally
+  }
+
   return (
     <motion.header
       initial={{ y: -100, opacity: 0 }}
@@ -452,19 +483,32 @@ export default function Header({
                               animate={{ opacity: 1, x: 0 }}
                               transition={{ delay: index * 0.05 }}
                             >
-                              <Link
-                                href={subItem.href}
-                                target={subItem.isDynamicUrl ? "_blank" : "_self"}
-                                className={`flex items-center justify-between px-4 py-3 text-sm text-wtheme-text hover:bg-wtheme-hover/10 transition-colors duration-200 ${
-                                  subItem.source === "section" ? `${isRTL ? 'border-r-2 border-accent mr-2' : 'border-l-2 border-accent ml-2'}` : ""
-                                } ${isRTL ? 'text-right' : 'text-left'}`}
-                                onClick={(e) => handleNavClick(e, subItem.href, subItem.isDynamicUrl)}
-                              >
-                                <span className={`flex-1 ${isRTL ? 'font-arabic text-right' : ''}`}>{subItem.label}</span>
-                                <div className={`flex items-center gap-2 ${isRTL ? 'flex-row-reverse' : ''}`}>
-                                  {subItem.source === "section" && <div className="w-2 h-2 rounded-full bg-accent" />}
-                                </div>
-                              </Link>
+                              {subItem.isInternal ? (
+                                <button
+                                  onClick={() => handleSubNavClick(subItem)}
+                                  className={`w-full flex items-center justify-between px-4 py-3 text-sm text-wtheme-text hover:bg-wtheme-hover/10 transition-colors duration-200 ${
+                                    subItem.source === "section" ? `${isRTL ? 'border-r-2 border-accent mr-2' : 'border-l-2 border-accent ml-2'}` : ""
+                                  } ${isRTL ? 'text-right' : 'text-left'}`}
+                                >
+                                  <span className={`flex-1 ${isRTL ? 'font-arabic text-right' : ''}`}>{subItem.label}</span>
+                                  <div className={`flex items-center gap-2 ${isRTL ? 'flex-row-reverse' : ''}`}>
+                                    {subItem.source === "section" && <div className="w-2 h-2 rounded-full bg-accent" />}
+                                  </div>
+                                </button>
+                              ) : (
+                                <Link
+                                  href={subItem.href}
+                                  target={subItem.isDynamicUrl ? "_blank" : "_self"}
+                                  className={`flex items-center justify-between px-4 py-3 text-sm text-wtheme-text hover:bg-wtheme-hover/10 transition-colors duration-200 ${
+                                    subItem.source === "section" ? `${isRTL ? 'border-r-2 border-accent mr-2' : 'border-l-2 border-accent ml-2'}` : ""
+                                  } ${isRTL ? 'text-right' : 'text-left'}`}
+                                >
+                                  <span className={`flex-1 ${isRTL ? 'font-arabic text-right' : ''}`}>{subItem.label}</span>
+                                  <div className={`flex items-center gap-2 ${isRTL ? 'flex-row-reverse' : ''}`}>
+                                    {subItem.source === "section" && <div className="w-2 h-2 rounded-full bg-accent" />}
+                                  </div>
+                                </Link>
+                              )}
                             </motion.div>
                           ))}
                         </div>
@@ -508,6 +552,7 @@ export default function Header({
         setIsOpen={setIsOpen}
         navItems={navItems}
         handleNavClick={handleNavClick}
+        handleSubNavClick={handleSubNavClick}
         direction={direction}
         isRTL={isRTL}
       />
@@ -525,11 +570,12 @@ interface MobileNavProps {
     isDynamicUrl?: boolean,
     navItem?: NavItem
   ) => void
+  handleSubNavClick: (subItem: SubNavItem) => void
   direction: string
   isRTL: boolean
 }
 
-function MobileNav({ isOpen, setIsOpen, navItems, handleNavClick, direction, isRTL }: MobileNavProps) {
+function MobileNav({ isOpen, setIsOpen, navItems, handleNavClick, handleSubNavClick, direction, isRTL }: MobileNavProps) {
   const [openSubNav, setOpenSubNav] = useState<string | null>(null)
 
   return (
@@ -598,19 +644,33 @@ function MobileNav({ isOpen, setIsOpen, navItems, handleNavClick, direction, isR
                             animate={{ opacity: 1, x: 0 }}
                             transition={{ delay: subIndex * 0.05 }}
                           >
-                            <Link
-                              href={subItem.href}
-                              target={subItem.isDynamicUrl ? "_blank" : "_self"}
-                              className={`flex items-center justify-between py-2 text-white/80 hover:text-accent transition-colors duration-200 ${
-                                isRTL ? 'flex-row-reverse text-right' : 'text-left'
-                              }`}
-                              onClick={(e) => handleNavClick(e, subItem.href, subItem.isDynamicUrl)}
-                            >
-                              <span className={`text-base ${isRTL ? 'font-arabic' : ''}`}>{subItem.label}</span>
-                              <div className={`flex items-center gap-2 ${isRTL ? 'flex-row-reverse' : ''}`}>
-                                {subItem.source === "section" && <div className="w-2 h-2 rounded-full bg-accent" />}
-                              </div>
-                            </Link>
+                            {subItem.isInternal ? (
+                              <button
+                                onClick={() => handleSubNavClick(subItem)}
+                                className={`w-full flex items-center justify-between py-2 text-white/80 hover:text-accent transition-colors duration-200 ${
+                                  isRTL ? 'flex-row-reverse text-right' : 'text-left'
+                                }`}
+                              >
+                                <span className={`text-base ${isRTL ? 'font-arabic' : ''}`}>{subItem.label}</span>
+                                <div className={`flex items-center gap-2 ${isRTL ? 'flex-row-reverse' : ''}`}>
+                                  {subItem.source === "section" && <div className="w-2 h-2 rounded-full bg-accent" />}
+                                </div>
+                              </button>
+                            ) : (
+                              <Link
+                                href={subItem.href}
+                                target={subItem.isDynamicUrl ? "_blank" : "_self"}
+                                className={`flex items-center justify-between py-2 text-white/80 hover:text-accent transition-colors duration-200 ${
+                                  isRTL ? 'flex-row-reverse text-right' : 'text-left'
+                                }`}
+                                onClick={() => setIsOpen(false)}
+                              >
+                                <span className={`text-base ${isRTL ? 'font-arabic' : ''}`}>{subItem.label}</span>
+                                <div className={`flex items-center gap-2 ${isRTL ? 'flex-row-reverse' : ''}`}>
+                                  {subItem.source === "section" && <div className="w-2 h-2 rounded-full bg-accent" />}
+                                </div>
+                              </Link>
+                            )}
                           </motion.div>
                         ))}
                       </motion.div>
