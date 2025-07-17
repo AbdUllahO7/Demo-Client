@@ -425,6 +425,7 @@ export default function Header({
               <Image
                 src={logo || "/placeholder.svg"}
                 alt="Logo"
+                priority={true}
                 width={120}
                 height={40}
                 className={`h-8 w-auto transition-all duration-300 ${isOpen ? "brightness-0 invert" : ""}`}
@@ -498,7 +499,7 @@ export default function Header({
                               ) : (
                                 <Link
                                   href={subItem.href}
-                                  target={subItem.isDynamicUrl ? "_blank" : "_self"}
+                                  target={subItem.isDynamicUrl ? "_self" : "_self"}
                                   className={`flex items-center justify-between px-4 py-3 text-sm text-wtheme-text hover:bg-wtheme-hover/10 transition-colors duration-200 ${
                                     subItem.source === "section" ? `${isRTL ? 'border-r-2 border-accent mr-2' : 'border-l-2 border-accent ml-2'}` : ""
                                   } ${isRTL ? 'text-right' : 'text-left'}`}
@@ -659,7 +660,7 @@ function MobileNav({ isOpen, setIsOpen, navItems, handleNavClick, handleSubNavCl
                             ) : (
                               <Link
                                 href={subItem.href}
-                                target={subItem.isDynamicUrl ? "_blank" : "_self"}
+                                target={subItem.isDynamicUrl ? "_self" : "_self"}
                                 className={`flex items-center justify-between py-2 text-white/80 hover:text-accent transition-colors duration-200 ${
                                   isRTL ? 'flex-row-reverse text-right' : 'text-left'
                                 }`}

@@ -35,6 +35,7 @@ export function ClientLogo({ client, index, isInView }: ClientLogoProps) {
           src={client.logo || "/placeholder.svg"}
           alt={client.name}
           width={150}
+          priority={true}
           height={60}
           className="h-12 w-auto object-contain grayscale opacity-70 transition-all duration-300 group-hover:grayscale-0 group-hover:opacity-100"
         />

@@ -73,6 +73,7 @@ export function CaseStudyCard({ study, index, isInView }: CaseStudyCardProps) {
                     src={study.image || "/placeholder.svg"}
                     alt={study.title}
                     width={600}
+                    priority={true}
                     height={400}
                     className="w-full h-64 object-cover"
                     />

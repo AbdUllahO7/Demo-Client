@@ -9,6 +9,7 @@ export function FeaturedImage({ image, title }) {
                     src={image}
                     alt={title}
                     fill
+                    priority={true}
                     className="object-cover"
                 />
             </div>

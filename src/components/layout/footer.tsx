@@ -191,7 +191,7 @@ export default function Footer({ sectionId, logo = "/assets/iDIGITEK.webp", subN
             className="space-y-4"
           >
             <div className="flex items-center gap-2">
-              <Image src={logo} alt="Idigitek Solutions Logo" width={100} height={100} className="rounded" />
+              <Image src={logo} alt="Idigitek Solutions Logo" priority={true} width={100} height={100} className="rounded" />
             </div>
             <p className="text-sm font-body text-wtheme-text">{contentItems[0]?.description || "No description available"}</p>
             <div className="flex space-x-4">
@@ -212,7 +212,7 @@ export default function Footer({ sectionId, logo = "/assets/iDIGITEK.webp", subN
                               src={social.image} 
                               alt={social.label} 
                               width={20} 
-                          
+                              priority={true}
                               height={20} 
                               className="w-5 h-5 object-contain m-1 "
                             /> : null
@@ -278,7 +278,8 @@ function FooterColumn({ title, links, scrollToSection }: FooterColumnProps & { s
                       src={link.image} 
                       alt={link.label} 
                       width={16} 
-                      height={16} 
+                      height={16}
+                      priority={true} 
                       className="w-4 h-4 object-contain"
                     />
                   )}
@@ -294,7 +295,8 @@ function FooterColumn({ title, links, scrollToSection }: FooterColumnProps & { s
                       src={link.image} 
                       alt={link.label} 
                       width={16} 
-                      height={16} 
+                      height={16}
+                      priority={true} 
                       className="w-4 h-4 object-contain"
                     />
                   )}

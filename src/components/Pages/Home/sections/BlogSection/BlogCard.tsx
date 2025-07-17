@@ -52,6 +52,7 @@ export function BlogCard({ post, index, isInView, isRTL }: BlogCardProps) {
               onError={() => console.error(`Failed to load image: ${post.image}`)}
               placeholder="blur"
               blurDataURL="/placeholder-image.jpg"
+              priority={true}
             />
             <div className="absolute inset-0 bg-gradient-to-t from-wtheme-background/90 via-wtheme-background/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
           </div>

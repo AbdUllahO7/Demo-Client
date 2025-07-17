@@ -253,6 +253,7 @@ function ProcessStep({
             alt={getCurrentText(step, 'title')}
             width={600}
             height={400}
+            priority={true}
             className="object-cover w-full h-full"
           />
           

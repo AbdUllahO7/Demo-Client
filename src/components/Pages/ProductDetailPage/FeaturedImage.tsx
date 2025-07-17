@@ -54,6 +54,7 @@ export const FeaturedImage: React.FC<FeaturedImageProps> = ({ product }) => {
         src={image || "/placeholder.svg"}
         alt={altText}
         width={900}
+        priority={true}
         height={500}
         className="w-full h-auto object-cover"
       />

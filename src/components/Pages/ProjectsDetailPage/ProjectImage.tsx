@@ -52,10 +52,11 @@ export const ProjectImage: React.FC<ProjectImageProps> = ({ project }) => {
             src={image}
             alt={altText}
             fill
+            
             className="object-cover"
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 1200px"
-            priority // Optional: prioritize loading for hero images
-          />
+            priority={true}          
+/>
         </div>
       </div>
     </section>

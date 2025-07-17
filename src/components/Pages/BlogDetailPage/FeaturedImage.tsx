@@ -56,9 +56,10 @@ export const FeaturedImage: React.FC<FeaturedImageProps> = ({ blog }) => {
       <Image
         src={image || "/placeholder.svg"}
         alt={altText}
-        width={900}
-        height={500}
+        width={800}
+        height={600}
         className="w-full h-auto object-cover"
+        priority={true}
       />
     </motion.div>
   )

@@ -38,7 +38,7 @@ const HeroSection = ({ heroData }: HeroSectionProps) => {
                 alt={displayTitle}
                 fill
                 className="object-cover"
-                priority
+                priority={true}
                 onError={(e) => {
                     // Fallback to placeholder if image fails to load
                     e.currentTarget.src = fallbackImage

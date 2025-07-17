@@ -94,6 +94,7 @@ const FeatureContent: React.FC<FeatureContentProps> = ({ content, direction }) =
         src={image || "/placeholder.svg"}
         alt={imageAlt || "Feature image"}
         fill
+        priority={true}
         className="object-cover transition-transform duration-300 hover:scale-105"
         onError={(e) => {
           e.currentTarget.src = "/placeholder.svg"

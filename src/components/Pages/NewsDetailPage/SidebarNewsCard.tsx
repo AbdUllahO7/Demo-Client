@@ -13,6 +13,7 @@ export function SidebarNewsCard({ item }) {
             src={item.image || "/placeholder.svg"}
             alt={item.title}
             fill
+            priority={true}
             className="object-cover"
             />
         </div>

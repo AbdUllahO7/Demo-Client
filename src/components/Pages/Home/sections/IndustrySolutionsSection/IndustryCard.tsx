@@ -65,6 +65,7 @@ function IndustryIcon({ icon, name }: IndustryIconProps) {
         width={94}
         height={94}
         className="w-full h-full object-contain"
+        priority={true}
       />
 
       {/* Animated circles */}

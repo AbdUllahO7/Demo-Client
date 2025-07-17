@@ -73,6 +73,7 @@ export const TestimonialCard = ({ testimonial, index, direction }) => {
                     alt={testimonial.author}
                     width={48}
                     height={48}
+                    priority={true}
                     className="h-full w-full object-cover"
                     />
                 </div>

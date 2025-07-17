@@ -298,6 +298,7 @@ function NewsCard({ news, index, isInView, direction, formatDate, readMoreText, 
             src={news.image || "/placeholder.svg"}
             alt={news.title}
             fill
+            priority={true}
             className="object-cover transition-transform duration-500 group-hover:scale-105"
           />
         </motion.div>

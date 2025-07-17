@@ -102,6 +102,7 @@ export default function TechnologyStackSection() {
                       src={tech.icon || "/placeholder.svg"} 
                       alt={getCurrentText(tech, 'name')} 
                       width={40} 
+                      priority={true}
                       height={40} 
                       className="relative z-10 drop-shadow-sm" 
                     />

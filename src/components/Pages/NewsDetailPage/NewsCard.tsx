@@ -25,6 +25,7 @@ export function NewsCard({ news, index, t }) {
             src={news.image || "/placeholder.svg"}
             alt={news.title}
             fill
+            priority={true}
             className="object-cover transition-transform duration-500 group-hover:scale-105"
             />
             <div className="absolute top-3 left-3 z-10">

@@ -37,6 +37,7 @@ export default function FeatureImage({ isInView, image }: FeatureImageProps) {
                 src={image}
                 width={600}
                 height={600}
+                priority={true}
                 alt="Product Features"
                 className="w-full h-auto"
             />

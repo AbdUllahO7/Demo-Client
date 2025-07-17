@@ -51,6 +51,7 @@ export const RelatedPostCard: React.FC<RelatedPostCardProps> = ({
               alt={post.title}
               width={300}
               height={160}
+              priority={true}
               className="w-full h-full object-cover"
             />
           </div>

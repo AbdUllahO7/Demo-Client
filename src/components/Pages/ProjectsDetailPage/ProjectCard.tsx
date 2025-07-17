@@ -29,6 +29,7 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({ project, index }) => {
           src={project.image || "/placeholder.svg"}
           alt={project.title}
           fill
+          priority={true}
           className="object-cover transition-transform duration-500 group-hover:scale-105"
         />
         <div className="absolute top-3 left-3 z-10">
