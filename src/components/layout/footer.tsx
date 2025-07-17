@@ -61,7 +61,7 @@ const generateFieldMappings = (isSpecial: boolean): Record<string, string> => {
       mappings[`socialLink${x}}`] = `Special Footer ${x} - Title`
       for (let y = 1; y <= 8; y++) {
         mappings[`socialLink${x}_${y}`] = `Special Footer ${x} - SocialLink ${y} - Url`
-        mappings[`sectionId${x}_${y}`] = `Special Footer ${x} - SocialLink ${y} - SectionId` // Added sectionId mapping
+        mappings[`sectionId${x}_${y}`] = `Special Footer ${x} - SocialLink ${y} - SectionId`
         mappings[`image${x}_${y}`] = `Special Footer ${x} - SocialLink ${y} - Image`
         mappings[`LinkName${x}_${y}`] = `Special Footer ${x} - SocialLink ${y} - LinkName`
       }
@@ -145,7 +145,7 @@ export default function Footer({ sectionId, logo = "/assets/iDIGITEK.webp", subN
             // Determine if this is an internal link (has sectionId) or external link (has URL)
             const isInternal = Boolean(sectionId && sectionId.trim())
             const href = isInternal 
-              ? `#${sectionId}` // Use sectionId for internal links
+              ? `#${sectionId}`
               : url?.startsWith("http") 
                 ? url 
                 : url ? `https://${url}` : "#"
@@ -167,10 +167,6 @@ export default function Footer({ sectionId, logo = "/assets/iDIGITEK.webp", subN
     }
     return columns
   }, [Special])
-
-  
-
-
 
   return (
     <motion.footer
@@ -206,17 +202,22 @@ export default function Footer({ sectionId, logo = "/assets/iDIGITEK.webp", subN
                     whileHover={{ scale: 1.2, color: "var(--website-theme-primary)" }}
                     transition={{ type: "spring", stiffness: 400, damping: 10 }}
                   >
-                    <Link href={social.socialLink} className="text-wtheme-text hover:text-wtheme-hover">
-                        {social.image ? 
-                            <Image 
-                              src={social.image} 
-                              alt={social.label} 
-                              width={20} 
-                              priority={true}
-                              height={20} 
-                              className="w-5 h-5 object-contain m-1 "
-                            /> : null
-                          }                      
+                    <Link 
+                      href={social.socialLink} 
+                      className="text-wtheme-text hover:text-wtheme-hover"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      {social.image ? 
+                        <Image 
+                          src={social.image} 
+                          alt={social.label} 
+                          width={20} 
+                          priority={true}
+                          height={20} 
+                          className="w-5 h-5 object-contain m-1 "
+                        /> : null
+                      }                      
                       <span className="sr-only">{social.label}</span>
                     </Link>
                   </motion.div>
@@ -246,13 +247,13 @@ export default function Footer({ sectionId, logo = "/assets/iDIGITEK.webp", subN
  * Enhanced Footer column component with section scrolling support
  */
 function FooterColumn({ title, links, scrollToSection }: FooterColumnProps & { scrollToSection: (sectionId: string) => void }) {
-  const handleLinkClick = (link: FooterColumnProps['links'][0]) => {
+  const handleLinkClick = (link: FooterColumnProps['links'][0], e: React.MouseEvent) => {
     if (link.isInternal && link.sectionId) {
       // Prevent default link behavior for internal links
+      e.preventDefault()
       scrollToSection(link.sectionId)
     }
   }
-
 
   return (
     <motion.div
@@ -270,7 +271,7 @@ function FooterColumn({ title, links, scrollToSection }: FooterColumnProps & { s
             >
               {link.isInternal ? (
                 <button
-                  onClick={() => handleLinkClick(link)}
+                  onClick={(e) => handleLinkClick(link, e)}
                   className="font-body text-wtheme-text hover:text-wtheme-hover flex items-center gap-2 text-left"
                 >
                   {link.image && (
@@ -289,6 +290,8 @@ function FooterColumn({ title, links, scrollToSection }: FooterColumnProps & { s
                 <Link 
                   href={link.href} 
                   className="font-body text-wtheme-text hover:text-wtheme-hover flex items-center gap-2"
+                  target="_blank"
+                  rel="noopener noreferrer"
                 >
                   {link.image && (
                     <Image 
