@@ -1,6 +1,7 @@
 "use client"
 
 import Link from "next/link"
+// 🚀 OPTIMIZATION: Import only specific motion components
 import { motion } from "framer-motion"
 import { Button } from "@/components/ui/button"
 import { ArrowRight } from "lucide-react"
@@ -27,6 +28,28 @@ interface HeroSlideProps {
   handleNavClick: (e: React.MouseEvent<HTMLAnchorElement>, sectionId: string) => void
 }
 
+// 🚀 OPTIMIZATION: Simplified, faster animation variants
+const slideVariants = {
+  initial: { 
+    opacity: 0,
+    // Remove complex transforms for better performance
+  },
+  animate: { 
+    opacity: 1,
+    transition: { 
+      duration: 0.4, // Shorter duration
+      ease: "easeOut" // Simpler easing
+    }
+  },
+  exit: { 
+    opacity: 0,
+    transition: { 
+      duration: 0.2, // Very fast exit
+      ease: "easeIn"
+    }
+  }
+}
+
 export default function HeroSlide({
   slide,
   index,
@@ -39,22 +62,10 @@ export default function HeroSlide({
   const isExternalUrl = (url: string) => {
     return url && (url.startsWith('http://') || url.startsWith('https://') || url.startsWith('//'))
   }
-  
-
-  
-  // Helper function to get button class based on type
-
 
   return (
-    <motion.div
-      key={index}
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      transition={{ duration: 0.5 }}
-      className="absolute inset-0 grid lg:grid-cols-2 gap-8 items-center"
-    >
-      {/* Content */}
+    <div className="grid lg:grid-cols-2 gap-8 items-center h-full">
+      {/* Content - Remove motion wrapper for better performance */}
       <SlideContent
         title={slide.title}
         description={slide.excerpt}
@@ -68,13 +79,14 @@ export default function HeroSlide({
               asChild
               size="lg"
               variant="default"
-              className={`${isExternalUrl(slide.exploreButtonUrl) ? ' border-2 border-primary' : 'border-2 border-primary'} dark:bg-primary text-wtheme-text`}
+              className={`${isExternalUrl(slide.exploreButtonUrl) ? ' border-2 border-primary' : 'border-2 border-primary'} dark:bg-primary text-wtheme-text transition-colors duration-200`}
             >
               {isExternalUrl(slide.exploreButtonUrl) ? (
                 <a 
                   href={slide.exploreButtonUrl} 
                   target="_blank" 
                   rel="noopener noreferrer"
+                  className="inline-flex items-center"
                 >
                   {slide.exploreButton}
                   {direction === "ltr" && <ArrowRight className="ml-2 h-4 w-4" />}
@@ -87,6 +99,7 @@ export default function HeroSlide({
                     ? (e) => handleNavClick(e, slide.exploreButtonUrl.replace('#', '')) 
                     : undefined
                   }
+                  className="inline-flex items-center"
                 >
                   {slide.exploreButton}
                   {direction === "ltr" && <ArrowRight className="ml-2 h-4 w-4" />}
@@ -95,17 +108,16 @@ export default function HeroSlide({
               )}
             </Button>
           )}
-
-      
         </div>
       </SlideContent>
 
-      {/* Image */}
+      {/* Image - Pass isFirst prop for LCP optimization */}
       <SlideImage
         image={slide.image || "/placeholder.svg"}
         title={slide.title}
         color={slide.color}
+        isFirst={index === 0}
       />
-    </motion.div>
+    </div>
   )
 }

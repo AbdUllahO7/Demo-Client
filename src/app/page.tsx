@@ -1,27 +1,70 @@
 "use client";
 
 import { JSX, useEffect } from "react";
-import ServicesSection from "@/components/Pages/Home/sections/services-section";
-import ProcessSection from "@/components/Pages/Home/sections/process-section";
-import TestimonialsSection from "@/components/Pages/Home/sections/testimonials-section";
-import PartnersSectionComponent from "@/components/Pages/Home/sections/partners-section";
-import TeamSection from "@/components/Pages/Home/sections/team-section";
 import { AnimatePresence } from "framer-motion";
 import { useLanguage } from "@/contexts/language-context";
-import NewsSection from "@/components/Pages/Home/sections/news-section";
-import ProjectsSection from "@/components/Pages/Home/sections/projects-section";
-import BlogSection from "@/components/Pages/Home/sections/BlogSection/blog-section";
-import ContactSection from "@/components/Pages/Home/sections/ContactSection/contact-section";
-import FaqSection from "@/components/Pages/Home/sections/FaqSection/faq-section";
-import HeroSection from "@/components/Pages/Home/sections/HeroSection/hero-section";
-import IndustrySolutionsSection from "@/components/Pages/Home/sections/IndustrySolutionsSection/industry-solutions-section";
-import FeaturesSection from "@/components/Pages/Home/sections/FeaturesSection/features-section";
 import { useWebSite } from "@/lib/webSite/use-WebSite";
 import { useSections } from "@/lib/section/use-Section";
+import { useBatchedSectionData } from "@/hooks/useBatchedSectionData";
 import { useScrollToSection } from "@/hooks/use-scroll-to-section";
 import { SectionSkeleton } from "@/components/Skeleton/SectionSkeleton";
-import ProductsSection from "@/components/Pages/Home/sections/ProductsSection/ProductsSection";
-import Footer from "@/components/layout/footer";
+import dynamic from 'next/dynamic';
+
+// Keep HeroSection static (above the fold)
+import HeroSection from "@/components/Pages/Home/sections/HeroSection/hero-section";
+
+// Dynamic imports with loading states
+const ServicesSection = dynamic(() => import("@/components/Pages/Home/sections/services-section"), {
+  loading: () => <SectionSkeleton variant="default" className="py-20" />
+});
+
+const ProcessSection = dynamic(() => import("@/components/Pages/Home/sections/process-section"), {
+  loading: () => <SectionSkeleton variant="default" className="py-20" />
+});
+
+const TestimonialsSection = dynamic(() => import("@/components/Pages/Home/sections/testimonials-section"), {
+  loading: () => <SectionSkeleton variant="default" className="py-20" />
+});
+
+const PartnersSectionComponent = dynamic(() => import("@/components/Pages/Home/sections/partners-section"), {
+  loading: () => <SectionSkeleton variant="default" className="py-20" />
+});
+
+const TeamSection = dynamic(() => import("@/components/Pages/Home/sections/team-section"), {
+  loading: () => <SectionSkeleton variant="default" className="py-20" />
+});
+
+const NewsSection = dynamic(() => import("@/components/Pages/Home/sections/news-section"), {
+  loading: () => <SectionSkeleton variant="default" className="py-20" />
+});
+
+const ProjectsSection = dynamic(() => import("@/components/Pages/Home/sections/projects-section"), {
+  loading: () => <SectionSkeleton variant="default" className="py-20" />
+});
+
+const BlogSection = dynamic(() => import("@/components/Pages/Home/sections/BlogSection/blog-section"), {
+  loading: () => <SectionSkeleton variant="default" className="py-20" />
+});
+
+const ContactSection = dynamic(() => import("@/components/Pages/Home/sections/ContactSection/contact-section"), {
+  loading: () => <SectionSkeleton variant="default" className="py-20" />
+});
+
+const FaqSection = dynamic(() => import("@/components/Pages/Home/sections/FaqSection/faq-section"), {
+  loading: () => <SectionSkeleton variant="default" className="py-20" />
+});
+
+const IndustrySolutionsSection = dynamic(() => import("@/components/Pages/Home/sections/IndustrySolutionsSection/industry-solutions-section"), {
+  loading: () => <SectionSkeleton variant="default" className="py-20" />
+});
+
+const FeaturesSection = dynamic(() => import("@/components/Pages/Home/sections/FeaturesSection/features-section"), {
+  loading: () => <SectionSkeleton variant="default" className="py-20" />
+});
+
+const ProductsSection = dynamic(() => import("@/components/Pages/Home/sections/ProductsSection/ProductsSection"), {
+  loading: () => <SectionSkeleton variant="default" className="py-20" />
+});
 
 // Define TypeScript interfaces for data
 interface Website {
@@ -72,15 +115,21 @@ const getOriginalSubName = (subName: string): string => {
 export default function LandingPage() {
   const { direction } = useLanguage();
   const { useGetWebsitesByUserId } = useWebSite();
-  const { useGetByWebsiteId } = useSections();
   const scrollToSection = useScrollToSection();
 
+  // 🚀 OPTIMIZATION: Get website data
   const { data: websites, isLoading: websitesLoading, error: websitesError } = useGetWebsitesByUserId();
   const websiteId = websites && websites.length > 0 ? websites[0].id : undefined;
-  const { data: sectionsData, isLoading: sectionsIsLoading, error: sectionsError } = useGetByWebsiteId(
-    websiteId || "",
-    false,
-  );
+  
+  // 🚀 OPTIMIZATION: Use batched data instead of individual calls
+  const { 
+    sectionsData, 
+    isLoading: sectionsIsLoading, 
+    error: sectionsError 
+  } = useBatchedSectionData({ 
+    websiteId: websiteId || "",
+    enabled: !!websiteId 
+  });
 
   if (websiteId) {
     localStorage.setItem("websiteId", websiteId);
