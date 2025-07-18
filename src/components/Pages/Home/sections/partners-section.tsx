@@ -178,7 +178,6 @@ export default function PartnersSection({ websiteId, sectionId }) {
                 />
               ))}
             </div>
-        
           </div>
         </motion.div>
       </div>
@@ -283,12 +282,12 @@ function PartnersCarousel({ partners, isInView, isRTL, containerRef }: PartnersC
     <>
       <style jsx>{`
         @keyframes scroll-ltr {
-          0% { transform: translateX(0); }
-          100% { transform: translateX(-33.333%); }
+          0% { transform: translateX(-33.333%); }
+          100% { transform: translateX(-66.666%); }
         }
         @keyframes scroll-rtl {
           0% { transform: translateX(-33.333%); }
-          100% { transform: translateX(0); }
+          100% { transform: translateX(0%); }
         }
         @keyframes glow {
           0%, 100% { box-shadow: 0 0 20px rgba(var(--primary), 0.1); }
@@ -339,11 +338,12 @@ function PartnersCarousel({ partners, isInView, isRTL, containerRef }: PartnersC
         }
         .marquee-content {
           display: flex;
-          animation: ${isRTL ? "scroll-rtl" : "scroll-ltr"} ${config.duration}s linear infinite;
-          animation-play-state: ${isPaused ? "paused" : "running"};
           width: fit-content;
           will-change: transform;
-          ${isRTL ? 'flex-direction: row;' : ''}
+          animation: ${isRTL ? "scroll-rtl" : "scroll-ltr"} ${config.duration}s linear infinite;
+          animation-play-state: ${isPaused ? "paused" : "running"};
+          transform: translateX(-33.333%);
+          ${isRTL ? 'flex-direction: row-reverse;' : ''}
         }
         .marquee-content:hover {
           animation-play-state: paused;
