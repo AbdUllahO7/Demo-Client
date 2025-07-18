@@ -4,6 +4,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import styles from './cookie-consent.module.css';
 import { CookieCategory, CookieCategoryInfo, CookieConsentData, CookiePreferences } from '@/api/types/cookie-consent';
+import { FadeIn } from '@/utils/lightweightAnimations';
 
 const CONSENT_VERSION = '1.0.0';
 const CONSENT_STORAGE_KEY = 'cookieConsent';
@@ -181,19 +182,13 @@ const CookieConsent: React.FC = () => {
   return (
     <AnimatePresence>
       {showBanner && (
-        <motion.div 
+        <FadeIn 
           className={styles.overlay}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.3 }}
+       
         >
-          <motion.div 
+          <FadeIn 
             className={styles.banner}
-            initial={{ y: 100, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            exit={{ y: 100, opacity: 0 }}
-            transition={{ duration: 0.4, ease: "easeOut" }}
+           
           >
             <div className={styles.content}>
               <div className={styles.header}>
@@ -206,22 +201,17 @@ const CookieConsent: React.FC = () => {
 
               <AnimatePresence>
                 {showDetails && (
-                  <motion.div 
+                  <FadeIn 
                     className={styles.details}
-                    initial={{ height: 0, opacity: 0 }}
-                    animate={{ height: "auto", opacity: 1 }}
-                    exit={{ height: 0, opacity: 0 }}
-                    transition={{ duration: 0.3 }}
+
                   >
                     <h4 className={styles.detailsTitle}>Cookie Preferences</h4>
                     <div className={styles.cookieCategories}>
                       {cookieCategories.map((category) => (
-                        <motion.div 
+                        <FadeIn 
                           key={category.key} 
                           className={styles.category}
-                          initial={{ x: -20, opacity: 0 }}
-                          animate={{ x: 0, opacity: 1 }}
-                          transition={{ delay: 0.1 }}
+                       
                         >
                           <label className={styles.categoryLabel}>
                             <input 
@@ -242,10 +232,10 @@ const CookieConsent: React.FC = () => {
                               </p>
                             </div>
                           </label>
-                        </motion.div>
+                        </FadeIn>
                       ))}
                     </div>
-                  </motion.div>
+                  </FadeIn>
                 )}
               </AnimatePresence>
 
@@ -294,8 +284,8 @@ const CookieConsent: React.FC = () => {
                 )}
               </div>
             </div>
-          </motion.div>
-        </motion.div>
+          </FadeIn>
+        </FadeIn>
       )}
     </AnimatePresence>
   );

@@ -8,6 +8,7 @@ import { useLanguage } from "@/contexts/language-context"
 import { useSectionLogic } from "@/hooks/useSectionLogic"
 import { useSectionContent } from "@/hooks/useSectionContent"
 import { iconMap } from "@/utils/IconMap"
+import { FadeIn } from "@/utils/lightweightAnimations"
 
 export default function TestimonialsSection({ websiteId, sectionId }) {
   const ref = useRef(null)
@@ -173,13 +174,10 @@ export default function TestimonialsSection({ websiteId, sectionId }) {
                     onMouseLeave={handleMouseLeave}
                   >
                     <AnimatePresence mode="wait">
-                      <motion.div
+                      <FadeIn
                         key={`desktop-${activeIndex}`}
                         className="grid grid-cols-1 lg:grid-cols-3 gap-8"
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -20 }}
-                        transition={{ duration: 0.5 }}
+
                       >
                         {getVisibleItems().map((testimonial, index) => (
                           <TestimonialCard
@@ -191,7 +189,7 @@ export default function TestimonialsSection({ websiteId, sectionId }) {
                             formatDate={formatDate}
                           />
                         ))}
-                      </motion.div>
+                      </FadeIn>
                     </AnimatePresence>
                   </div>
 
@@ -255,12 +253,9 @@ export default function TestimonialsSection({ websiteId, sectionId }) {
                   <div onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
                     <div className="overflow-hidden">
                       <AnimatePresence mode="wait">
-                        <motion.div
+                        <FadeIn
                           key={`mobile-${activeIndex}`}
-                          initial={{ opacity: 0, x: direction === "rtl" ? -100 : 100 }}
-                          animate={{ opacity: 1, x: 0 }}
-                          exit={{ opacity: 0, x: direction === "rtl" ? 100 : -100 }}
-                          transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                    
                           className="w-full"
                         >
                           <TestimonialCard
@@ -270,7 +265,7 @@ export default function TestimonialsSection({ websiteId, sectionId }) {
                             direction={direction}
                             formatDate={formatDate}
                           />
-                        </motion.div>
+                        </FadeIn>
                       </AnimatePresence>
                     </div>
                   </div>
@@ -324,29 +319,9 @@ function TestimonialCard({ testimonial, index, isInView, direction, formatDate }
   }
 
   return (
-    <motion.div
-      ref={cardRef}
-      initial={{ opacity: 0, y: 50, scale: 0.95 }}
-      animate={
-        cardInView
-          ? {
-              opacity: 1,
-              y: 0,
-              scale: 1,
-              transition: {
-                type: "spring",
-                stiffness: 300,
-                damping: 20,
-                delay: 0.1 * index,
-              },
-            }
-          : { opacity: 0, y: 50, scale: 0.95 }
-      }
-      whileHover={{
-        y: -8,
-        scale: 1.02,
-        transition: { type: "spring", stiffness: 400, damping: 10 },
-      }}
+    <FadeIn
+    
+    
       className="group relative overflow-hidden rounded-2xl bg-wtheme-background border border-wtheme-border/50 shadow-lg hover:shadow-xl transition-all duration-500 h-full flex flex-col"
     >
       {/* Gradient overlay */}
@@ -355,44 +330,36 @@ function TestimonialCard({ testimonial, index, isInView, direction, formatDate }
       <div className="p-8 flex-grow flex flex-col">
         {/* Header with icon and stars */}
         <div className="flex items-center justify-between mb-6">
-          <motion.div
+          <FadeIn
             className="w-12 h-12 rounded-full flex items-center justify-center text-wtheme-text shadow-lg"
-            initial={{ opacity: 0, scale: 0 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.5, delay: 0.3 + index * 0.1 }}
+          
           >
             {renderIcon()}
-          </motion.div>
+          </FadeIn>
 
-          <motion.div
+          <FadeIn
             className="flex items-center gap-1"
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.5, delay: 0.4 + index * 0.1 }}
+
           >
             {renderStars()}
-          </motion.div>
+          </FadeIn>
         </div>
 
         {/* Quote */}
-        <motion.div
+        <FadeIn
           className="flex-grow mb-6"
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.5 + index * 0.1 }}
+       
         >
           <Quote className={`h-8 w-8 text-wtheme-text mb-4 ${isRTL ? "ml-auto" : ""}`} />
           <p className={`text-wtheme-text font-body leading-relaxed ${isRTL ? "text-right" : ""} text-lg`}>
             {testimonial.excerpt}
           </p>
-        </motion.div>
+        </FadeIn>
 
         {/* Client info */}
-        <motion.div
+        <FadeIn
           className="pt-6 border-t border-wtheme-border/30 flex items-center"
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.6 + index * 0.1 }}
+         
         >
           <div className={`relative ${isRTL ? "ml-4" : "mr-4"}`}>
             <div className="w-12 h-12 rounded-full bg-wtheme-text/20 flex items-center justify-center">
@@ -407,16 +374,14 @@ function TestimonialCard({ testimonial, index, isInView, direction, formatDate }
             </h4>
           
           </div>
-        </motion.div>
+        </FadeIn>
       </div>
 
       {/* Hover effect */}
-      <motion.div
+      <FadeIn
         className="absolute -bottom-8 -right-8 w-24 h-24 rounded-full bg-theme-gradient opacity-0 group-hover:opacity-10 transition-opacity duration-500"
-        initial={{ scale: 0 }}
-        animate={{ scale: 1 }}
-        transition={{ duration: 0.8, delay: 0.3 + index * 0.1 }}
-      ></motion.div>
-    </motion.div>
+ 
+      ></FadeIn>
+    </FadeIn>
   )
 }

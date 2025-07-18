@@ -5,17 +5,15 @@ import { useRef } from "react"
 import Image from "next/image"
 import { motion, useInView } from "framer-motion"
 import { Quote } from "lucide-react"
+import { FadeIn } from "@/utils/lightweightAnimations"
 
 export const TestimonialCard = ({ testimonial, index, direction }) => {
     const cardRef = useRef(null)
     const cardInView = useInView(cardRef, { once: true, amount: 0.1 })
 
     return (
-        <motion.div
-        ref={cardRef}
-        initial={{ opacity: 0, y: 50 }}
-        animate={cardInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 50 }}
-        transition={{ duration: 0.6, delay: 0.1 * (index % 3) }}
+        <FadeIn
+       
         className="group relative overflow-hidden rounded-2xl bg-background border border-border/50 shadow-lg hover:shadow-xl transition-all duration-500 h-full flex flex-col"
         >
         {/* Top gradient bar */}
@@ -95,6 +93,6 @@ export const TestimonialCard = ({ testimonial, index, direction }) => {
         <div
             className={`absolute -bottom-8 -right-8 w-16 h-16 rounded-full bg-gradient-to-r ${testimonial.color} opacity-10 group-hover:opacity-20 transition-opacity duration-500`}
         ></div>
-        </motion.div>
+        </FadeIn>
     )
 }

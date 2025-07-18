@@ -6,6 +6,7 @@ import { motion } from "framer-motion"
 import { ChevronLeft, ChevronRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { BlogCard } from "./BlogCard"
+import { FadeIn } from "@/utils/lightweightAnimations"
 
 
 
@@ -80,14 +81,10 @@ export function BlogCarousel({ posts, isInView, containerRef, isRTL }) {
       {/* Unified Carousel for All Screen Sizes */}
       <div className="relative">
         <div className="overflow-hidden" ref={carouselRef}>
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={isInView ? { opacity: 1 } : { opacity: 0 }}
-            transition={{ duration: 0.6, delay: 0.3 }}
+          <FadeIn
+        
             className="flex transition-transform duration-500 ease-in-out"
-            style={{
-              transform: `translateX(${isRTL ? currentSlide * slideWidth : -currentSlide * slideWidth}%)`,
-            }}
+       
           >
             {posts.map((post, index) => (
               <div 
@@ -101,17 +98,12 @@ export function BlogCarousel({ posts, isInView, containerRef, isRTL }) {
                 <BlogCard post={post} index={index} isInView={isInView} isRTL={isRTL} />
               </div>
             ))}
-          </motion.div>
+          </FadeIn>
         </div>
 
         {/* Navigation Buttons */}
         <div className="flex justify-center mt-8 md:mt-12 gap-4 md:gap-6">
-          <motion.div
-            style={{
-              x: mousePosition.x * -10,
-              y: mousePosition.y * -10,
-            }}
-            transition={{ type: "spring", stiffness: 150, damping: 15 }}
+          <FadeIn
           >
             <Button
               variant="outline"
@@ -123,14 +115,10 @@ export function BlogCarousel({ posts, isInView, containerRef, isRTL }) {
               <ChevronLeft className={`h-4 w-4 md:h-5 md:w-5 ${isRTL ? "rotate-180" : ""}`} />
               <span className="sr-only">Previous</span>
             </Button>
-          </motion.div>
+          </FadeIn>
 
-          <motion.div
-            style={{
-              x: mousePosition.x * 10,
-              y: mousePosition.y * -10,
-            }}
-            transition={{ type: "spring", stiffness: 150, damping: 15 }}
+          <FadeIn
+          
           >
             <Button
               variant="outline"
@@ -142,7 +130,7 @@ export function BlogCarousel({ posts, isInView, containerRef, isRTL }) {
               <ChevronRight className={`h-4 w-4 md:h-5 md:w-5 ${isRTL ? "rotate-180" : ""}`} />
               <span className="sr-only">Next</span>
             </Button>
-          </motion.div>
+          </FadeIn>
         </div>
       </div>
     </div>

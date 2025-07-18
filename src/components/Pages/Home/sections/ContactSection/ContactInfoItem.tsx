@@ -2,6 +2,7 @@
 
 import { ReactNode } from "react"
 import { motion } from "@/components/ui/framer-motion"
+import { FadeIn } from "@/utils/lightweightAnimations"
 
 interface ContactInfoItemProps {
   icon: ReactNode
@@ -12,7 +13,7 @@ interface ContactInfoItemProps {
 
 export function ContactInfoItem({ icon, title, content, isRTL }: ContactInfoItemProps) {
   return (
-    <motion.div whileHover={{ x: isRTL ? -5 : 5 }} className={`flex items-start gap-4 ${isRTL ? "" : ""}`}>
+    <FadeIn  className={`flex items-start gap-4 ${isRTL ? "" : ""}`}>
       <div className="rounded-full bg-primary/10 p-2 text-primary">
         {icon}
       </div>
@@ -20,6 +21,6 @@ export function ContactInfoItem({ icon, title, content, isRTL }: ContactInfoItem
         <h4 className="font-heading  text-wtheme-text">{title}</h4>
         <p className="text-wtheme-text font-body">{content}</p>
       </div>
-    </motion.div>
+    </FadeIn>
   )
 }

@@ -2,6 +2,7 @@ import React from "react"
 import { motion } from "framer-motion"
 import { getTranslatedContent } from "@/utils/getTranslatedContent"
 import { useLanguage } from "@/contexts/language-context"
+import { FadeIn } from "@/utils/lightweightAnimations"
 
 interface PostContentProps {
 blog: {
@@ -33,16 +34,14 @@ export const PostContent: React.FC<PostContentProps> = ({ blog }) => {
 
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 40 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.8, delay: 0.2 }}
+    <FadeIn
+    
       className={`prose max-w-none dark:prose-invert mb-14 ${direction === "rtl" ? "text-right" : ""}`}
     >
 
         <p className="text-lg leading-relaxed text-muted-foreground">
         {content}
       </p>
-    </motion.div>
+    </FadeIn>
   )
 }

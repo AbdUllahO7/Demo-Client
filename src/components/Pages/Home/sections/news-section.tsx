@@ -10,6 +10,7 @@ import { CardContent, CardFooter } from "@/components/ui/card"
 import { useSectionLogic } from "@/hooks/useSectionLogic"
 import { useSectionContent } from "@/hooks/useSectionContent"
 import { useLanguage } from "@/contexts/language-context"
+import { FadeIn } from "@/utils/lightweightAnimations"
 
 export default function NewsSection({ sectionId, websiteId }) {
   const ref = useRef(null)
@@ -83,16 +84,12 @@ export default function NewsSection({ sectionId, websiteId }) {
   return (
     <section id="news" className="relative w-full py-20 overflow-hidden bg-wtheme-background" dir={direction}>
     
-      <motion.div
-        initial={{ opacity: 0, scale: 0.8 }}
-        animate={{ opacity: 0.1, scale: 1 }}
-        transition={{ duration: 1.5 }}
+      <FadeIn
+   
         className="absolute top-1/3 left-0 w-96 h-96 rounded-full bg-accent blur-3xl"
       />
-      <motion.div
-        initial={{ opacity: 0, scale: 0.8 }}
-        animate={{ opacity: 0.1, scale: 1 }}
-        transition={{ duration: 1.5, delay: 0.3 }}
+      <FadeIn
+       
         className="absolute bottom-1/3 right-0 w-96 h-96 rounded-full bg-secondary blur-3xl"
       />
 
@@ -153,13 +150,9 @@ export default function NewsSection({ sectionId, websiteId }) {
             >
               <div className="relative">
                 <AnimatePresence mode="popLayout">
-                  <motion.div
+                  <FadeIn
                     key={`desktop-${activeIndex}`}
-                    className="grid grid-cols-3 gap-8"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    transition={{ duration: 0.5 }}
+                
                   >
                     {getVisibleItems().map((news, index) => (
                       <NewsCard
@@ -174,7 +167,7 @@ export default function NewsSection({ sectionId, websiteId }) {
                         websiteId={websiteId}
                       />
                     ))}
-                  </motion.div>
+                  </FadeIn>
                 </AnimatePresence>
               </div>
 
@@ -204,12 +197,9 @@ export default function NewsSection({ sectionId, websiteId }) {
             <div className="md:hidden relative" onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
               <div className="overflow-hidden rounded-2xl">
                 <AnimatePresence mode="popLayout">
-                  <motion.div
+                  <FadeIn
                     key={`mobile-${activeIndex}`}
-                    initial={{ opacity: 0, x: direction === "rtl" ? -100 : 100 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    exit={{ opacity: 0, x: direction === "rtl" ? 100 : -100 }}
-                    transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                
                     className="w-full"
                   >
                     <NewsCard
@@ -222,7 +212,7 @@ export default function NewsSection({ sectionId, websiteId }) {
                       sectionId={sectionId}
                       websiteId={websiteId}
                     />
-                  </motion.div>
+                  </FadeIn>
                 </AnimatePresence>
               </div>
 
@@ -261,39 +251,17 @@ function NewsCard({ news, index, isInView, direction, formatDate, readMoreText, 
   const isRTL = direction === "rtl"
 
   return (
-    <motion.div
-      ref={cardRef}
-      initial={{ opacity: 0, y: 50, rotateY: 15 }}
-      animate={
-        cardInView
-          ? {
-              opacity: 1,
-              y: 0,
-              rotateY: 0,
-              transition: {
-                type: "spring",
-                stiffness: 300,
-                damping: 20,
-                delay: 0.1 * index,
-              },
-            }
-          : { opacity: 0, y: 50, rotateY: 15 }
-      }
-      whileHover={{
-        y: -10,
-        transition: { type: "spring", stiffness: 400, damping: 10 },
-      }}
+    <FadeIn
+    
       className="group relative overflow-hidden rounded-2xl  border border-wtheme-border/50 shadow-lg hover:shadow-xl transition-all duration-500 h-full flex flex-col"
     >
-      <motion.div
+      <FadeIn
         className="h-1.5 w-full bg-primary"
-        initial={{ scaleX: 0 }}
-        animate={{ scaleX: 1 }}
-        transition={{ duration: 0.6, delay: 0.2 + index * 0.1 }}
-      ></motion.div>
+     
+      ></FadeIn>
 
       <div className="relative overflow-hidden aspect-video">
-        <motion.div initial={{ scale: 1.2 }} animate={{ scale: 1 }} transition={{ duration: 0.8, delay: 0.1 * index }}>
+        <FadeIn >
           <Image
             src={news.image || "/placeholder.svg"}
             alt={news.title}
@@ -301,29 +269,25 @@ function NewsCard({ news, index, isInView, direction, formatDate, readMoreText, 
             priority={true}
             className="object-cover transition-transform duration-500 group-hover:scale-105"
           />
-        </motion.div>
-        <motion.div
+        </FadeIn>
+        <FadeIn
           className="absolute top-4 left-4 z-10"
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.3 + index * 0.1 }}
+       
         >
           <span className="px-3 py-1 rounded-full text-xs font-accent font-medium text-white bg-primary">
             {news.category}
           </span>
-        </motion.div>
+        </FadeIn>
       </div>
 
       <CardContent className="flex-grow p-6">
-        <motion.div
+        <FadeIn
           className="flex items-center text-sm text-wtheme-text/70 font-body mb-3"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.5, delay: 0.4 + index * 0.1 }}
+
         >
           <Calendar className={` text-wtheme-text font-body h-4 w-4 ${isRTL ? "ml-2" : "mr-2"}`} />
           <span className="text-wtheme-text font-bold">{formatDate(news.date)}</span>
-        </motion.div>
+        </FadeIn>
 
         <motion.h3
           className="text-xl font-heading  mb-3 line-clamp-2 text-wtheme-text group-hover:text-wtheme-hover transition-colors"
@@ -345,10 +309,8 @@ function NewsCard({ news, index, isInView, direction, formatDate, readMoreText, 
       </CardContent>
 
       <CardFooter className="p-6 pt-0">
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.7 + index * 0.1 }}
+        <FadeIn
+     
         >
           <Link
             href={`/Pages/NewsDetailPage/${news.id}?sectionId=${sectionId}&websiteId=${websiteId}`}
@@ -359,15 +321,13 @@ function NewsCard({ news, index, isInView, direction, formatDate, readMoreText, 
               className={`${isRTL ? "mr-2 rotate-180" : "ml-2"} h-4 w-4 transition-transform duration-300 ${isRTL ? "group-hover:-translate-x-1" : "group-hover:translate-x-1"}`}
             />
           </Link>
-        </motion.div>
+        </FadeIn>
       </CardFooter>
 
-      <motion.div
+      <FadeIn
         className="absolute -bottom-8 -right-8 w-16 h-16 rounded-full bg-theme-gradient opacity-10 group-hover:opacity-20 transition-opacity duration-500"
-        initial={{ scale: 0 }}
-        animate={{ scale: 1 }}
-        transition={{ duration: 0.8, delay: 0.3 + index * 0.1 }}
-      ></motion.div>
-    </motion.div>
+     
+      ></FadeIn>
+    </FadeIn>
   )
 }

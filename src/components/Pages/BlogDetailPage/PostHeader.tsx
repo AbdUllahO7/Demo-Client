@@ -4,6 +4,7 @@
   import { useLanguage } from "@/contexts/language-context"
   import { formatDate } from "@/lib/utils"
   import { GoBackButton } from "@/components/GoBackButton"
+import { FadeIn } from "@/utils/lightweightAnimations"
 
   interface PostHeaderProps {
     blog: {
@@ -65,10 +66,8 @@
 
 
     return (
-      <motion.div
-        initial={{ opacity: 0, y: 30 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
+      <FadeIn
+      
         className="mb-8"
       >
         <GoBackButton sectionName="blog" title={backLinkText}  />
@@ -91,6 +90,6 @@
           </div>
           
         </div>
-      </motion.div>
+      </FadeIn>
     )
   }

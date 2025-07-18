@@ -1,5 +1,6 @@
 "use client"
 
+import { FadeIn } from "@/utils/lightweightAnimations"
 import { motion } from "framer-motion"
 import type React from "react"
 
@@ -38,18 +39,14 @@ export default function SlideContent({
   const selectedShadow = shadowClasses[colorScheme]
 
   return (
-    <motion.div
-      initial={{ opacity: 0, x: direction === 'rtl' ? 50 : -50 }}
-      animate={{ opacity: 1, x: 0 }}
-      transition={{ duration: 0.7, delay: 0.2 }}
+    <FadeIn
+   
       className="flex flex-col bg-transparent justify-center space-y-6 z-10 relative "
     >
       {/* Decorative line with gradient */}
       <div className="flex items-center gap-2 bg-transparent">
-        <motion.div 
-          initial={{ width: 0 }}
-          animate={{ width: '3rem' }}
-          transition={{ duration: 0.8, delay: 0.4 }}
+        <FadeIn 
+         
           className={`h-1.5 rounded-full bg-gradient-to-r ${selectedGradient} ${selectedShadow}/20`}
         />
       </div>
@@ -78,16 +75,14 @@ export default function SlideContent({
       </motion.p>
 
       {/* Children container with animation */}
-      <motion.div
-        initial={{ opacity: 0, y: 30 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.7, delay: 0.6 }}
+      <FadeIn
+       
         className="flex flex-col sm:flex-row gap-4 items-start"
       >
         {children}
-      </motion.div>
+      </FadeIn>
 
     
-    </motion.div>
+    </FadeIn>
   )
 }

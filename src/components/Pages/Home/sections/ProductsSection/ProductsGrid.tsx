@@ -5,6 +5,7 @@ import React, { useState } from "react"
 import { motion } from "framer-motion"
 import { X } from "lucide-react"
 import { ProductCard } from "./ProductCard";
+import { FadeIn } from "@/utils/lightweightAnimations";
 
 interface Product {
   id: string;
@@ -69,16 +70,13 @@ export function ProductsGrid({ products, isInView, containerRef, isRTL }: Produc
 
   return (
     <>
-      <motion.div
-        variants={containerVariants}
-        initial="hidden"
-        animate={isInView ? "visible" : "hidden"}
+      <FadeIn
+      
         className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-6 lg:gap-8 auto-rows-fr"
       >
         {products.map((product, index) => (
-          <motion.div
+          <FadeIn
             key={product.id}
-            variants={itemVariants}
             className="w-full h-full flex" // Added h-full and flex
           >
             <ProductCard 
@@ -89,16 +87,14 @@ export function ProductsGrid({ products, isInView, containerRef, isRTL }: Produc
               onImageClick={openImageModal}
               className="flex-1" // Added flex-1 prop
             />
-          </motion.div>
+          </FadeIn>
         ))}
-      </motion.div>
+      </FadeIn>
 
       {/* Image Modal */}
       {selectedImage && (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
+        <div
+      
           className="fixed inset-0 backdrop-blur-sm z-50 flex items-center justify-center p-4"
           onClick={closeImageModal}
         >
@@ -123,7 +119,7 @@ export function ProductsGrid({ products, isInView, containerRef, isRTL }: Produc
               className="w-full h-full object-contain rounded-lg"
             />
           </motion.div>
-        </motion.div>
+        </div>
       )}
     </>
   );

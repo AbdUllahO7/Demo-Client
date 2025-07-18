@@ -1,6 +1,7 @@
 "use client"
 
 import { motion } from "@/components/ui/framer-motion"
+import { FadeIn } from "@/utils/lightweightAnimations"
 
 interface FormFieldProps {
   id: string
@@ -20,11 +21,8 @@ export function FormField({
   isRTL
 }: FormFieldProps) {
   return (
-    <motion.div
-      variants={{
-        hidden: { opacity: 0, y: 10 },
-        visible: { opacity: 1, y: 0 },
-      }}
+    <FadeIn
+    
       className="grid gap-2"
     >
       <label
@@ -41,6 +39,6 @@ export function FormField({
         placeholder={placeholder}
         dir={direction}
       />
-    </motion.div>
+    </FadeIn>
   )
 }

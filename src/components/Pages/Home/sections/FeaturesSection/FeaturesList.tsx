@@ -3,6 +3,7 @@
 import { motion } from "framer-motion"
 import type React from "react"
 import FeatureCard from "./FeatureCard"
+import { FadeIn } from "@/utils/lightweightAnimations"
 
 interface FeaturesListProps {
     features: Array<{
@@ -23,14 +24,12 @@ export default function FeaturesList({ features, isInView }: FeaturesListProps) 
             ))}
         </div>
 
-        <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-            transition={{ duration: 0.6, delay: 0.6 }}
+        <FadeIn
+          
             className="mt-10"
         >
             {/* Content can be added here in the future */}
-        </motion.div>
+        </FadeIn>
         </>
     )
 }

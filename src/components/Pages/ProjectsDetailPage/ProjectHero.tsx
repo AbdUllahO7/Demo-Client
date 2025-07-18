@@ -4,6 +4,7 @@ import { useRef } from "react"
 import { motion, useInView } from "framer-motion"
 import { GoBackButton } from "@/components/GoBackButton"
 import { useLanguage } from "@/contexts/language-context"
+import { FadeIn } from "@/utils/lightweightAnimations"
 
 interface ProjectHeroProps {
   project: {
@@ -84,16 +85,12 @@ export const ProjectHero = ({ project, clients }: ProjectHeroProps) => {
     <section className="relative w-full py-20 overflow-hidden bg-wtheme-background">
       <div className="absolute inset-0 bg-gradient-to-b from-primary/5 to-wtheme-background"></div>
 
-      <motion.div
-        initial={{ opacity: 0, scale: 0.8 }}
-        animate={{ opacity: 0.1, scale: 1 }}
-        transition={{ duration: 1.5 }}
+      <FadeIn
+    
         className="absolute top-1/3 right-0 w-96 h-96 rounded-full bg-secondary blur-3xl"
       />
-      <motion.div
-        initial={{ opacity: 0, scale: 0.8 }}
-        animate={{ opacity: 0.1, scale: 1 }}
-        transition={{ duration: 1.5, delay: 0.3 }}
+      <FadeIn
+      
         className="absolute bottom-1/3 left-0 w-96 h-96 rounded-full bg-accent blur-3xl"
       />
 
@@ -128,14 +125,12 @@ export const ProjectHero = ({ project, clients }: ProjectHeroProps) => {
           )}
 
           {technologies && (
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={isHeaderInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-              transition={{ duration: 0.6, delay: 0.2 }}
+            <FadeIn
+             
               className="flex flex-wrap gap-2 mb-6"
             >
               <span className="px-3 py-1 rounded-full text-xs font-body font-medium text-wtheme-text ">{technologies}</span>
-            </motion.div>
+            </FadeIn>
           )}
         </div>
       </div>

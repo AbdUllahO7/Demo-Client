@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion"
 import IndustryCard from "./IndustryCard"
+import { FadeIn } from "@/utils/lightweightAnimations"
 
 interface Industry {
   id: string
@@ -31,14 +32,12 @@ export default function IndustriesGrid({ industries, isInView }: IndustriesGridP
         ))}
       </div>
 
-      <motion.div
-        initial={{ opacity: 0, y: 30 }}
-        animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
-        transition={{ duration: 0.6, delay: 0.8 }}
+      <FadeIn
+      
         className="mt-16 text-center"
       >
         {/* This space can be used for a CTA button or additional content */}
-      </motion.div>
+      </FadeIn>
     </>
   )
 }

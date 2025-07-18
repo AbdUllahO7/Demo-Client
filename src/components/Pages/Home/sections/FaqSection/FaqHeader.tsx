@@ -4,13 +4,12 @@
 import React from "react"
 import { motion } from "framer-motion"
 import { MessageCircleQuestion, Search } from "lucide-react"
+import { FadeIn } from "@/utils/lightweightAnimations"
 
 export const FaqHeader = ({ content, isInView, isRTL, searchQuery, setSearchQuery }) => {
     return (
-        <motion.div
-            initial={{ opacity: 0 }}
-            animate={isInView ? { opacity: 1 } : { opacity: 0 }}
-            transition={{ duration: 0.8 }}
+        <FadeIn
+          
             className="relative max-w-3xl mx-auto mb-20 text-center"
         >
          <motion.span
@@ -43,6 +42,6 @@ export const FaqHeader = ({ content, isInView, isRTL, searchQuery, setSearchQuer
         >
             {content.sectionDescription}
         </motion.p>
-        </motion.div>
+        </FadeIn>
     )
 }

@@ -20,7 +20,7 @@ const HeroSection = ({ heroData }: HeroSectionProps) => {
         title,
         description,
         backLinkText,
-        sectionId = "services" // Default section to return to
+        sectionId = "services"
     } = heroData
 
     const { direction } = useLanguage?.() || { direction: 'ltr' }
@@ -32,27 +32,30 @@ const HeroSection = ({ heroData }: HeroSectionProps) => {
     const displayDescription = description || "Learn more about our services"
 
     return (
-        <div className="relative h-[50vh] md:h-[60vh] w-full">
+        <div className="relative h-[50vh] md:h-[60vh] w-full overflow-hidden">
             <Image
                 src={displayImage}
                 alt={displayTitle}
                 fill
                 className="object-cover"
                 priority={true}
+                sizes="100vw"
+                quality={85}
+                placeholder="blur"
+                blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAIAAoDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWGRkqGx0f/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8AltJagyeH0AthI5xdrLcNM91BF5pX2HaH9bcfaSXWGaRmknyJckliyjqTzSlT54b6bk+h0R//2Q=="
                 onError={(e) => {
-                    // Fallback to placeholder if image fails to load
-                    e.currentTarget.src = fallbackImage
+                    const target = e.target as HTMLImageElement;
+                    target.src = fallbackImage;
                 }}
             />
             <div className="absolute inset-0 bg-black/50 flex flex-col justify-end">
                 <div className="container mx-auto px-4 pb-12">
-                    {/* Go back button */}
                     <GoBackButton 
                         sectionName={sectionId}
                         className="mb-4"
                         title={backLinkText} 
                     />
-                    <h1 className="text-4xl md:text-5xl  lg:text-6xl font-bold text-white mb-4">
+                    <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4">
                         {displayTitle}
                     </h1>
                     <p className="text-xl text-white/90 max-w-2xl">

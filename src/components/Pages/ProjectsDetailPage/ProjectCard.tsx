@@ -4,6 +4,7 @@ import Image from "next/image"
 import { ChevronRight } from "lucide-react"
 import { motion, useInView } from "framer-motion"
 import { Project } from "./Projects"
+import { FadeIn } from "@/utils/lightweightAnimations"
 
 interface ProjectCardProps {
   project: Project
@@ -15,11 +16,8 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({ project, index }) => {
   const cardInView = useInView(cardRef, { once: true, amount: 0.1 })
 
   return (
-    <motion.div
-      ref={cardRef}
-      initial={{ opacity: 0, y: 30 }}
-      animate={cardInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
-      transition={{ duration: 0.5, delay: 0.1 * index }}
+    <FadeIn
+     
       className="group relative overflow-hidden rounded-xl bg-background border border-border/50 shadow-md hover:shadow-lg transition-all duration-300 h-full flex flex-col"
     >
       <div className={`h-1 w-full bg-gradient-to-r ${project.color}`}></div>
@@ -56,6 +54,6 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({ project, index }) => {
           <ChevronRight className="ml-1 h-3 w-3" />
         </Link>
       </div>
-    </motion.div>
+    </FadeIn>
   )
 }

@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button"
 import { useLanguage } from "@/contexts/language-context"
 import { caseStudiesData, sectionTranslations } from "./data"
 import { CaseStudyCard } from "./CaseStudyCard"
+import { FadeIn } from "@/utils/lightweightAnimations"
 
 
 export default function CaseStudiesSection() {
@@ -38,29 +39,22 @@ export default function CaseStudiesSection() {
       <div className="absolute top-0 left-0 w-full h-40 bg-grid-pattern opacity-5"></div>
       <div className="absolute bottom-0 right-0 w-full h-40 bg-grid-pattern opacity-5"></div>
 
-      <motion.div
-        initial={{ opacity: 0, scale: 0.8 }}
-        animate={{ opacity: 0.1, scale: 1 }}
-        transition={{ duration: 1.5 }}
+      <FadeIn
+       
         className="absolute top-1/4 left-0 w-96 h-96 rounded-full bg-digitek-pink blur-3xl"
       />
-      <motion.div
-        initial={{ opacity: 0, scale: 0.8 }}
-        animate={{ opacity: 0.1, scale: 1 }}
-        transition={{ duration: 1.5, delay: 0.3 }}
+      <FadeIn
         className="absolute bottom-1/4 right-0 w-96 h-96 rounded-full bg-digitek-orange blur-3xl"
       />
 
       <div className="container relative z-10 px-4 md:px-6">
         <div ref={ref} className="flex flex-col items-center justify-center space-y-6 text-center mb-16">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-            transition={{ duration: 0.6 }}
+          <FadeIn
+      
             className="inline-flex items-center justify-center px-4 py-1.5 rounded-full bg-primary/10 text-primary text-sm font-medium"
           >
              {sectionText.badge}
-          </motion.div>
+          </FadeIn>
 
           <motion.h2
             initial={{ opacity: 0, y: 20 }}
@@ -95,9 +89,8 @@ export default function CaseStudiesSection() {
         {/* Mobile view: Carousel */}
         <div className="md:hidden relative">
           <div className="overflow-hidden">
-            <motion.div
-              animate={{ x: `-${activeIndex * 100}%` }}
-              transition={{ type: "spring", stiffness: 300, damping: 30 }}
+            <FadeIn
+
               className="flex"
             >
               {caseStudies.map((study, index) => (
@@ -105,7 +98,7 @@ export default function CaseStudiesSection() {
                   <CaseStudyCard study={study} index={index} isInView={true} />
                 </div>
               ))}
-            </motion.div>
+            </FadeIn>
           </div>
 
           {/* Navigation controls */}

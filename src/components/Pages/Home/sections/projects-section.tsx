@@ -11,6 +11,7 @@ import { CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { useSectionLogic } from "@/hooks/useSectionLogic"
 import { useSectionContent } from "@/hooks/useSectionContent"
+import { FadeIn } from "@/utils/lightweightAnimations"
 
 export default function ProjectsSection({ sectionId, websiteId }) {
   const { direction } = useLanguage()
@@ -231,15 +232,9 @@ export default function ProjectsSection({ sectionId, websiteId }) {
 
             {/* Carousel Track */}
             <div className="flex-1 overflow-hidden">
-              <motion.div
+              <FadeIn
                 className="flex"
-                animate={{
-                  x: getTransform(),
-                }}
-                transition={{
-                  duration: 0.5,
-                  ease: "easeInOut",
-                }}
+               
               >
                 {projects.map((project, index) => (
                   <div
@@ -254,7 +249,7 @@ export default function ProjectsSection({ sectionId, websiteId }) {
                     />
                   </div>
                 ))}
-              </motion.div>
+              </FadeIn>
             </div>
 
             {/* Right Arrow - Outside Content */}

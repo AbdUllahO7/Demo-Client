@@ -7,6 +7,7 @@ import { motion } from "@/components/ui/framer-motion"
 import { useScrollAnimation } from "@/hooks/use-scroll-animation"
 import { useSectionContent } from "@/hooks/useSectionContent"
 import { useScrollToSection } from "@/hooks/use-scroll-to-section"
+import { FadeIn } from "@/utils/lightweightAnimations"
 
 // Types
 interface ContentItem {
@@ -182,7 +183,7 @@ export default function Footer({ sectionId, logo = "/assets/iDIGITEK.webp", subN
     >
       <div className="container px-4 md:px-6">
         <div className={`grid gap-8 ${dynamicColumns.length > 0 ? `md:grid-cols-2 lg:grid-cols-${Math.min(dynamicColumns.length + 1, 4)}` : 'md:grid-cols-1'}`}>
-          <motion.div
+          <FadeIn
             variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0, transition: { duration: 0.5 } } }}
             className="space-y-4"
           >
@@ -197,10 +198,8 @@ export default function Footer({ sectionId, logo = "/assets/iDIGITEK.webp", subN
                 <span className="text-sm font-body text-destructive"></span>
               ) : dynamicFallbackSocialMedia.length > 0 ? (
                 dynamicFallbackSocialMedia.map((social, index) => (
-                  <motion.div
+                  <FadeIn
                     key={`${social.label}-${index}`}
-                    whileHover={{ scale: 1.2, color: "var(--website-theme-primary)" }}
-                    transition={{ type: "spring", stiffness: 400, damping: 10 }}
                   >
                     <Link 
                       href={social.socialLink} 
@@ -220,13 +219,13 @@ export default function Footer({ sectionId, logo = "/assets/iDIGITEK.webp", subN
                       }                      
                       <span className="sr-only">{social.label}</span>
                     </Link>
-                  </motion.div>
+                  </FadeIn>
                 ))
               ) : (
                 <span className="text-sm font-body text-wtheme-text"></span>
               )}
             </div>
-          </motion.div>
+          </FadeIn>
 
           {/* Dynamic columns rendering with enhanced props */}
           {dynamicColumns.map((column, index) => (
@@ -256,7 +255,7 @@ function FooterColumn({ title, links, scrollToSection }: FooterColumnProps & { s
   }
 
   return (
-    <motion.div
+    <FadeIn
       variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0, transition: { duration: 0.5 } } }}
       className="space-y-4"
     >
@@ -312,6 +311,6 @@ function FooterColumn({ title, links, scrollToSection }: FooterColumnProps & { s
           <li className="text-sm font-body text-wtheme-text"></li>
         )}
       </ul>
-    </motion.div>
+    </FadeIn>
   )
 }

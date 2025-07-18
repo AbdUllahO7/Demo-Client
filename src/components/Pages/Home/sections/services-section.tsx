@@ -10,6 +10,7 @@ import { motion } from "framer-motion"
 import { ButtonSectionLink } from "@/components/SectionLinks"
 import { useSectionLogic } from "@/hooks/useSectionLogic"
 import { useSectionContent } from "@/hooks/useSectionContent"
+import { FadeIn } from "@/utils/lightweightAnimations"
 
 // Define interfaces for type safety
 interface ServiceItem {
@@ -192,24 +193,16 @@ function ServiceCard({ service, index, direction, serviceDetails }: ServiceCardP
   };
 
   return (
-    <motion.div
-      ref={ref}
-      initial="hidden"
-      animate={isInView ? "visible" : "hidden"}
-      variants={{
-        hidden: { opacity: 0 },
-        visible: { opacity: 1, transition: { duration: 0.6 } },
-      }}
+    <FadeIn
+      
       className="relative group"
     >
       {/* Background decoration */}
       <div className="absolute inset-0 bg-theme-gradient opacity-5 rounded-2xl blur-xl group-hover:opacity-10 transition-opacity duration-500"></div>
       
       <div className={`flex flex-col ${getFlexDirection()} gap-8 items-center relative`}>
-        <motion.div
-          initial={{ opacity: 0, x: getAnimationDirection(true) }}
-          animate={isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: getAnimationDirection(true) }}
-          transition={{ duration: 0.7, delay: 0.2 }}
+        <FadeIn
+
           className="w-full lg:w-1/2"
         >
           <div className="relative overflow-hidden rounded-2xl shadow-theme-lg aspect-video border border-wtheme-border/20">
@@ -226,12 +219,10 @@ function ServiceCard({ service, index, direction, serviceDetails }: ServiceCardP
             {/* Overlay gradient using theme colors */}
             <div className="absolute inset-0 bg-theme-gradient-radial opacity-20 mix-blend-overlay"></div>
           </div>
-        </motion.div>
+        </FadeIn>
 
-        <motion.div
-          initial={{ opacity: 0, x: getAnimationDirection(false) }}
-          animate={isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: getAnimationDirection(false) }}
-          transition={{ duration: 0.7, delay: 0.4 }}
+        <FadeIn
+       
           className="w-full lg:w-1/2"
         >
           <div className="flex items-center gap-4 mb-4">
@@ -256,8 +247,8 @@ function ServiceCard({ service, index, direction, serviceDetails }: ServiceCardP
               className={`${isRTL ? 'mr-2 rotate-180' : 'ml-2'} h-4 w-4 transition-transform duration-300 ${isRTL ? 'group-hover:-translate-x-1' : 'group-hover:translate-x-1'}`} 
             />
           </ButtonSectionLink>
-        </motion.div>
+        </FadeIn>
       </div>
-    </motion.div>
+    </FadeIn>
   );
 }

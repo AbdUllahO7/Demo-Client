@@ -4,9 +4,6 @@ import type React from "react"
 import { useState, useEffect } from "react"
 import { useLanguage } from "@/contexts/language-context"
 import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Separator } from "@/components/ui/separator"
 import { FileText, Download, File, FileImage, FileArchive, Files, ExternalLink, Maximize2, Minimize2, ZoomIn, ZoomOut, Printer } from 'lucide-react'
 
 interface ProjectFilesProps {

@@ -2,6 +2,7 @@
 
 import Image from "next/image"
 import { motion } from "framer-motion"
+import { FadeIn } from "@/utils/lightweightAnimations"
 
 interface IndustryCardProps {
   industry: {
@@ -16,10 +17,8 @@ interface IndustryCardProps {
 
 export default function IndustryCard({ industry, index, isInView }: IndustryCardProps) {
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 50 }}
-      animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 50 }}
-      transition={{ duration: 0.6, delay: 0.3 + index * 0.1 }}
+    <FadeIn
+      
       className="group relative overflow-hidden rounded-2xl  border border-wtheme-border/50 shadow-sm hover:shadow-xl transition-all duration-500"
     >
       {/* Gradient background that appears on hover */}
@@ -45,7 +44,7 @@ export default function IndustryCard({ industry, index, isInView }: IndustryCard
 
       {/* Corner accent */}
       <div className={`absolute -bottom-8 -right-8 w-16 h-16 rounded-full bg-gradient-to-r ${industry.color} opacity-10 group-hover:opacity-30 transition-opacity duration-500`}></div>
-    </motion.div>
+    </FadeIn>
   )
 }
 
@@ -69,11 +68,9 @@ function IndustryIcon({ icon, name }: IndustryIconProps) {
       />
 
       {/* Animated circles */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        whileHover={{ opacity: 1 }}
+      <FadeIn
+      
         className="absolute -inset-1 rounded-3xl border-2 border-dashed border-primary/20 opacity-0 group-hover:opacity-100 transition-opacity"
-        style={{ rotate: 45 }}
       />
     </div>
   )

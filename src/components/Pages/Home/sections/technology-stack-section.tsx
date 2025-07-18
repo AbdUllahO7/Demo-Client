@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button"
 import { ArrowRight, Sparkles } from 'lucide-react'
 import { useLanguage } from "@/contexts/language-context"
 import { technologies } from "../ConstData/ConstData"
+import { FadeIn } from "@/utils/lightweightAnimations"
 
 export default function TechnologyStackSection() {
   const ref = useRef(null)
@@ -37,21 +38,17 @@ export default function TechnologyStackSection() {
       <div className="absolute inset-0 opacity-[0.02] bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px]" />
       
       <div className="container relative z-10 px-4 md:px-6" ref={ref}>
-        <motion.div 
-          initial={{ opacity: 0 }} 
-          animate={isInView ? { opacity: 1 } : { opacity: 0 }}
-          transition={{ duration: 0.8 }}
+        <FadeIn 
+      
           className="relative max-w-3xl mx-auto mb-20 text-center"
         >
-          <motion.div
-            initial={{ scale: 0.8, opacity: 0 }}
-            animate={isInView ? { scale: 1, opacity: 1 } : { scale: 0.8, opacity: 0 }}
-            transition={{ type: "spring", stiffness: 100, delay: 0.1 }}
+          <FadeIn
+          
             className="inline-flex items-center gap-2 px-4 py-2 mb-6 text-sm font-medium rounded-full bg-primary/10 text-primary border border-primary/20"
           >
             <Sparkles className="w-4 h-4" />
             <span>{language === 'en' ? "Cutting-Edge Stack" : 'مجموعة متطورة'}</span>
-          </motion.div>
+          </FadeIn>
           
           <motion.h2
             initial={{ y: 40, opacity: 0 }}
@@ -70,24 +67,13 @@ export default function TechnologyStackSection() {
           >
             {language === 'en' ? ' We leverage the most advanced technologies to build solutions that are fast, scalable, and future-proof.' : 'نحن نستفيد من أحدث التقنيات لبناء حلول سريعة وقابلة للتطوير ومقاومة للمستقبل.'}
           </motion.p>
-        </motion.div>
+        </FadeIn>
 
         <div className="grid grid-cols-2 gap-6 sm:grid-cols-3 md:grid-cols-4 lg:gap-8">
           {technologies.map((tech, index) => (
-            <motion.div
+            <FadeIn
               key={index}
-              initial={{ y: 60, opacity: 0 }}
-              animate={isInView ? { y: 0, opacity: 1 } : { y: 60, opacity: 0 }}
-              transition={{ 
-                type: "spring", 
-                stiffness: 100, 
-                damping: 12, 
-                delay: 0.2 + index * 0.1 
-              }}
-              whileHover={{ 
-                y: -8,
-                transition: { type: "spring", stiffness: 400, damping: 10 }
-              }}
+          
               className="group relative flex flex-col items-center"
             >
               {/* Card with gradient border */}
@@ -113,14 +99,12 @@ export default function TechnologyStackSection() {
                   </h3>
                 </div>
               </div>
-            </motion.div>
+            </FadeIn>
           ))}
         </div>
 
-        <motion.div
-          initial={{ y: 80, opacity: 0 }}
-          animate={isInView ? { y: 0, opacity: 1 } : { y: 80, opacity: 0 }}
-          transition={{ type: "spring", stiffness: 50, damping: 15, delay: 0.6 }}
+        <FadeIn
+     
           className="mt-24 max-w-5xl mx-auto"
         >
           <div className="relative overflow-hidden rounded-3xl">
@@ -161,7 +145,7 @@ export default function TechnologyStackSection() {
               </div>
             </div>
           </div>
-        </motion.div>
+        </FadeIn>
       </div>
     </section>
   )

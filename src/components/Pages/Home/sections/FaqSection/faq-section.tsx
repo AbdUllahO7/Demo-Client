@@ -11,6 +11,7 @@ import { translationsDataFaq } from "../../ConstData/ConstData"
 import { BackgroundEffects } from "./BackgroundEffects"
 import { useSectionLogic } from "@/hooks/useSectionLogic"
 import { useSectionContent } from "@/hooks/useSectionContent"
+import { FadeIn } from "@/utils/lightweightAnimations"
 
 export default function FaqSection({ websiteId, sectionId }) {
   const ref = useRef(null)
@@ -76,10 +77,8 @@ export default function FaqSection({ websiteId, sectionId }) {
           setSearchQuery={setSearchQuery}
         />
 
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={isInView ? { opacity: 1 } : { opacity: 0 }}
-          transition={{ duration: 0.5, delay: 0.2 }}
+        <FadeIn
+      
           className="max-w-4xl mx-auto"
         >
           <div className="grid gap-6">
@@ -93,7 +92,7 @@ export default function FaqSection({ websiteId, sectionId }) {
               />
             ))}
           </div>
-        </motion.div>
+        </FadeIn>
       </div>
     </section>
   )

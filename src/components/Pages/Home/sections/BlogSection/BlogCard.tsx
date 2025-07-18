@@ -8,6 +8,7 @@ import { useLanguage } from "@/contexts/language-context";
 import { ButtonSectionLink } from "@/components/SectionLinks";
 import { Post } from "./types";
 import { formatDate } from "@/lib/utils";
+import { FadeIn } from "@/utils/lightweightAnimations";
 
 interface BlogCardProps {
   post: Post;
@@ -20,18 +21,8 @@ export function BlogCard({ post, index, isInView, isRTL }: BlogCardProps) {
   const { direction } = useLanguage();
 
   return (
-    <motion.div
-      initial="hidden"
-      animate={isInView ? "visible" : "hidden"}
-      variants={{
-        hidden: { opacity: 0, y: 50 },
-        visible: {
-          opacity: 1,
-          y: 0,
-          transition: { duration: 0.6, delay: 0.2 + index * 0.1 },
-        },
-      }}
-      whileHover={{ y: -8, transition: { duration: 0.2 } }}
+    <FadeIn
+     
       className="group flex flex-col h-full rounded-2xl border border-wtheme-border/40 bg-wtheme-background/80 backdrop-blur-sm shadow-lg shadow-primary/5 overflow-hidden transition-all duration-300 hover:border-primary/30 hover:shadow-xl hover:shadow-primary/10"
     >
       <div className="relative w-full h-40 sm:h-48 md:h-56">
@@ -83,6 +74,6 @@ export function BlogCard({ post, index, isInView, isRTL }: BlogCardProps) {
           </div>
         </div>
       </div>
-    </motion.div>
+    </FadeIn>
   );
 }

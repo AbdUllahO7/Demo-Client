@@ -7,6 +7,7 @@ import { Calendar } from "lucide-react"
 import { GoBackButton } from "@/components/GoBackButton"
 import { useLanguage } from "@/contexts/language-context"
 import { formatDate } from "@/lib/utils"
+import { FadeIn } from "@/utils/lightweightAnimations"
 
 export function NewsHero({ news, t }) {
   const headerRef = useRef(null)
@@ -35,16 +36,12 @@ export function NewsHero({ news, t }) {
       {/* Background elements */}
       <div className="absolute inset-0 bg-gradient-to-b from-primary/5 to-wtheme-background"></div>
 
-      <motion.div
-        initial={{ opacity: 0, scale: 0.8 }}
-        animate={{ opacity: 0.1, scale: 1 }}
-        transition={{ duration: 1.5 }}
+      <FadeIn
+     
         className="absolute top-1/3 right-0 w-96 h-96 rounded-full bg-secondary blur-3xl"
       />
-      <motion.div
-        initial={{ opacity: 0, scale: 0.8 }}
-        animate={{ opacity: 0.1, scale: 1 }}
-        transition={{ duration: 1.5, delay: 0.3 }}
+      <FadeIn
+      
         className="absolute bottom-1/3 left-0 w-96 h-96 rounded-full bg-accent blur-3xl"
       />
 

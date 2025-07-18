@@ -7,6 +7,7 @@ import { motion, useInView } from "framer-motion"
 import { useLanguage } from "@/contexts/language-context"
 import { useSectionLogic } from "@/hooks/useSectionLogic"
 import { useSectionContent } from "@/hooks/useSectionContent"
+import { FadeIn } from "@/utils/lightweightAnimations"
 
 export default function TeamSection({websiteId , sectionId}) {
   const ref = useRef(null)
@@ -46,16 +47,12 @@ export default function TeamSection({websiteId , sectionId}) {
       <div className="absolute top-0 left-0 w-full h-40  opacity-5"></div>
       <div className="absolute bottom-0 right-0 w-full h-40 opacity-5"></div>
 
-      <motion.div
-        initial={{ opacity: 0, scale: 0.8 }}
-        animate={{ opacity: 0.1, scale: 1 }}
-        transition={{ duration: 1.5 }}
+      <FadeIn
+     
         className="absolute top-1/3 right-0 w-96 h-96 rounded-full bg-secondary/10 blur-3xl"
       />
-      <motion.div
-        initial={{ opacity: 0, scale: 0.8 }}
-        animate={{ opacity: 0.1, scale: 1 }}
-        transition={{ duration: 1.5, delay: 0.3 }}
+      <FadeIn
+     
         className="absolute bottom-1/3 left-0 w-96 h-96 rounded-full bg-accent/10 blur-3xl"
       />
 
@@ -140,11 +137,8 @@ function TeamMemberCard({
   const cardInView = useInView(cardRef, { once: false, amount: 0.3 })
 
   return (
-    <motion.div
-      ref={cardRef}
-      initial={{ opacity: 0, y: 50 }}
-      animate={cardInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 50 }}
-      transition={{ duration: 0.6, delay: 0.3 + index * 0.1 }}
+    <FadeIn
+   
       className="group relative overflow-hidden rounded-2xl bg-wtheme-background border border-wtheme-border/50 shadow-sm hover:shadow-xl transition-all duration-500"
     >
       {/* Top gradient bar */}
@@ -155,9 +149,8 @@ function TeamMemberCard({
           {/* Image with gradient border */}
           <div className="relative mb-6">
             <div className="absolute inset-0 rounded-full bg-theme-gradient blur-sm opacity-70 scale-110"></div>
-            <motion.div
-              whileHover={{ scale: 1.05, rotate: 5 }}
-              transition={{ type: "spring", stiffness: 300, damping: 15 }}
+            <FadeIn
+             
               className="relative overflow-hidden rounded-full border-2 border-white h-28 w-28 bg-theme-gradient p-0.5"
             >
               <div className="rounded-full overflow-hidden h-full w-full bg-wtheme-background">
@@ -170,7 +163,7 @@ function TeamMemberCard({
                   className="h-full w-full object-cover"
                 />
               </div>
-            </motion.div>
+            </FadeIn>
           </div>
 
           <h3 className="text-xl font-heading font-heading mb-1 text-wtheme-text group-hover:text-wtheme-hover transition-colors duration-300">
@@ -189,6 +182,6 @@ function TeamMemberCard({
 
       {/* Corner accent */}
       <div className="absolute -bottom-8 -right-8 w-16 h-16 rounded-full bg-theme-gradient opacity-10 group-hover:opacity-20 transition-opacity duration-500"></div>
-    </motion.div>
+    </FadeIn>
   )
 }

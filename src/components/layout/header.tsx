@@ -13,6 +13,7 @@ import { useScrollToSection } from "@/hooks/use-scroll-to-section"
 import { useRouter, usePathname } from "next/navigation"
 import { ThemeToggle } from "../theme-toggle"
 import { useSubSections } from "@/lib/subSections/use-subSections"
+import { FadeIn } from "@/utils/lightweightAnimations"
 
 // Define interfaces for type safety
 interface SubNavItem {
@@ -416,7 +417,7 @@ export default function Header({
       <div className="mx-auto px-4 sm:px-6 lg:px-8">
         <div className={`flex h-16 items-center justify-between ${isRTL ? 'flex-row-reverse' : ''}`}>
           {/* Logo */}
-          <motion.div
+          <FadeIn
             className="flex-shrink-0"
             whileHover={{ scale: 1.05 }}
             transition={{ type: "spring", stiffness: 400, damping: 10 }}
@@ -431,12 +432,12 @@ export default function Header({
                 className={`h-8 w-auto transition-all duration-300 ${isOpen ? "brightness-0 invert" : ""}`}
               />
             </Link>
-          </motion.div>
+          </FadeIn>
 
           {/* Desktop Navigation */}
           <nav className={`hidden lg:flex items-center ${isRTL ? 'space-x-reverse space-x-8' : 'space-x-8'}`}>
             {navItems.map((item) => (
-              <motion.div
+              <FadeIn
                 key={item.id}
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -465,7 +466,7 @@ export default function Header({
                 {item.subNavItems.length > 0 && (
                   <AnimatePresence>
                     {hoveredNavId === item.id && (
-                      <motion.div
+                      <FadeIn
                         initial={{ opacity: 0, y: 10, scale: 0.95 }}
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         exit={{ opacity: 0, y: 10, scale: 0.95 }}
@@ -478,7 +479,7 @@ export default function Header({
                       >
                         <div className="py-2">
                           {item.subNavItems.map((subItem, index) => (
-                            <motion.div
+                            <FadeIn
                               key={subItem.id}
                               initial={{ opacity: 0, x: isRTL ? 10 : -10 }}
                               animate={{ opacity: 1, x: 0 }}
@@ -510,14 +511,14 @@ export default function Header({
                                   </div>
                                 </Link>
                               )}
-                            </motion.div>
+                            </FadeIn>
                           ))}
                         </div>
-                      </motion.div>
+                      </FadeIn>
                     )}
                   </AnimatePresence>
                 )}
-              </motion.div>
+              </FadeIn>
             ))}
           </nav>
 
@@ -539,9 +540,9 @@ export default function Header({
                   : "text-wtheme-text hover:text-wtheme-hover hover:bg-wtheme-hover/10"
               }`}
             >
-              <motion.div animate={{ rotate: isOpen ? 180 : 0 }} transition={{ duration: 0.2 }}>
+              <FadeIn animate={{ rotate: isOpen ? 180 : 0 }} transition={{ duration: 0.2 }}>
                 {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
-              </motion.div>
+              </FadeIn>
             </Button>
           </div>
         </div>
@@ -582,22 +583,15 @@ function MobileNav({ isOpen, setIsOpen, navItems, handleNavClick, handleSubNavCl
   return (
     <AnimatePresence>
       {isOpen && (
-        <motion.div
-          className="lg:hidden fixed inset-x-0 top-16 bottom-0 z-40 bg-primary overflow-y-auto"
-          initial={{ opacity: 0, height: 0 }}
-          animate={{ opacity: 1, height: "auto" }}
-          exit={{ opacity: 0, height: 0 }}
-          transition={{ duration: 0.3, ease: "easeInOut" }}
-          dir={direction}
+        <FadeIn
+          className="lg:hidden sticky inset-x-0 top-16 bottom-0 z-40 bg-primary overflow-y-auto"
         >
           <div className="container mx-auto px-4 py-6">
             <nav className="space-y-4">
               {navItems.map((item, index) => (
-                <motion.div
+                <FadeIn
                   key={item.id}
-                  initial={{ opacity: 0, x: isRTL ? 20 : -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: index * 0.1 }}
+
                   className="space-y-2"
                 >
                   <div
@@ -614,20 +608,20 @@ function MobileNav({ isOpen, setIsOpen, navItems, handleNavClick, handleSubNavCl
                   >
                     <span className={isRTL ? 'font-arabic' : ''}>{item.label}</span>
                     {item.subNavItems.length > 0 && (
-                      <motion.div 
+                      <FadeIn 
                         animate={{ rotate: openSubNav === item.id ? 180 : 0 }} 
                         transition={{ duration: 0.2 }}
                         className={isRTL ? 'ml-2' : 'mr-2'}
                       >
                         <ChevronDown className="h-5 w-5" />
-                      </motion.div>
+                      </FadeIn>
                     )}
                   </div>
 
                   {/* Mobile Submenu */}
                   <AnimatePresence>
                     {item.subNavItems.length > 0 && openSubNav === item.id && (
-                      <motion.div
+                      <FadeIn
                         initial={{ opacity: 0, height: 0 }}
                         animate={{ opacity: 1, height: "auto" }}
                         exit={{ opacity: 0, height: 0 }}
@@ -639,7 +633,7 @@ function MobileNav({ isOpen, setIsOpen, navItems, handleNavClick, handleSubNavCl
                         }`}
                       >
                         {item.subNavItems.map((subItem, subIndex) => (
-                          <motion.div
+                          <FadeIn
                             key={subItem.id}
                             initial={{ opacity: 0, x: isRTL ? 10 : -10 }}
                             animate={{ opacity: 1, x: 0 }}
@@ -672,16 +666,16 @@ function MobileNav({ isOpen, setIsOpen, navItems, handleNavClick, handleSubNavCl
                                 </div>
                               </Link>
                             )}
-                          </motion.div>
+                          </FadeIn>
                         ))}
-                      </motion.div>
+                      </FadeIn>
                     )}
                   </AnimatePresence>
-                </motion.div>
+                </FadeIn>
               ))}
 
               {/* Mobile Controls */}
-              <motion.div
+              <FadeIn
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: navItems.length * 0.1 + 0.2 }}
@@ -691,10 +685,10 @@ function MobileNav({ isOpen, setIsOpen, navItems, handleNavClick, handleSubNavCl
               >
                 <ThemeToggle />
                 <LanguageToggle />
-              </motion.div>
+              </FadeIn>
             </nav>
           </div>
-        </motion.div>
+        </FadeIn>
       )}
     </AnimatePresence>
   )

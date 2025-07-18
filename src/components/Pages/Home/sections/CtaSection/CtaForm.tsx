@@ -4,6 +4,7 @@ import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { motion } from "@/components/ui/framer-motion"
 import { FormField } from "./FormField"
+import { FadeIn } from "@/utils/lightweightAnimations"
 
 interface CtaFormProps {
   content: {
@@ -26,11 +27,8 @@ interface CtaFormProps {
 
 export function CtaForm({ content, direction, isRTL }: CtaFormProps) {
   return (
-    <motion.div
-      variants={{
-        hidden: { opacity: 0, y: 10 },
-        visible: { opacity: 1, y: 0 },
-      }}
+    <FadeIn
+   
       className="w-full max-w-md mt-6"
     >
       <form className="grid gap-4">
@@ -59,13 +57,8 @@ export function CtaForm({ content, direction, isRTL }: CtaFormProps) {
           isRTL={isRTL}
         />
         
-        <motion.div
-          variants={{
-            hidden: { opacity: 0, y: 10 },
-            visible: { opacity: 1, y: 0 },
-          }}
-          whileHover={{ scale: 1.03 }}
-          whileTap={{ scale: 0.97 }}
+        <FadeIn
+      
         >
           <Button
             type="submit"
@@ -73,7 +66,7 @@ export function CtaForm({ content, direction, isRTL }: CtaFormProps) {
           >
             {content.requestDemo}
           </Button>
-        </motion.div>
+        </FadeIn>
       </form>
       <motion.p
         variants={{
@@ -92,6 +85,6 @@ export function CtaForm({ content, direction, isRTL }: CtaFormProps) {
         </Link>
         {content.period}
       </motion.p>
-    </motion.div>
+    </FadeIn>
   )
 }

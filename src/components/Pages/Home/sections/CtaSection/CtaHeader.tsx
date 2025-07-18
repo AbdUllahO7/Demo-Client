@@ -1,6 +1,7 @@
 "use client"
 
 import { motion } from "@/components/ui/framer-motion"
+import { FadeIn } from "@/utils/lightweightAnimations"
 
 interface CtaHeaderProps {
   content: {
@@ -13,15 +14,12 @@ interface CtaHeaderProps {
 export function CtaHeader({ content }: CtaHeaderProps) {
   return (
     <>
-      <motion.div
-        variants={{
-          hidden: { opacity: 0, y: 10 },
-          visible: { opacity: 1, y: 0 },
-        }}
+      <FadeIn
+    
         className="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-primary text-primary-foreground hover:bg-primary/80"
       >
         {content.badge}
-      </motion.div>
+      </FadeIn>
       <div className="space-y-2">
         <motion.h2
           variants={{

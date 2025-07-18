@@ -1,5 +1,6 @@
 "use client"
 
+import { FadeIn } from "@/utils/lightweightAnimations"
 import { motion } from "framer-motion"
 import type React from "react"
 
@@ -21,10 +22,8 @@ export default function FeatureHighlight({
   text 
 }: FeatureHighlightProps) {
   return (
-    <motion.div
-      initial={{ opacity: 0, scale: 0.5 }}
-      animate={isInView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.5 }}
-      transition={{ duration: 0.5, delay }}
+    <FadeIn
+    
       className={`absolute ${position} hidden lg:flex items-center gap-2`}
     >
       <div
@@ -36,6 +35,6 @@ export default function FeatureHighlight({
         {text}
       </div>
       <div className="absolute inset-0 bg-gradient-to-r from-white/5 to-white/0 blur-sm -z-10"></div>
-    </motion.div>
+    </FadeIn>
   )
 }

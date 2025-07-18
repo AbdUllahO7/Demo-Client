@@ -49,6 +49,7 @@ export default function PartnersSection({ websiteId, sectionId }) {
     filter: featureFilter,
   })
 
+console.log(content)
   const isRTL = direction === "rtl"
 
   return (

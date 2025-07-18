@@ -3,6 +3,7 @@
 import { forwardRef } from "react"
 import { motion } from "@/components/ui/framer-motion"
 import { BookOpen, PhoneCall } from "lucide-react"
+import { FadeIn } from "@/utils/lightweightAnimations"
 
 interface ContactHeaderProps {
   isInView: boolean
@@ -16,18 +17,8 @@ interface ContactHeaderProps {
 export const ContactHeader = forwardRef<HTMLDivElement, ContactHeaderProps>(
   ({ isInView, content }, ref) => {
     return (
-      <motion.div
-        ref={ref}
-        initial="hidden"
-        animate={isInView ? "visible" : "hidden"}
-        variants={{
-          hidden: { opacity: 0, y: 20 },
-          visible: {
-            opacity: 1,
-            y: 0,
-            transition: { duration: 0.6 },
-          },
-        }}
+      <FadeIn
+     
         className="flex flex-col items-center justify-center space-y-4 text-center"
       >
         <motion.span
@@ -44,7 +35,7 @@ export const ContactHeader = forwardRef<HTMLDivElement, ContactHeaderProps>(
             {content.sectionDescription}
           </p>
         </div>
-      </motion.div>
+      </FadeIn>
     )
   }
 )

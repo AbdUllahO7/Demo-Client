@@ -6,6 +6,7 @@ import { motion } from "framer-motion"
 import { Eye } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 import { useRouter } from "next/navigation"
+import { FadeIn } from "@/utils/lightweightAnimations"
 
 interface Product {
   id: string;
@@ -43,8 +44,7 @@ export function ProductCard({ product, index, isInView, isRTL, onImageClick }: P
   return (
     <motion.div
       className="group relative  backdrop-blur-sm border border-white/20 rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 cursor-pointer"
-      whileHover={{ scale: 1.02 }}
-      transition={{ type: "spring", stiffness: 300, damping: 30 }}
+    
       onClick={handleProductClick}
     >
       {/* Product Image */}

@@ -4,21 +4,15 @@
 import React, { useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { ChevronDown } from "lucide-react"
+import { FadeIn } from "@/utils/lightweightAnimations"
 
 export const FaqItem = ({ faq, index, isInView, isRTL }) => {
   const [isOpen, setIsOpen] = useState(false)
   const toggleOpen = () => setIsOpen(!isOpen)
 
   return (
-    <motion.div
-      initial={{ y: 50, opacity: 0 }}
-      animate={isInView ? { y: 0, opacity: 1 } : { y: 50, opacity: 0 }}
-      transition={{
-        type: "spring",
-        stiffness: 100,
-        damping: 12,
-        delay: 0.3 + index * 0.1,
-      }}
+    <FadeIn
+     
       className="group relative"
     >
       {/* Enhanced glass card effect with theme gradient */}
@@ -28,21 +22,14 @@ export const FaqItem = ({ faq, index, isInView, isRTL }) => {
         } transition-opacity duration-300`}
       />
 
-      <motion.div
+      <FadeIn
         className={`relative rounded-2xl ${
           isOpen 
             ? "border-primary  border-2" 
             : "border-primary "
         } backdrop-blur-sm shadow-sm overflow-hidden transition-all border-primary duration-300 border bg-wtheme-background`}
-        animate={{
-          borderColor: isOpen ? "var(--website-theme-primary)" : "rgba(var(--website-theme-primary), 0.1)",
-          boxShadow: isOpen ? "0 8px 30px rgba(var(--website-theme-primary), 0.1)" : "0 1px 3px rgba(0, 0, 0, 0.05)",
-        }}
-        whileHover={{
-          borderColor: "rgba(var(--website-theme-primary), 0.3)",
-          boxShadow: "0 8px 30px rgba(var(--website-theme-primary), 0.1)",
-          y: -2,
-        }}
+   
+      
       >
         <button
           onClick={toggleOpen}
@@ -71,34 +58,30 @@ export const FaqItem = ({ faq, index, isInView, isRTL }) => {
             <span className="text-xs font-accent px-2 py-1 rounded-full bg-primary/10 text-primary font-medium">
               {faq.category }
             </span>
-            <motion.div
-              animate={{ rotate: isOpen ? (isRTL ? -180 : 180) : 0 }}
-              transition={{ duration: 0.3, type: "spring", stiffness: 300 }}
+            <FadeIn
+            
               className={`flex items-center justify-center w-8 h-8 rounded-full ${
                 isOpen ? "bg-primary/10 text-primary" : "bg-wtheme-text/10 text-wtheme-text/60"
               } transition-colors duration-300`}
             >
               <ChevronDown className="w-4 h-4" />
-            </motion.div>
+            </FadeIn>
           </div>
         </button>
 
         <AnimatePresence>
           {isOpen && (
-            <motion.div
-              initial={{ height: 0, opacity: 0 }}
-              animate={{ height: "auto", opacity: 1 }}
-              exit={{ height: 0, opacity: 0 }}
-              transition={{ duration: 0.3, ease: "easeInOut" }}
+            <FadeIn
+            
               className="overflow-hidden"
             >
               <div className={`p-6 pt-0 border-t border-primary ${isRTL ? "pr-20 text-right" : "pl-20 text-left"} text-wtheme-text`}>
                 <p className="leading-relaxed font-body">{faq.answer}</p>
               </div>
-            </motion.div>
+            </FadeIn>
           )}
         </AnimatePresence>
-      </motion.div>
-    </motion.div>
+      </FadeIn>
+    </FadeIn>
   )
 }

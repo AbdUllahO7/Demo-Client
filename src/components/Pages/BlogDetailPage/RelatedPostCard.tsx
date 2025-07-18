@@ -3,6 +3,7 @@ import Link from "next/link"
 import Image from "next/image"
 import { ArrowRight } from "lucide-react"
 import { motion } from "framer-motion"
+import { FadeIn } from "@/utils/lightweightAnimations"
 
 interface RelatedPostCardProps {
   post: {
@@ -39,8 +40,7 @@ export const RelatedPostCard: React.FC<RelatedPostCardProps> = ({
   const postUrl = `/blog/${postIndex}-${createSlug(post.title)}`;
 
   return (
-    <motion.div
-      whileHover={{ y: -5, transition: { duration: 0.2 } }}
+    <FadeIn
       className="group flex flex-col rounded-xl border border-border/40 bg-background/80 backdrop-blur-sm shadow-md overflow-hidden transition-all duration-300 h-full hover:border-primary/30 hover:shadow-lg"
     >
       <Link href={postUrl} className="block h-full">
@@ -75,6 +75,6 @@ export const RelatedPostCard: React.FC<RelatedPostCardProps> = ({
           </div>
         </div>
       </Link>
-    </motion.div>
+    </FadeIn>
   )
 }

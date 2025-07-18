@@ -9,6 +9,7 @@ import { useLanguage } from "@/contexts/language-context";
 import { useSectionLogic } from "@/hooks/useSectionLogic";
 import { useSectionContent } from "@/hooks/useSectionContent";
 import { ProductsGrid } from "./ProductsGrid";
+import { FadeIn } from "@/utils/lightweightAnimations";
 
 export default function ProductsSection({ websiteId, sectionId }: { websiteId: string; sectionId: string }) {
   const { ref, isInView } = useScrollAnimation();
@@ -60,18 +61,8 @@ export default function ProductsSection({ websiteId, sectionId }: { websiteId: s
       <div className="absolute bottom-40 right-[5%] w-48 h-48 md:w-72 md:h-72 lg:w-[25rem] lg:h-[25rem] bg-accent/10 rounded-full blur-2xl md:blur-[7rem] -z-10" />
 
       <div className="container relative px-4 md:px-6 mx-auto z-10" ref={containerRef}>
-        <motion.div
-          ref={ref}
-          initial="hidden"
-          animate={isInView ? "visible" : "hidden"}
-          variants={{
-            hidden: { opacity: 0, y: 20 },
-            visible: {
-              opacity: 1,
-              y: 0,
-              transition: { duration: 0.6 },
-            },
-          }}
+        <FadeIn
+        
           className="flex flex-col items-center justify-center space-y-6 md:space-y-8 text-center mb-12 md:mb-20"
         >
           <motion.span
@@ -101,7 +92,7 @@ export default function ProductsSection({ websiteId, sectionId }: { websiteId: s
               {content.sectionDescription}
             </motion.p>
           </div>
-        </motion.div>
+        </FadeIn>
 
         {/* Products Grid */}
         <div className="mt-8 md:mt-12">

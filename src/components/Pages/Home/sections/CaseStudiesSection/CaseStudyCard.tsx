@@ -7,6 +7,7 @@ import { ArrowRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useLanguage } from "@/contexts/language-context"
 import { CaseStudy } from "./types"
+import { FadeIn } from "@/utils/lightweightAnimations"
 
 interface CaseStudyCardProps {
     study: CaseStudy
@@ -20,11 +21,8 @@ export function CaseStudyCard({ study, index, isInView }: CaseStudyCardProps) {
     const cardInView = useInView(cardRef, { once: false, amount: 0.3 })
 
     return (
-        <motion.div
-        ref={cardRef}
-        initial={{ opacity: 0, y: 50 }}
-        animate={cardInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 50 }}
-        transition={{ duration: 0.6, delay: 0.3 + index * 0.2 }}
+        <FadeIn
+    
         className="group relative overflow-hidden rounded-2xl bg-background border border-border/50 shadow-lg hover:shadow-xl transition-all duration-500"
         >
         {/* Top gradient bar */}
@@ -63,9 +61,8 @@ export function CaseStudyCard({ study, index, isInView }: CaseStudyCardProps) {
             </div>
 
             <div className="md:w-1/2">
-                <motion.div
-                whileHover={{ scale: 1.05 }}
-                transition={{ type: "spring", stiffness: 300, damping: 15 }}
+                <FadeIn
+          
                 className={`relative p-1 bg-gradient-to-r ${study.color} rounded-xl shadow-md overflow-hidden`}
                 >
                 <div className="bg-background rounded-lg overflow-hidden">
@@ -78,7 +75,7 @@ export function CaseStudyCard({ study, index, isInView }: CaseStudyCardProps) {
                     className="w-full h-64 object-cover"
                     />
                 </div>
-                </motion.div>
+                </FadeIn>
             </div>
             </div>
         </div>
@@ -87,6 +84,6 @@ export function CaseStudyCard({ study, index, isInView }: CaseStudyCardProps) {
         <div
             className={`absolute -bottom-8 -right-8 w-16 h-16 rounded-full bg-gradient-to-r ${study.color} opacity-10 group-hover:opacity-20 transition-opacity duration-500`}
         ></div>
-        </motion.div>
+        </FadeIn>
     )
 }

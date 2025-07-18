@@ -1,9 +1,10 @@
+// src/components/Pages/ProductDetailPage/ProductHeader.tsx - STEP 5 OPTIMIZED
 import React from "react"
 import { Calendar, DollarSign } from "lucide-react"
-import { motion } from "framer-motion"
 import { useLanguage } from "@/contexts/language-context"
 import { formatDate } from "@/lib/utils"
 import { GoBackButton } from "@/components/GoBackButton"
+import { FadeIn } from "@/utils/lightweightAnimations" // 🚀 STEP 5: Lightweight alternative
 
 interface ProductHeaderProps {
   product: {
@@ -69,12 +70,8 @@ export const ProductHeader: React.FC<ProductHeaderProps> = ({ product }) => {
     parseFloat(price) !== 0;
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 30 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.6 }}
-      className="mb-8"
-    >
+    // 🚀 STEP 5: Replace motion.div with lightweight FadeIn
+    <FadeIn duration={600} className="mb-8">
       <GoBackButton sectionName="products" title={backLinkText} />
     
       <div className={`flex items-center gap-3 mb-2`}>
@@ -108,6 +105,6 @@ export const ProductHeader: React.FC<ProductHeaderProps> = ({ product }) => {
           </div>
         </div>
       )}
-    </motion.div>
+    </FadeIn>
   )
 }

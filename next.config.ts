@@ -9,7 +9,6 @@ const nextConfig: NextConfig = {
     ignoreDuringBuilds: true,
   },
   
-  // 🚀 KEEP YOUR WORKING IMAGE CONFIG (this was working!)
   images: {
     unoptimized: true, // Keep this - it was working!
     remotePatterns: [
@@ -28,7 +27,6 @@ const nextConfig: NextConfig = {
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
   },
 
-  // 🚀 ADD: Safe performance optimizations that won't break images
   swcMinify: true, // Use SWC for faster builds
   
   compiler: {
@@ -38,60 +36,38 @@ const nextConfig: NextConfig = {
     } : false,
   },
 
-  // 🚀 ADD: Bundle optimization without touching images
-  webpack: (config, { isServer, dev }) => {
-    if (!dev && !isServer) {
-      // 🚀 Split large bundles for better performance
-      config.optimization = {
-        ...config.optimization,
-        splitChunks: {
-          chunks: 'all',
-          cacheGroups: {
-            // 🚀 Separate Framer Motion (your 3,967ms issue)
-            framerMotion: {
-              test: /[\\/]node_modules[\\/]framer-motion[\\/]/,
-              name: 'framer-motion',
-              chunks: 'all',
-              priority: 30,
-              enforce: true,
-            },
-            // 🚀 React libraries
-            react: {
-              test: /[\\/]node_modules[\\/](react|react-dom)[\\/]/,
-              name: 'react-vendor',
-              chunks: 'all',
-              priority: 25,
-              enforce: true,
-            },
-            // 🚀 UI libraries
-            ui: {
-              test: /[\\/]node_modules[\\/](@radix-ui|lucide-react)[\\/]/,
-              name: 'ui-vendor',
-              chunks: 'all',
-              priority: 20,
-              enforce: true,
-            },
-            // 🚀 Everything else
-            vendor: {
-              test: /[\\/]node_modules[\\/]/,
-              name: 'vendors',
-              chunks: 'all',
-              priority: 10,
-            },
-          },
-        },
-      };
-    }
-    return config;
-  },
 
-  // 🚀 ADD: Enable compression
   compress: true,
   poweredByHeader: false,
 
-  // 🚀 ADD: Cache static assets
   async headers() {
     return [
+      {
+        source: '/:path*',
+        headers: [
+          // 🚀 FIX: Preconnect to Vercel scripts (fixes Lighthouse warning)
+          {
+            key: 'Link',
+            value: '<https://vercel-scripts.com>; rel=preconnect, <https://va.vercel-scripts.com>; rel=preconnect'
+          },
+          {
+            key: 'X-DNS-Prefetch-Control',
+            value: 'on'
+          },
+          {
+            key: 'X-XSS-Protection',
+            value: '1; mode=block'
+          },
+          {
+            key: 'X-Frame-Options',
+            value: 'SAMEORIGIN'
+          },
+          {
+            key: 'X-Content-Type-Options',
+            value: 'nosniff'
+          },
+        ],
+      },
       {
         source: '/_next/static/(.*)',
         headers: [

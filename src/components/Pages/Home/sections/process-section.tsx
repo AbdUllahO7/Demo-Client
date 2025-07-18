@@ -7,6 +7,7 @@ import { useLanguage } from "@/contexts/language-context"
 import { ProcessSteps } from "../ConstData/ConstData"
 import { useSectionLogic } from "@/hooks/useSectionLogic"
 import { useSectionContent } from "@/hooks/useSectionContent"
+import { FadeIn } from "@/utils/lightweightAnimations"
 
 export default function ProcessSection({websiteId , sectionId}) {
   const { t,  language } = useLanguage()
@@ -66,20 +67,16 @@ export default function ProcessSection({websiteId , sectionId}) {
       <div className="absolute inset-0 bg-[url('/grid-pattern.svg')] bg-center opacity-5" />
       
       {/* Background decorative shapes */}
-      <motion.div 
-        style={{ y: yBgShape1, opacity: opacityBg }}
+      <FadeIn
         className="absolute right-0 top-20 w-96 h-96 rounded-full bg-secondary/10 blur-3xl"
       />
-      <motion.div 
-        style={{ y: yBgShape2, opacity: opacityBg }}
+      <FadeIn 
         className="absolute -left-20 bottom-40 w-80 h-80 rounded-full bg-accent/10 blur-3xl"
       />
 
       <div className="container relative z-10 px-4 md:px-6">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-          transition={{ duration: 0.6 }}
+        <FadeIn
+       
           className="flex flex-col items-center justify-center space-y-4 text-center max-w-3xl mx-auto"
         >
             <motion.span
@@ -96,7 +93,7 @@ export default function ProcessSection({websiteId , sectionId}) {
           <p className="text-lg font-body text-wtheme-text md:text-xl">
             {content.sectionDescription}
           </p>
-        </motion.div>
+        </FadeIn>
 
         <div className="mt-24 space-y-32 lg:space-y-0 lg:grid lg:grid-cols-1 lg:gap-16 xl:gap-24">
                   <div className="mt-24 space-y-32 lg:space-y-0 lg:grid lg:grid-cols-2 lg:gap-16 xl:gap-24">
@@ -212,37 +209,20 @@ function ProcessStep({
   const accentColor = "bg-primary"
 
   return (
-    <motion.div
-      ref={stepRef}
+    <FadeIn
       className={`relative lg:flex lg:flex-col lg:h-full lg:justify-center ${isOdd ? 'lg:mt-64' : ''}`}
-      initial="hidden"
-      animate={isStepInView ? "visible" : "hidden"}
-      variants={{
-        hidden: { opacity: 0 },
-        visible: {
-          opacity: 1,
-          transition: {
-            staggerChildren: 0.1,
-          },
-        },
-      }}
+     
     >
       {/* Number indicator */}
-      <motion.div
-        variants={mobileVariants}
+      <FadeIn
         className={`z-20 flex items-center justify-center w-16 h-16 rounded-full ${accentColor} text-white text-xl font-heading font-bold   lg:absolute lg:-top-8 lg:left-1/2 lg:-translate-x-1/2 mb-6 mx-auto lg:mb-0`}
       >
         {step.number}
-      </motion.div>
+      </FadeIn>
       
       {/* Content Card */}
-      <motion.div
-        variants={desktopVariants}
-        whileHover={{ 
-          y: -5, 
-          boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.25)",
-          transition: { duration: 0.3 }
-        }}
+      <FadeIn
+  
         className="relative z-10 backdrop-blur-sm rounded-2xl border border-wtheme-border/50 bg-wtheme-background overflow-hidden shadow-xl"
       >
         {/* Image */}
@@ -278,17 +258,15 @@ function ProcessStep({
             <div className={`h-1.5 w-1.5 rounded-full bg-wtheme-text/30`}></div>
           </div>
         </div>
-      </motion.div>
+      </FadeIn>
       
       {/* Connecting line for mobile */}
       {!isLast && (
-        <motion.div
-          initial={{ height: 0 }}
-          animate={isStepInView ? { height: 60 } : { height: 0 }}
-          transition={{ duration: 1, delay: 0.5 }}
+        <FadeIn
+      
           className={`absolute -bottom-16 left-1/2 w-0.5 ${accentColor} -translate-x-1/2 lg:hidden`}
         />
       )}
-    </motion.div>
+    </FadeIn>
   )
 }

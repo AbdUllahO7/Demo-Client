@@ -4,26 +4,23 @@ import { Package, ArrowLeft } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import { useLanguage } from "@/contexts/language-context"
+import { FadeIn } from "@/utils/lightweightAnimations"
 
 export const ProductNotFound: React.FC = () => {
   const { direction } = useLanguage()
 
   return (
     <div className="min-h-screen bg-wtheme-background flex items-center justify-center p-4" dir={direction}>
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
+      <FadeIn
+   
         className="text-center max-w-md mx-auto"
       >
-        <motion.div
-          initial={{ scale: 0 }}
-          animate={{ scale: 1 }}
-          transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
+        <FadeIn
+         
           className="mb-8"
         >
           <Package className="w-24 h-24 mx-auto text-gray-400" />
-        </motion.div>
+        </FadeIn>
 
         <motion.h1
           initial={{ opacity: 0 }}
@@ -43,10 +40,8 @@ export const ProductNotFound: React.FC = () => {
           Sorry, the product you're looking for doesn't exist or has been removed.
         </motion.p>
 
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.5 }}
+        <FadeIn
+        
         >
           <Button asChild className="bg-primary hover:bg-primary/90">
             <Link href="/products" className="inline-flex items-center gap-2">
@@ -54,8 +49,8 @@ export const ProductNotFound: React.FC = () => {
               Back to Products
             </Link>
           </Button>
-        </motion.div>
-      </motion.div>
+        </FadeIn>
+      </FadeIn>
     </div>
   )
 }
