@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect, use } from 'react'
+import { use } from 'react'
 import HeroSection from "@/components/Pages/ServiceDetails/HeroSection"
 import OverviewSection from "@/components/Pages/ServiceDetails/OverviewSection"
 import FeaturesSection from "@/components/Pages/ServiceDetails/FeaturesSection"
@@ -8,7 +8,6 @@ import HowItWorksSection from "@/components/Pages/ServiceDetails/HowItWorksSecti
 import FAQSection from "@/components/Pages/ServiceDetails/FAQSection"
 
 import { useLanguage } from "@/contexts/language-context"
-import { Loader2 } from "lucide-react"
 import { useSubSections } from '@/lib/subSections/use-subSections'
 import { ProjectNotFound } from '@/components/Pages/ProjectsDetailPage/data/ProjectNotFound'
 import { SectionSkeleton } from '@/components/Skeleton/SectionSkeleton'

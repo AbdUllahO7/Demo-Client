@@ -3,7 +3,7 @@
 import { useRef, useState, useEffect } from "react"
 import Link from "next/link"
 import Image from "next/image"
-import { motion, useInView, AnimatePresence } from "framer-motion"
+import {  AnimatePresence } from "framer-motion"
 import { ArrowRight, Calendar, ChevronLeft, ChevronRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { CardContent, CardFooter } from "@/components/ui/card"
@@ -11,11 +11,15 @@ import { useSectionLogic } from "@/hooks/useSectionLogic"
 import { useSectionContent } from "@/hooks/useSectionContent"
 import { useLanguage } from "@/contexts/language-context"
 import { FadeIn } from "@/utils/lightweightAnimations"
+import { useOptimizedIntersection } from "@/hooks/useIntersectionObserver"
 
 export default function NewsSection({ sectionId, websiteId }) {
-  const ref = useRef(null)
   const carouselRef = useRef(null)
-  const isInView = useInView(ref, { once: false, amount: 0.2 })
+  const { ref, isInView } = useOptimizedIntersection({
+    threshold: 0.2,
+    triggerOnce: true,
+    rootMargin: '100px'
+  })
   const [activeIndex, setActiveIndex] = useState(0)
   const [isAutoPlaying, setIsAutoPlaying] = useState(true)
   const { language } = useLanguage()
@@ -95,31 +99,25 @@ export default function NewsSection({ sectionId, websiteId }) {
 
       <div className="container relative z-10 px-4 md:px-6">
         <div ref={ref} className="flex flex-col items-center justify-center space-y-6 text-center mb-16">
-          <motion.span
-              initial={{ opacity: 0, y: 20 }}
-              animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-              transition={{ duration: 0.5 }}
+          <span
               className="inline-block mb-2 text-body  text-primary tracking-wider  uppercase"
             >
               {content.sectionLabel}
-            </motion.span>
-          <motion.h2
-            initial={{ opacity: 0, y: 20 }}
-            animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-            transition={{ duration: 0.6, delay: 0.1 }}
+            </span>
+          <h2
             className="text-3xl md:text-4xl lg:text-5xl font-heading font-bold tracking-tight max-w-3xl text-wtheme-text"
           >
             {content.sectionTitle}
-          </motion.h2>
+          </h2>
 
-          <motion.p
+          <p
             initial={{ opacity: 0, y: 20 }}
             animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
             transition={{ duration: 0.6, delay: 0.2 }}
             className="max-w-2xl text-wtheme-text font-body text-lg"
           >
             {content.sectionDescription}
-          </motion.p>
+          </p>
         </div>
 
         {isLoading ? (
@@ -245,9 +243,7 @@ export default function NewsSection({ sectionId, websiteId }) {
   )
 }
 
-function NewsCard({ news, index, isInView, direction, formatDate, readMoreText, sectionId, websiteId }) {
-  const cardRef = useRef(null)
-  const cardInView = useInView(cardRef, { once: false, amount: 0.3 })
+function NewsCard({ news, index, direction, formatDate, readMoreText, sectionId, websiteId }) {
   const isRTL = direction === "rtl"
 
   return (
@@ -289,23 +285,19 @@ function NewsCard({ news, index, isInView, direction, formatDate, readMoreText, 
           <span className="text-wtheme-text font-bold">{formatDate(news.date)}</span>
         </FadeIn>
 
-        <motion.h3
+        <h3
           className="text-xl font-heading  mb-3 line-clamp-2 text-wtheme-text group-hover:text-wtheme-hover transition-colors"
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.5 + index * 0.1 }}
+      
         >
           {news.title}
-        </motion.h3>
+        </h3>
 
-        <motion.p
+        <p
           className="text-wtheme-text font-body line-clamp-3"
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.6 + index * 0.1 }}
+         
         >
           {news.excerpt}
-        </motion.p>
+        </p>
       </CardContent>
 
       <CardFooter className="p-6 pt-0">

@@ -1,7 +1,6 @@
 "use client"
 
 import { FadeIn } from "@/utils/lightweightAnimations"
-import { motion } from "framer-motion"
 import type React from "react"
 
 interface FeatureHighlightProps {

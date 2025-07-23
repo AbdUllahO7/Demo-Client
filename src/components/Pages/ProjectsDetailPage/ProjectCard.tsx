@@ -2,7 +2,6 @@ import React, { useRef } from "react"
 import Link from "next/link"
 import Image from "next/image"
 import { ChevronRight } from "lucide-react"
-import { motion, useInView } from "framer-motion"
 import { Project } from "./Projects"
 import { FadeIn } from "@/utils/lightweightAnimations"
 
@@ -12,8 +11,6 @@ interface ProjectCardProps {
 }
 
 export const ProjectCard: React.FC<ProjectCardProps> = ({ project, index }) => {
-  const cardRef = useRef(null)
-  const cardInView = useInView(cardRef, { once: true, amount: 0.1 })
 
   return (
     <FadeIn

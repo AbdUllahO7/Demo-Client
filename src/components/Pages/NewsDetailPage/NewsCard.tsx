@@ -1,15 +1,11 @@
 "use client"
 
-import { useRef } from "react"
-import { motion, useInView } from "framer-motion"
 import Link from "next/link"
 import Image from "next/image"
 import { Calendar, ChevronRight } from "lucide-react"
 import { FadeIn } from "@/utils/lightweightAnimations"
 
-export function NewsCard({ news, index, t }) {
-    const cardRef = useRef(null)
-    const cardInView = useInView(cardRef, { once: true, amount: 0.1 })
+export function NewsCard({ news }) {
 
     return (
         <FadeIn
@@ -51,7 +47,7 @@ export function NewsCard({ news, index, t }) {
             href={`/Pages/NewsDetailPage/${news.id}`}
             className="inline-flex items-center text-sm text-primary font-medium hover:underline mt-2"
             >
-            {t.readMore}
+            {news.readMore}
             <ChevronRight className="ml-1 h-3 w-3" />
             </Link>
         </div>

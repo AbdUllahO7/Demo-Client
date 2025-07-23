@@ -1,6 +1,5 @@
 "use client";
 
-import { motion } from "framer-motion";
 import React from "react";
 import { useLanguage } from "@/contexts/language-context";
 import { iconMap } from "@/utils/IconMap";

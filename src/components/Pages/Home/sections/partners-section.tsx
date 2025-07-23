@@ -8,6 +8,8 @@ import { useLanguage } from "@/contexts/language-context"
 import { useState, useRef, useEffect } from "react"
 import { useSectionLogic } from "@/hooks/useSectionLogic"
 import { useSectionContent } from "@/hooks/useSectionContent"
+import { OptimizedFadeIn } from "@/utils/OptimizedAnimations"
+import { useOptimizedIntersection } from "@/hooks/useIntersectionObserver"
 
 export default function PartnersSection({ websiteId, sectionId }) {
   const { ref, isInView } = useScrollAnimation()
@@ -62,7 +64,7 @@ console.log(content)
       {/* Floating Particles */}
       <div className="absolute inset-0 overflow-hidden">
         {[...Array(6)].map((_, i) => (
-          <motion.div
+          <OptimizedFadeIn
             key={i}
             className="absolute w-2 h-2 bg-primary/20 rounded-full"
             style={{
@@ -83,7 +85,7 @@ console.log(content)
       </div>
 
       <div className="relative container px-4 md:px-6" ref={containerRef}>
-        <motion.div
+        <OptimizedFadeIn
           ref={ref}
           initial="hidden"
           animate={isInView ? "visible" : "hidden"}
@@ -101,7 +103,7 @@ console.log(content)
           className="flex flex-col items-center justify-center space-y-6 text-center mb-16"
         >
           {/* Enhanced Label */}
-          <motion.div
+          <OptimizedFadeIn
             initial={{ opacity: 0, scale: 0.8 }}
             animate={isInView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.8 }}
             transition={{ duration: 0.6, delay: 0.2 }}
@@ -112,37 +114,35 @@ console.log(content)
               <span className="w-2 h-2 bg-primary rounded-full mr-2 animate-pulse"></span>
               {content.sectionLabel}
             </span>
-          </motion.div>
+          </OptimizedFadeIn>
 
           {/* Enhanced Title */}
           <div className="space-y-4">
-            <motion.h2
-              initial={{ opacity: 0, y: 20 }}
-              animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+            <h2
               transition={{ duration: 0.8, delay: 0.4 }}
               className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-wtheme-text relative"
             >
               <span className="relative inline-block">
                 {content.sectionTitle}
-                <motion.div
+                <OptimizedFadeIn
                   className="absolute -bottom-2 left-0 h-1 bg-gradient-to-r from-primary to-primary/60 rounded-full"
                   initial={{ width: 0 }}
                   animate={isInView ? { width: "100%" } : { width: 0 }}
                   transition={{ duration: 1, delay: 0.8 }}
                 />
               </span>
-            </motion.h2>
+            </h2>
 
-            <motion.p
+            <p
               initial={{ opacity: 0, y: 20 }}
               animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
               transition={{ duration: 0.8, delay: 0.6 }}
               className="max-w-3xl text-lg text-wtheme-text/70 leading-relaxed"
             >
               {content.sectionDescription}
-            </motion.p>
+            </p>
           </div>
-        </motion.div>
+        </OptimizedFadeIn>
 
         {/* Enhanced Partners Carousel */}
         <div className="relative">

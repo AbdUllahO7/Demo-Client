@@ -1,15 +1,11 @@
 // src/components/Pages/Testimonials/TestimonialCard.jsx
 "use client"
 
-import { useRef } from "react"
 import Image from "next/image"
-import { motion, useInView } from "framer-motion"
 import { Quote } from "lucide-react"
 import { FadeIn } from "@/utils/lightweightAnimations"
 
 export const TestimonialCard = ({ testimonial, index, direction }) => {
-    const cardRef = useRef(null)
-    const cardInView = useInView(cardRef, { once: true, amount: 0.1 })
 
     return (
         <FadeIn

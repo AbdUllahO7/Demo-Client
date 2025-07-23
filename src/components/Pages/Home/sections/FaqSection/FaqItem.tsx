@@ -2,9 +2,9 @@
 "use client"
 
 import React, { useState } from "react"
-import { motion, AnimatePresence } from "framer-motion"
 import { ChevronDown } from "lucide-react"
 import { FadeIn } from "@/utils/lightweightAnimations"
+import { AnimatePresence } from "framer-motion"
 
 export const FaqItem = ({ faq, index, isInView, isRTL }) => {
   const [isOpen, setIsOpen] = useState(false)

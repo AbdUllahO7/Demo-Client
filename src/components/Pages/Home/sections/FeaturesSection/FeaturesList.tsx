@@ -1,6 +1,5 @@
 "use client"
 
-import { motion } from "framer-motion"
 import type React from "react"
 import FeatureCard from "./FeatureCard"
 import { FadeIn } from "@/utils/lightweightAnimations"

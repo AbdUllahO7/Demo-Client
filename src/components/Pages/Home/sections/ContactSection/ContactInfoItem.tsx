@@ -1,7 +1,6 @@
 "use client"
 
 import { ReactNode } from "react"
-import { motion } from "@/components/ui/framer-motion"
 import { FadeIn } from "@/utils/lightweightAnimations"
 
 interface ContactInfoItemProps {

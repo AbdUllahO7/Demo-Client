@@ -2,7 +2,6 @@
 "use client";
 
 import Image from "next/image";
-import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 import { useLanguage } from "@/contexts/language-context";
 import { ButtonSectionLink } from "@/components/SectionLinks";

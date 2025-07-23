@@ -2,7 +2,6 @@
 
 import { forwardRef } from "react"
 import { motion } from "@/components/ui/framer-motion"
-import { BookOpen, PhoneCall } from "lucide-react"
 import { FadeIn } from "@/utils/lightweightAnimations"
 
 interface ContactHeaderProps {

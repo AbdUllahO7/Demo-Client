@@ -130,20 +130,3 @@ function darken(rgb: [number, number, number], factor: number): string {
   return rgb.map(c => Math.round(c * (1 - factor))).join(', ')
 }
 
-// Component to show current theme info (for debugging)
-export function ThemeDebugger() {
-  const { activeTheme, isLoading, error } = useTheme()
-
-  if (isLoading) return <div className="fixed bottom-4 right-4 p-2 bg-gray-100 rounded text-xs">Loading theme...</div>
-  if (error) return <div className="fixed bottom-4 right-4 p-2 bg-red-100 rounded text-xs">Theme error: {error}</div>
-  if (!activeTheme) return <div className="fixed bottom-4 right-4 p-2 bg-yellow-100 rounded text-xs">No active theme</div>
-
-  return (
-    <div className="fixed bottom-4 right-4 p-3 bg-white shadow-lg rounded-lg text-xs max-w-xs">
-      <h4 className="font-semibold mb-1">Active Theme</h4>
-      <p><strong>Name:</strong> {activeTheme.themeName}</p>
-      <p><strong>Primary:</strong> <span className="inline-block w-3 h-3 rounded ml-1" style={{ backgroundColor: activeTheme.colors.primary }}></span> {activeTheme.colors.primary}</p>
-      <p><strong>Font:</strong> {activeTheme.fonts.heading.family.split(',')[0]}</p>
-    </div>
-  )
-}

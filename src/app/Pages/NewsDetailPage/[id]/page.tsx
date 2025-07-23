@@ -3,8 +3,6 @@
 import { use } from "react"
 import { useSearchParams } from "next/navigation"
 import { useLanguage } from "@/contexts/language-context"
-import { translationsNews } from "@/components/Pages/Home/ConstData/ConstData"
-import { NotFound } from "@/components/Pages/NewsDetailPage/NotFound"
 import { FeaturedImage } from "@/components/Pages/NewsDetailPage/FeaturedImage"
 import { ArticleContent } from "@/components/Pages/NewsDetailPage/ArticleContent"
 import { Sidebar } from "@/components/Pages/NewsDetailPage/Sidebar"
@@ -54,7 +52,6 @@ export default function NewsDetailPage({ params }: { params: Promise<{ id: strin
 
 
   // Get translations for the current language
-  const t = translationsNews[language] || translationsNews.en
 
   // Validate params after hook calls
   if (!newsId || !sectionId || !websiteId) {
@@ -99,7 +96,7 @@ export default function NewsDetailPage({ params }: { params: Promise<{ id: strin
   return (
     <div className="min-h-screen bg-wtheme-background " dir={direction}>
       {/* Hero section with title and category */}
-      <NewsHero news={currentNews} t={t} />
+      <NewsHero news={currentNews}  />
 
       {/* Featured image */}
       <FeaturedImage image={currentNews.image} title={currentNews.title} />
@@ -116,7 +113,7 @@ export default function NewsDetailPage({ params }: { params: Promise<{ id: strin
       </section>
 
       {/* Related articles section */}
-      <RelatedArticles relatedNews={relatedNews} t={t} />
+      <RelatedArticles relatedNews={relatedNews}  />
     </div>
   )
 }

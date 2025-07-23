@@ -3,7 +3,6 @@
 import { useRef, useState, useEffect } from "react"
 import Link from "next/link"
 import Image from "next/image"
-import { motion } from "framer-motion"
 import { ArrowRight, ChevronLeft, ChevronRight } from "lucide-react"
 import { useLanguage } from "@/contexts/language-context"
 import { Button } from "@/components/ui/button"
@@ -88,7 +87,7 @@ export default function ProjectsSection({ sectionId, websiteId }) {
 
   // Navigation functions - Fixed for RTL
   const nextSlide = () => {
-    if (isTransitioning) return
+    if (isTransitioning || validProjects.length === 0) return
     setIsTransitioning(true)
     // In RTL, "next" means moving left (decreasing index)
     setCurrentIndex((prev) => (isRTL ? prev - 1 : prev + 1))
@@ -96,7 +95,7 @@ export default function ProjectsSection({ sectionId, websiteId }) {
   }
 
   const prevSlide = () => {
-    if (isTransitioning) return
+    if (isTransitioning || validProjects.length === 0) return
     setIsTransitioning(true)
     // In RTL, "previous" means moving right (increasing index)
     setCurrentIndex((prev) => (isRTL ? prev + 1 : prev - 1))
@@ -150,10 +149,10 @@ export default function ProjectsSection({ sectionId, websiteId }) {
     const gapOffset = (currentIndex * gap) / itemsPerView
     if (isRTL) {
       // In RTL, we reverse the direction of movement
-      return `calc(${currentIndex * percentage}% - ${gapOffset}px)`
+      return `translateX(calc(${currentIndex * percentage}% - ${gapOffset}px))`
     } else {
       // LTR (original)
-      return `calc(-${currentIndex * percentage}% + ${gapOffset}px)`
+      return `translateX(calc(-${currentIndex * percentage}% + ${gapOffset}px))`
     }
   }
 
@@ -232,9 +231,11 @@ export default function ProjectsSection({ sectionId, websiteId }) {
 
             {/* Carousel Track */}
             <div className="flex-1 overflow-hidden">
-              <FadeIn
-                className="flex"
-               
+              <div
+                className="flex transition-transform duration-500 ease-in-out"
+                style={{
+                  transform: getTransform(),
+                }}
               >
                 {projects.map((project, index) => (
                   <div
@@ -249,7 +250,7 @@ export default function ProjectsSection({ sectionId, websiteId }) {
                     />
                   </div>
                 ))}
-              </FadeIn>
+              </div>
             </div>
 
             {/* Right Arrow - Outside Content */}

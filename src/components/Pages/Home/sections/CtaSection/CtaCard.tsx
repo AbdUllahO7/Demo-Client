@@ -1,7 +1,6 @@
 "use client"
 
 import { forwardRef } from "react"
-import { motion } from "@/components/ui/framer-motion"
 import { CtaHeader } from "./CtaHeader"
 import { CtaForm } from "./CtaForm"
 import { FadeIn } from "@/utils/lightweightAnimations"

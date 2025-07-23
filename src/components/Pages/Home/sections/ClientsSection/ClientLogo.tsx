@@ -1,7 +1,6 @@
 "use client"
 
 import Image from "next/image"
-import { motion } from "framer-motion"
 import { ClientLogoType } from "./types"
 import { FadeIn } from "@/utils/lightweightAnimations"
 

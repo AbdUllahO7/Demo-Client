@@ -1,9 +1,6 @@
 "use client"
 
 import Image from "next/image"
-import { motion } from "framer-motion"
-import { BarChart, Clock, Shield, Zap } from "lucide-react"
-import FeatureHighlight from "./FeatureHighlight"
 import { SectionSkeleton } from "@/components/Skeleton/SectionSkeleton"
 import { FadeIn } from "@/utils/lightweightAnimations"
 

@@ -1,4 +1,3 @@
-// src/utils/lightweightAnimations.tsx - STEP 5: Replace Framer Motion
 "use client";
 
 import { useEffect, useRef, useState } from 'react';
@@ -12,7 +11,7 @@ interface FadeInProps {
   className?: string;
 }
 
-// 🚀 Lightweight FadeIn component (replaces motion.div)
+// 🚀 Lightweight FadeIn component (replaces OptimizedFadeIn)
 export function FadeIn({ children, delay = 0, duration = 600, className = "" }: FadeInProps) {
   const [isVisible, setIsVisible] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
@@ -126,65 +125,7 @@ export function SlideIn({
   );
 }
 
-// 🚀 Lightweight Stagger component (for list animations)
-interface StaggerProps {
-  children: React.ReactNode[];
-  delay?: number;
-  staggerDelay?: number;
-  className?: string;
-}
 
-export function Stagger({ children, delay = 0, staggerDelay = 100, className = "" }: StaggerProps) {
-  const [visibleItems, setVisibleItems] = useState<number[]>([]);
-  const ref = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          // Animate items one by one
-          children.forEach((_, index) => {
-            setTimeout(() => {
-              setVisibleItems(prev => [...prev, index]);
-            }, delay + (index * staggerDelay));
-          });
-          observer.disconnect();
-        }
-      },
-      { threshold: 0.1, rootMargin: '50px' }
-    );
-
-    const current = ref.current;
-    if (current) {
-      observer.observe(current);
-    }
-
-    return () => {
-      if (current) {
-        observer.unobserve(current);
-      }
-    };
-  }, [children, delay, staggerDelay]);
-
-  return (
-    <div ref={ref} className={className}>
-      {children.map((child, index) => (
-        <div
-          key={index}
-          className="transition-all duration-500 ease-out"
-          style={{
-            opacity: visibleItems.includes(index) ? 1 : 0,
-            transform: visibleItems.includes(index) 
-              ? 'translateY(0)' 
-              : 'translateY(20px)',
-          }}
-        >
-          {child}
-        </div>
-      ))}
-    </div>
-  );
-}
 
 // 🚀 Lightweight Scale component (for hover effects)
 interface ScaleProps {
@@ -213,54 +154,4 @@ export function Scale({ children, scale = 1.05, duration = 200, className = "" }
   );
 }
 
-// 🚀 CSS-only animation classes for even better performance
-export const animationClasses = {
-  fadeIn: `
-    opacity-0 translate-y-4 transition-all duration-700 ease-out
-    [&.animate-in]:opacity-100 [&.animate-in]:translate-y-0
-  `,
-  slideInLeft: `
-    opacity-0 -translate-x-4 transition-all duration-500 ease-out
-    [&.animate-in]:opacity-100 [&.animate-in]:translate-x-0
-  `,
-  slideInRight: `
-    opacity-0 translate-x-4 transition-all duration-500 ease-out
-    [&.animate-in]:opacity-100 [&.animate-in]:translate-x-0
-  `,
-  scaleIn: `
-    opacity-0 scale-95 transition-all duration-400 ease-out
-    [&.animate-in]:opacity-100 [&.animate-in]:scale-100
-  `,
-};
 
-// 🚀 Hook for triggering CSS animations
-export function useInViewAnimation(className: string = 'animate-in') {
-  const [hasAnimated, setHasAnimated] = useState(false);
-  const ref = useRef<HTMLElement>(null);
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting && !hasAnimated) {
-          entry.target.classList.add(className);
-          setHasAnimated(true);
-          observer.disconnect();
-        }
-      },
-      { threshold: 0.1, rootMargin: '50px' }
-    );
-
-    const current = ref.current;
-    if (current) {
-      observer.observe(current);
-    }
-
-    return () => {
-      if (current) {
-        observer.unobserve(current);
-      }
-    };
-  }, [className, hasAnimated]);
-
-  return ref;
-}

@@ -1,7 +1,7 @@
 import { Separator } from "@/components/ui/separator"
 import { NewsCard } from "./NewsCard"
 
-export function RelatedArticles({ relatedNews, t }) {
+export function RelatedArticles({ relatedNews}) {
   if (relatedNews.length === 0) return null
 
   return (
@@ -11,7 +11,7 @@ export function RelatedArticles({ relatedNews, t }) {
         <h2 className="text-2xl font-bold mb-8">Related Articles</h2>
         <div className="grid gap-8 md:grid-cols-3">
           {relatedNews.map((news, index) => (
-            <NewsCard key={news.id} news={news} index={index} t={t} />
+            <NewsCard key={news.id} news={news}  />
           ))}
         </div>
       </div>

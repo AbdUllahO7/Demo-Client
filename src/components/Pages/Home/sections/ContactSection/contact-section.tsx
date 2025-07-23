@@ -1,11 +1,9 @@
 "use client"
 
 import { useState } from "react"
-import { motion } from "@/components/ui/framer-motion"
 import { useScrollAnimation } from "@/hooks/use-scroll-animation"
 import { useLanguage } from "@/contexts/language-context"
 import { ContactHeader } from "./ContactHeader"
-import { translationsDataContact } from "../../ConstData/ConstData"
 import { ContactInfo } from "./ContactInfo"
 import { ContactForm } from "./ContactForm"
 import { useSectionLogic } from "@/hooks/useSectionLogic"

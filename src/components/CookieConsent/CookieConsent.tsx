@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useCallback } from 'react';
-import { AnimatePresence, motion } from 'framer-motion';
+import { AnimatePresence } from 'framer-motion';
 import styles from './cookie-consent.module.css';
 import { CookieCategory, CookieCategoryInfo, CookieConsentData, CookiePreferences } from '@/api/types/cookie-consent';
 import { FadeIn } from '@/utils/lightweightAnimations';

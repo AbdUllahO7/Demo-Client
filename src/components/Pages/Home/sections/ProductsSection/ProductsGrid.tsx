@@ -2,7 +2,6 @@
 "use client"
 
 import React, { useState } from "react"
-import { motion } from "framer-motion"
 import { X } from "lucide-react"
 import { ProductCard } from "./ProductCard";
 import { FadeIn } from "@/utils/lightweightAnimations";
@@ -98,7 +97,7 @@ export function ProductsGrid({ products, isInView, containerRef, isRTL }: Produc
           className="fixed inset-0 backdrop-blur-sm z-50 flex items-center justify-center p-4"
           onClick={closeImageModal}
         >
-          <motion.div
+          <OptimizedFadeIn
             initial={{ scale: 0.8, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0.8, opacity: 0 }}
@@ -118,7 +117,7 @@ export function ProductsGrid({ products, isInView, containerRef, isRTL }: Produc
               alt="Product detail"
               className="w-full h-full object-contain rounded-lg"
             />
-          </motion.div>
+          </OptimizedFadeIn>
         </div>
       )}
     </>

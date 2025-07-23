@@ -1,18 +1,20 @@
 "use client"
 
 import type React from "react"
-import { useRef } from "react"
 import Image from "next/image"
-import { motion, useInView } from "framer-motion"
 import { useLanguage } from "@/contexts/language-context"
 import { useSectionLogic } from "@/hooks/useSectionLogic"
 import { useSectionContent } from "@/hooks/useSectionContent"
 import { FadeIn } from "@/utils/lightweightAnimations"
+import { useOptimizedIntersection } from "@/hooks/useIntersectionObserver"
 
 export default function TeamSection({websiteId , sectionId}) {
-  const ref = useRef(null)
-  const isInView = useInView(ref, { once: false, amount: 0.2 })
-  const { t,  language } = useLanguage()
+const { ref, isInView } = useOptimizedIntersection({
+  threshold: 0.2,
+  triggerOnce: true,
+  rootMargin: '100px'
+})  
+const { t,  language } = useLanguage()
 
   const { content, isLoading: sectionLoading, error: sectionError, refetch, direction, formatDate } = useSectionLogic({
     sectionId,
@@ -58,32 +60,25 @@ export default function TeamSection({websiteId , sectionId}) {
 
       <div className="container relative z-10 px-4 md:px-6">
         <div ref={ref} className="flex flex-col items-center justify-center space-y-6 text-center mb-16">
-          <motion.span
-            initial={{ opacity: 0, y: 20 }}
-            animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-            transition={{ duration: 0.5 }}
+          <span
             className="inline-block mb-2 text-body  text-primary tracking-wider  uppercase"
           >
             {content.sectionLabel}
-          </motion.span>
+          </span>
 
-          <motion.h2
-            initial={{ opacity: 0, y: 20 }}
-            animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-            transition={{ duration: 0.6, delay: 0.1 }}
+          <h2
+
             className="text-3xl md:text-4xl lg:text-5xl font-heading font-bold tracking-tight max-w-3xl text-wtheme-text"
           >
             {content.sectionTitle}
-            </motion.h2>
+            </h2>
 
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
+          <p
+
             className="max-w-2xl text-wtheme-text font-body text-lg"
           >
             {content.sectionDescription}
-            </motion.p>
+            </p>
         </div>
 
         <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-4">
@@ -129,12 +124,8 @@ interface TeamMemberCardProps {
 
 function TeamMemberCard({ 
   member, 
-  index, 
-  isInView, 
   getCurrentText 
 }: TeamMemberCardProps) {
-  const cardRef = useRef(null)
-  const cardInView = useInView(cardRef, { once: false, amount: 0.3 })
 
   return (
     <FadeIn

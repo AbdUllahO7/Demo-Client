@@ -2,7 +2,6 @@
 
 import { useRef } from "react"
 import Image from "next/image"
-import { motion, useInView } from "framer-motion"
 import { ArrowRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useLanguage } from "@/contexts/language-context"
@@ -17,8 +16,6 @@ interface CaseStudyCardProps {
 
 export function CaseStudyCard({ study, index, isInView }: CaseStudyCardProps) {
     const { t } = useLanguage()
-    const cardRef = useRef(null)
-    const cardInView = useInView(cardRef, { once: false, amount: 0.3 })
 
     return (
         <FadeIn

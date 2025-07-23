@@ -1,10 +1,9 @@
 "use client"
 
-import { useRef } from "react"
-import { motion, useInView } from "framer-motion"
 import { GoBackButton } from "@/components/GoBackButton"
 import { useLanguage } from "@/contexts/language-context"
 import { FadeIn } from "@/utils/lightweightAnimations"
+import { useOptimizedIntersection } from "@/hooks/useIntersectionObserver"
 
 interface ProjectHeroProps {
   project: {
@@ -42,10 +41,13 @@ interface ProjectHeroProps {
 }
 
 export const ProjectHero = ({ project, clients }: ProjectHeroProps) => {
-  const headerRef = useRef(null)
-  const isHeaderInView = useInView(headerRef, { once: true })
-  const { language, direction } = useLanguage()
+  const { language } = useLanguage()
 
+  const { ref, isInView } = useOptimizedIntersection({
+  threshold: 0.2,
+  triggerOnce: true,
+  rootMargin: '100px'
+})
   // Check if project.elements is not found or empty
   if (!project?.elements || project.elements.length === 0) {
     return null
@@ -95,7 +97,7 @@ export const ProjectHero = ({ project, clients }: ProjectHeroProps) => {
       />
 
       <div className="container relative z-10 px-4 md:px-6">
-        <div ref={headerRef} className="max-w-4xl mx-auto">
+        <div ref={ref} className="max-w-4xl mx-auto">
           <GoBackButton sectionName="projects" title={backLinkText} />
 
           <div className="flex items-center gap-3 mb-4">
@@ -104,24 +106,20 @@ export const ProjectHero = ({ project, clients }: ProjectHeroProps) => {
             </span>
           </div>
 
-          <motion.h1
-            initial={{ opacity: 0, y: 20 }}
-            animate={isHeaderInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-            transition={{ duration: 0.6 }}
+          <h1
+
             className="text-3xl md:text-4xl lg:text-5xl font-heading font-bold tracking-tight mb-6 text-wtheme-text"
           >
             {title}
-          </motion.h1>
+          </h1>
 
           {description && (
-            <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              animate={isHeaderInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-              transition={{ duration: 0.6, delay: 0.1 }}
+            <p
+            
               className="text-xl text-wtheme-text font-body mb-6 whitespace-pre-line"
             >
               {description}
-            </motion.p>
+            </p>
           )}
 
           {technologies && (

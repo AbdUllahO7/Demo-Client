@@ -1,17 +1,14 @@
 "use client"
 
-import { useRef } from "react"
-import { motion } from "framer-motion"
-import { useInView } from "framer-motion"
 import { Calendar } from "lucide-react"
 import { GoBackButton } from "@/components/GoBackButton"
 import { useLanguage } from "@/contexts/language-context"
 import { formatDate } from "@/lib/utils"
 import { FadeIn } from "@/utils/lightweightAnimations"
+import { useOptimizedIntersection } from "@/hooks/useIntersectionObserver"
 
-export function NewsHero({ news, t }) {
-  const headerRef = useRef(null)
-  const isHeaderInView = useInView(headerRef, { once: true })
+export function NewsHero({ news }) {
+
   const { language } = useLanguage()
 
   // Default color if not provided
@@ -60,15 +57,12 @@ export function NewsHero({ news, t }) {
             </div>
           </div>
 
-          <motion.h1
-            ref={headerRef}
-            initial={{ opacity: 0, y: 20 }}
-            animate={isHeaderInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-            transition={{ duration: 0.6 }}
+          <h1
+         
             className="text-3xl md:text-4xl lg:text-5xl font-heading font-bold tracking-tight mb-6 text-wtheme-text"
           >
             {news.title}
-          </motion.h1>
+          </h1>
         </div>
       </div>
     </section>

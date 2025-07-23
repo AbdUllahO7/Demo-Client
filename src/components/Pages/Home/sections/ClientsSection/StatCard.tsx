@@ -1,6 +1,5 @@
 "use client"
 
-import { motion } from "framer-motion"
 import { StatType } from "./types"
 import { FadeIn } from "@/utils/lightweightAnimations"
 

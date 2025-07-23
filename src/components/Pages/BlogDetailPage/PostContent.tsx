@@ -1,5 +1,4 @@
 import React from "react"
-import { motion } from "framer-motion"
 import { getTranslatedContent } from "@/utils/getTranslatedContent"
 import { useLanguage } from "@/contexts/language-context"
 import { FadeIn } from "@/utils/lightweightAnimations"

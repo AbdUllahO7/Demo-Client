@@ -2,7 +2,6 @@
 
 import Image from "next/image"
 import { GoBackButton } from "@/components/GoBackButton"
-import { useLanguage } from "@/contexts/language-context"
 
 interface HeroSectionProps {
     heroData: {
@@ -23,7 +22,6 @@ const HeroSection = ({ heroData }: HeroSectionProps) => {
         sectionId = "services"
     } = heroData
 
-    const { direction } = useLanguage?.() || { direction: 'ltr' }
 
     // Fallback values in case data is missing
     const fallbackImage = "/placeholder.svg"

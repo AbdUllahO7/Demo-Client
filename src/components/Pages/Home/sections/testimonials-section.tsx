@@ -2,7 +2,7 @@
 
 import React, { useRef, useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
-import { Calendar, ChevronLeft, ChevronRight, Quote, Star, User } from "lucide-react"
+import { ChevronLeft, ChevronRight, Quote, Star, User } from "lucide-react"
 import { motion, useInView, AnimatePresence } from "framer-motion"
 import { useLanguage } from "@/contexts/language-context"
 import { useSectionLogic } from "@/hooks/useSectionLogic"

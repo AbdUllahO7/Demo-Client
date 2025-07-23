@@ -64,7 +64,6 @@ export default function RootLayoutClient({ children }: RootLayoutClientProps) {
   );
 
   // Get all section IDs
-  const allSectionIds: string[] = sectionsData?.data?.map((section: Section) => section._id) || [];
 
   // Find specific sections (Header and Footer)
   const headerSection = sectionsData?.data.find((section: Section) => section.subName === "Header");

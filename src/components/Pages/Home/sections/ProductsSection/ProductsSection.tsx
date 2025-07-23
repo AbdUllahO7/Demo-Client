@@ -2,8 +2,6 @@
 "use client";
 
 import { useRef } from "react";
-import { motion } from "framer-motion";
-import { Package } from "lucide-react";
 import { useScrollAnimation } from "@/hooks/use-scroll-animation";
 import { useLanguage } from "@/contexts/language-context";
 import { useSectionLogic } from "@/hooks/useSectionLogic";
@@ -65,32 +63,26 @@ export default function ProductsSection({ websiteId, sectionId }: { websiteId: s
         
           className="flex flex-col items-center justify-center space-y-6 md:space-y-8 text-center mb-12 md:mb-20"
         >
-          <motion.span
-              initial={{ opacity: 0, y: 20 }}
-              animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-              transition={{ duration: 0.5 }}
+          <span
+          
               className="inline-block mb-2 text-body  text-primary tracking-wider  uppercase"
             >
               {content.sectionLabel}
-          </motion.span>
+          </span>
           <div className="space-y-3 md:space-y-5 max-w-4xl">
-            <motion.h2
-              initial={{ y: 40, opacity: 0 }}
-              animate={isInView ? { y: 0, opacity: 1 } : { y: 40, opacity: 0 }}
-              transition={{ type: "spring", stiffness: 100, damping: 15, delay: 0.2 }}
+            <h2
+         
               className="text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-heading font-bold tracking-tight text-wtheme-text"
             >
               {content.sectionTitle}
-            </motion.h2>
+            </h2>
 
-            <motion.p
-              initial={{ y: 40, opacity: 0 }}
-              animate={isInView ? { y: 0, opacity: 1 } : { y: 40, opacity: 0 }}
-              transition={{ type: "spring", stiffness: 100, damping: 15, delay: 0.3 }}
+            <p
+             
               className="text-base md:text-xl lg:text-2xl font-body text-wtheme-text max-w-3xl mx-auto"
             >
               {content.sectionDescription}
-            </motion.p>
+            </p>
           </div>
         </FadeIn>
 

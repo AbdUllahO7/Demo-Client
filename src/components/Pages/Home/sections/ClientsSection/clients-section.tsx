@@ -1,17 +1,19 @@
 "use client"
 
-import { useRef } from "react"
-import { motion, useInView } from "framer-motion"
 import { useLanguage } from "@/contexts/language-context"
 import { ClientLogo } from "./ClientLogo"
 import { StatCard } from "./StatCard"
 import { clientsData } from "./data"
 import { FadeIn } from "@/utils/lightweightAnimations"
+import { useOptimizedIntersection } from "@/hooks/useIntersectionObserver"
 
 
 export default function ClientsSection() {
-  const ref = useRef(null)
-  const isInView = useInView(ref, { once: false, amount: 0.2 })
+  const { ref, isInView } = useOptimizedIntersection({
+    threshold: 0.2,
+    triggerOnce: true,
+    rootMargin: '100px'
+  })  
   const { direction } = useLanguage()
 
   const clients = clientsData.clients
@@ -32,14 +34,12 @@ export default function ClientsSection() {
             {direction === "ltr" ? "Our Clients" : "عملاؤنا"}
           </FadeIn>
           
-          <motion.h2
-            initial={{ opacity: 0, y: 20 }}
-            animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-            transition={{ duration: 0.6, delay: 0.1 }}
+          <h2
+           
             className="text-3xl md:text-4xl font-bold tracking-tight"
           >
             {direction === "ltr" ? "Trusted by Industry Leaders" : "قادة الصناعة الموثوق بهم"}
-          </motion.h2>
+          </h2>
           
           <FadeIn
          
@@ -71,9 +71,6 @@ export default function ClientsSection() {
         
         {/* Stats */}
         <FadeIn
-          initial={{ opacity: 0, y: 30 }}
-          animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
-          transition={{ duration: 0.6, delay: 0.5 }}
           className="mt-20 grid grid-cols-2 md:grid-cols-4 gap-8 text-center"
         >
           {stats.map((stat, index) => (

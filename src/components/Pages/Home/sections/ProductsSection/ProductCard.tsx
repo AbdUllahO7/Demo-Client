@@ -2,11 +2,9 @@
 "use client"
 
 import React from "react"
-import { motion } from "framer-motion"
 import { Eye } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 import { useRouter } from "next/navigation"
-import { FadeIn } from "@/utils/lightweightAnimations"
 
 interface Product {
   id: string;
@@ -42,26 +40,23 @@ export function ProductCard({ product, index, isInView, isRTL, onImageClick }: P
     parseFloat(product.price) !== 0;
 
   return (
-    <motion.div
+    <div
       className="group relative  backdrop-blur-sm border border-white/20 rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 cursor-pointer"
     
       onClick={handleProductClick}
     >
       {/* Product Image */}
       <div className="relative aspect-square overflow-hidden">
-        <motion.img
+        <img
           src={product.image}
           alt={product.title}
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 cursor-pointer"
-          whileHover={{ scale: 1.05 }}
           onClick={() => onImageClick(product.image)}
         />
         
         {/* Image Overlay */}
         <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-          <motion.button
-            initial={{ scale: 0 }}
-            whileHover={{ scale: 1.1 }}
+          <button
             className="bg-white/90 backdrop-blur-sm  p-3 rounded-full shadow-lg hover:bg-white transition-colors"
             onClick={(e) => {
               e.stopPropagation();
@@ -69,7 +64,7 @@ export function ProductCard({ product, index, isInView, isRTL, onImageClick }: P
             }}
           >
             <Eye className="w-5 h-5" />
-          </motion.button>
+          </button>
         </div>
 
         {/* Category Badge */}
@@ -116,6 +111,6 @@ export function ProductCard({ product, index, isInView, isRTL, onImageClick }: P
 
       {/* Hover Glow Effect */}
       <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-primary/5 to-secondary/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
-    </motion.div>
+    </div>
   );
 }

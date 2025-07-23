@@ -1,16 +1,18 @@
 // src/components/Pages/Testimonials/Hero.jsx
 "use client"
 
-import { useRef } from "react"
 import Link from "next/link"
-import { motion, useInView } from "framer-motion"
 import { ArrowLeft } from "lucide-react"
 import { FadeIn } from "@/utils/lightweightAnimations"
+import { useOptimizedIntersection } from "@/hooks/useIntersectionObserver"
 
-export const TestimonialsHero = ({ t, direction }) => {
-    const headerRef = useRef(null)
-    const isHeaderInView = useInView(headerRef, { once: true })
-
+    export const TestimonialsHero = ({ t, direction }) => {
+    const { ref, isInView } = useOptimizedIntersection({
+    threshold: 0.2,
+    triggerOnce: true,
+    rootMargin: '100px',
+    })
+    
     return (
         <section className="relative w-full py-20 overflow-hidden">
         {/* Background elements */}
@@ -27,7 +29,7 @@ export const TestimonialsHero = ({ t, direction }) => {
         />
 
         <div className="container relative z-10 px-4 md:px-6">
-            <div ref={headerRef} className="max-w-4xl mx-auto">
+            <div ref={ref} className="max-w-4xl mx-auto">
             <Link
                 href="/#testimonials"
                 className="inline-flex items-center text-muted-foreground hover:text-wtheme-hover mb-6 transition-colors"
@@ -36,23 +38,19 @@ export const TestimonialsHero = ({ t, direction }) => {
                 {t.backToHome}
             </Link>
 
-            <motion.h1
-                initial={{ opacity: 0, y: 20 }}
-                animate={isHeaderInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-                transition={{ duration: 0.6 }}
+            <h1
+              
                 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight mb-6"
             >
                 {t.pageTitle}
-            </motion.h1>
+            </h1>
 
-            <motion.p
-                initial={{ opacity: 0, y: 20 }}
-                animate={isHeaderInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-                transition={{ duration: 0.6, delay: 0.1 }}
+            <p
+        
                 className="text-xl text-muted-foreground mb-12"
             >
                 {t.pageDescription}
-            </motion.p>
+            </p>
             </div>
         </div>
         </section>

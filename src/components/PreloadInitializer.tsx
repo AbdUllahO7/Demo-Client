@@ -1,7 +1,6 @@
 import { useEffect } from "react"
 
 
-// 🚀 STEP 4: Component to initialize preloading strategies
 export function PreloadInitializer() {
   useEffect(() => {
     // 🚀 STEP 4: Preload critical components on user interaction
@@ -56,9 +55,5 @@ export function PreloadInitializer() {
   return null // This component doesn't render anything
 }
 
-// 🚀 STEP 4: Usage in your RootLayoutClient component:
-/*
-Add this to your RootLayoutClient.tsx inside the return statement:
 
 
-*/

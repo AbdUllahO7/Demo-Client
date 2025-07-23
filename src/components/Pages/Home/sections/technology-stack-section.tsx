@@ -3,18 +3,19 @@
 import { useRef } from "react"
 import Link from "next/link"
 import Image from "next/image"
-import { motion } from "framer-motion"
-import { useInView } from "framer-motion"
 import { Button } from "@/components/ui/button"
 import { ArrowRight, Sparkles } from 'lucide-react'
 import { useLanguage } from "@/contexts/language-context"
-import { technologies } from "../ConstData/ConstData"
 import { FadeIn } from "@/utils/lightweightAnimations"
+import { useOptimizedIntersection } from "@/hooks/useIntersectionObserver"
 
 export default function TechnologyStackSection() {
-  const ref = useRef(null)
-  const isInView = useInView(ref, { once: false, amount: 0.1 })
-  const { t, direction, language } = useLanguage()
+const { ref, isInView } = useOptimizedIntersection({
+  threshold: 0.2,
+  triggerOnce: true,
+  rootMargin: '100px'
+})  
+const { t, direction, language } = useLanguage()
 
 
   // Function to get current language text
@@ -50,23 +51,19 @@ export default function TechnologyStackSection() {
             <span>{language === 'en' ? "Cutting-Edge Stack" : 'مجموعة متطورة'}</span>
           </FadeIn>
           
-          <motion.h2
-            initial={{ y: 40, opacity: 0 }}
-            animate={isInView ? { y: 0, opacity: 1 } : { y: 40, opacity: 0 }}
-            transition={{ type: "spring", stiffness: 100, damping: 15, delay: 0.2 }}
+          <h2
+         
             className="text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl bg-clip-text text-black dark:text-white"
           >
             {language === 'en' ? " Powered by Innovation" : ' مدعوم بالابتكار'}
-          </motion.h2>
+          </h2>
           
-          <motion.p
-            initial={{ y: 40, opacity: 0 }}
-            animate={isInView ? { y: 0, opacity: 1 } : { y: 40, opacity: 0 }}
-            transition={{ type: "spring", stiffness: 100, damping: 15, delay: 0.3 }}
+          <p
+       
             className="mt-6 text-xl text-muted-foreground"
           >
             {language === 'en' ? ' We leverage the most advanced technologies to build solutions that are fast, scalable, and future-proof.' : 'نحن نستفيد من أحدث التقنيات لبناء حلول سريعة وقابلة للتطوير ومقاومة للمستقبل.'}
-          </motion.p>
+          </p>
         </FadeIn>
 
         <div className="grid grid-cols-2 gap-6 sm:grid-cols-3 md:grid-cols-4 lg:gap-8">

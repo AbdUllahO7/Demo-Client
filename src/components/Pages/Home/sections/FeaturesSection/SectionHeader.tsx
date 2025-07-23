@@ -1,6 +1,5 @@
 "use client"
 
-import { motion } from "framer-motion"
 
 interface SectionHeaderProps {
   isInView: boolean
@@ -19,32 +18,26 @@ export default function SectionHeader({
 }: SectionHeaderProps) {
   return (
     <>
-      <motion.span
-            initial={{ opacity: 0, y: 20 }}
-            animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-            transition={{ duration: 0.5 }}
+      <span
+          
             className="inline-block mb-2 text-body  text-primary tracking-wider  uppercase"
           >
             {sectionTitle}
-        </motion.span>
+        </span>
 
-     <motion.h2
-            initial={{ opacity: 0, y: 20 }}
-            animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-            transition={{ duration: 0.6, delay: 0.1 }}
+     <h2
+            
             className="text-3xl md:text-4xl lg:text-5xl font-heading font-bold tracking-tight max-w-3xl text-wtheme-text"
           >
             {mainTitle}
-          </motion.h2>
+          </h2>
 
-      <motion.p
-        initial={{ opacity: 0, y: 20 }}
-        animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-        transition={{ duration: 0.6, delay: 0.2 }}
+      <p
+     
         className={`mt-4 text-lg font-body text-wtheme-text ${centered ? 'max-w-2xl mx-auto' : 'max-w-[600px]'}`}
       >
         {mainDescription}
-      </motion.p>
+      </p>
     </>
   )
 }

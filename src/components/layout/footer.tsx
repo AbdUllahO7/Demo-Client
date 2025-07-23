@@ -3,11 +3,10 @@
 import { useMemo } from "react"
 import Link from "next/link"
 import Image from "next/image"
-import { motion } from "@/components/ui/framer-motion"
-import { useScrollAnimation } from "@/hooks/use-scroll-animation"
 import { useSectionContent } from "@/hooks/useSectionContent"
 import { useScrollToSection } from "@/hooks/use-scroll-to-section"
 import { FadeIn } from "@/utils/lightweightAnimations"
+import { useOptimizedIntersection } from "@/hooks/useIntersectionObserver"
 
 // Types
 interface ContentItem {
@@ -81,7 +80,11 @@ const generateFieldMappings = (isSpecial: boolean): Record<string, string> => {
  * Main Footer component
  */
 export default function Footer({ sectionId, logo = "/assets/iDIGITEK.webp", subName, websiteId }: FooterProps) {
-  const { ref, isInView } = useScrollAnimation()
+const { ref } = useOptimizedIntersection({
+  threshold: 0.2,
+  triggerOnce: true,
+  rootMargin: '100px'
+})
   const scrollToSection = useScrollToSection()
 
   // Field mappings
@@ -170,21 +173,12 @@ export default function Footer({ sectionId, logo = "/assets/iDIGITEK.webp", subN
   }, [Special])
 
   return (
-    <motion.footer
-      ref={ref}
-      initial="hidden"
-      animate={isInView ? "visible" : "hidden"}
-      variants={{
-        hidden: { opacity: 0 },
-        visible: { opacity: 1, transition: { staggerChildren: 0.1 } },
-      }}
-      id="contact"
-      className="w-full border-t border-wtheme-border/50 bg-wtheme-background py-12 md:py-16"
+    <div
+      className="w-full opacity-1 border-t border-wtheme-border/50 bg-wtheme-background py-12 md:py-16"
     >
       <div className="container px-4 md:px-6">
         <div className={`grid gap-8 ${dynamicColumns.length > 0 ? `md:grid-cols-2 lg:grid-cols-${Math.min(dynamicColumns.length + 1, 4)}` : 'md:grid-cols-1'}`}>
           <FadeIn
-            variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0, transition: { duration: 0.5 } } }}
             className="space-y-4"
           >
             <div className="flex items-center gap-2">
@@ -238,7 +232,7 @@ export default function Footer({ sectionId, logo = "/assets/iDIGITEK.webp", subN
           ))}
         </div>
       </div>
-    </motion.footer>
+    </div>
   )
 }
 
@@ -256,17 +250,14 @@ function FooterColumn({ title, links, scrollToSection }: FooterColumnProps & { s
 
   return (
     <FadeIn
-      variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0, transition: { duration: 0.5 } } }}
       className="space-y-4"
     >
       <h3 className="text-lg font-heading text-primary">{title}</h3>
       <ul className="space-y-2">
         {links.length > 0 ? (
           links.map((link) => (
-            <motion.li
+            <li
               key={link.label}
-              whileHover={{ x: 5 }}
-              transition={{ type: "spring", stiffness: 400, damping: 10 }}
             >
               {link.isInternal ? (
                 <button
@@ -289,7 +280,7 @@ function FooterColumn({ title, links, scrollToSection }: FooterColumnProps & { s
                 <Link 
                   href={link.href} 
                   className="font-body text-wtheme-text hover:text-wtheme-hover flex items-center gap-2"
-                  target="_blank"
+                  target="_self"
                   rel="noopener noreferrer"
                 >
                   {link.image && (
@@ -305,7 +296,7 @@ function FooterColumn({ title, links, scrollToSection }: FooterColumnProps & { s
                   {link.label}
                 </Link>
               )}
-            </motion.li>
+            </li>
           ))
         ) : (
           <li className="text-sm font-body text-wtheme-text"></li>

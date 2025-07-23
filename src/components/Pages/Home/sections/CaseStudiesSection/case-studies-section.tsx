@@ -1,20 +1,23 @@
 // src/components/CaseStudies/CaseStudiesSection.tsx
 "use client"
 
-import { useRef, useState } from "react"
-import { motion, useInView } from "framer-motion"
+import {  useState } from "react"
 import { ChevronLeft, ChevronRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useLanguage } from "@/contexts/language-context"
 import { caseStudiesData, sectionTranslations } from "./data"
 import { CaseStudyCard } from "./CaseStudyCard"
 import { FadeIn } from "@/utils/lightweightAnimations"
+import { useOptimizedIntersection } from "@/hooks/useIntersectionObserver"
 
 
 export default function CaseStudiesSection() {
-  const ref = useRef(null)
-  const isInView = useInView(ref, { once: false, amount: 0.2 })
-  const { language, direction } = useLanguage()
+const { ref, isInView } = useOptimizedIntersection({
+  threshold: 0.2,
+  triggerOnce: true,
+  rootMargin: '100px'
+})  
+const { language, direction } = useLanguage()
   const [activeIndex, setActiveIndex] = useState(0)
   
   // Get case studies for current language
@@ -56,25 +59,21 @@ export default function CaseStudiesSection() {
              {sectionText.badge}
           </FadeIn>
 
-          <motion.h2
-            initial={{ opacity: 0, y: 20 }}
-            animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-            transition={{ duration: 0.6, delay: 0.1 }}
+          <h2
+           
             className="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight max-w-3xl"
           >
             <span className="bg-clip-text bg-gradient-to-r dark:text-white text-black">
               {sectionText.title}
             </span>
-          </motion.h2>
+          </h2>
 
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
+          <p
+          
             className="max-w-2xl text-muted-foreground text-lg"
           >
             {sectionText.description}
-          </motion.p>
+          </p>
         </div>
 
         {/* Desktop view: Featured case study */}

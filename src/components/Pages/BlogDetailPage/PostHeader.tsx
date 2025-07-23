@@ -1,6 +1,5 @@
   import React from "react"
   import {  Calendar } from "lucide-react"
-  import { motion } from "framer-motion"
   import { useLanguage } from "@/contexts/language-context"
   import { formatDate } from "@/lib/utils"
   import { GoBackButton } from "@/components/GoBackButton"

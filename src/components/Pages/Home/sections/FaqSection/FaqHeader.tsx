@@ -2,9 +2,8 @@
 "use client"
 
 import React from "react"
-import { motion } from "framer-motion"
-import { MessageCircleQuestion, Search } from "lucide-react"
 import { FadeIn } from "@/utils/lightweightAnimations"
+import { motion } from "@/components/ui/framer-motion"
 
 export const FaqHeader = ({ content, isInView, isRTL, searchQuery, setSearchQuery }) => {
     return (

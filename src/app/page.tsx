@@ -10,7 +10,6 @@ import { AnimatePresence } from "framer-motion";
 import { useLanguage } from "@/contexts/language-context";
 import NewsSection from "@/components/Pages/Home/sections/news-section";
 import ProjectsSection from "@/components/Pages/Home/sections/projects-section";
-import BlogSection from "@/components/Pages/Home/sections/BlogSection/blog-section";
 import ContactSection from "@/components/Pages/Home/sections/ContactSection/contact-section";
 import FaqSection from "@/components/Pages/Home/sections/FaqSection/faq-section";
 import HeroSection from "@/components/Pages/Home/sections/HeroSection/hero-section";
@@ -21,6 +20,7 @@ import { useSections } from "@/lib/section/use-Section";
 import { useScrollToSection } from "@/hooks/use-scroll-to-section";
 import { SectionSkeleton } from "@/components/Skeleton/SectionSkeleton";
 import ProductsSection from "@/components/Pages/Home/sections/ProductsSection/ProductsSection";
+import BlogSection from '@/components/Pages/Home/sections/BlogSection/blog-section';
 
 
 

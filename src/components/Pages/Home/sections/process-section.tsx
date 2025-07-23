@@ -2,19 +2,22 @@
 
 import { useRef } from "react"
 import Image from "next/image"
-import { motion, useScroll, useTransform, useInView } from "framer-motion"
+import {  useScroll, useTransform } from "framer-motion"
 import { useLanguage } from "@/contexts/language-context"
-import { ProcessSteps } from "../ConstData/ConstData"
 import { useSectionLogic } from "@/hooks/useSectionLogic"
 import { useSectionContent } from "@/hooks/useSectionContent"
 import { FadeIn } from "@/utils/lightweightAnimations"
+import { useOptimizedIntersection } from "@/hooks/useIntersectionObserver"
 
 export default function ProcessSection({websiteId , sectionId}) {
   const { t,  language } = useLanguage()
   const sectionRef = useRef(null)
-  const isInView = useInView(sectionRef, { once: false, amount: 0.1 })
   
-
+  const { isInView } = useOptimizedIntersection({
+    threshold: 0.2,
+    triggerOnce: true,
+    rootMargin: '100px'
+  })
     const { content, isLoading: sectionLoading, error: sectionError, refetch, direction, formatDate } = useSectionLogic({
       sectionId,
       websiteId,
@@ -79,14 +82,12 @@ export default function ProcessSection({websiteId , sectionId}) {
        
           className="flex flex-col items-center justify-center space-y-4 text-center max-w-3xl mx-auto"
         >
-            <motion.span
-                initial={{ opacity: 0, y: 20 }}
-                animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-                transition={{ duration: 0.5 }}
+            <span
+            
                 className="inline-block mb-2 text-body  text-primary tracking-wider  uppercase"
               >
                 {content.sectionLabel}
-              </motion.span>
+              </span>
           <h2 className="text-4xl font-heading font-bold text-wtheme-text md:text-5xl lg:text-6xl bg-clip-text">
             {content.sectionTitle}
           </h2>
@@ -123,10 +124,8 @@ export default function ProcessSection({websiteId , sectionId}) {
         <div className="hidden lg:block absolute top-0 left-0 right-0 h-full pointer-events-none">
           <svg className="absolute top-[28%] left-0 w-full h-[60%]" width="100%" height="100%" viewBox="0 0 100 100" preserveAspectRatio="none">
             {/* Main zigzag path */}
-            <motion.path
-              initial={{ pathLength: 0 }}
-              animate={isInView ? { pathLength: 1 } : { pathLength: 0 }}
-              transition={{ duration: 1.5, ease: "easeInOut", delay: 0.5 }}
+            <path
+            
               d="M0,20 L50,0 L50,33 L100,20 M0,80 L50,60 L50,100 L100,80"
               fill="none"
               stroke="url(#themeGradient)"
@@ -171,39 +170,11 @@ interface ProcessStepProps {
 function ProcessStep({ 
   step, 
   index, 
-  isInView, 
   isLast, 
   getCurrentText 
 }: ProcessStepProps) {
-  const stepRef = useRef(null)
-  const isStepInView = useInView(stepRef, { once: false, amount: 0.3 })
-  const { direction } = useLanguage()
   const isOdd = index % 2 === 1
   
-  // Different animations based on screen size
-  const mobileVariants = {
-    hidden: { opacity: 0, y: 30 },
-    visible: { 
-      opacity: 1, 
-      y: 0, 
-      transition: { 
-        duration: 0.6,
-        delay: index * 0.2 
-      } 
-    }
-  }
-  
-  const desktopVariants = {
-    hidden: { opacity: 0, y: 30 },
-    visible: { 
-      opacity: 1, 
-      y: 0, 
-      transition: { 
-        duration: 0.6,
-        delay: 0.3 + index * 0.2 
-      } 
-    }
-  }
 
   // Use primary colors consistently
   const accentColor = "bg-primary"

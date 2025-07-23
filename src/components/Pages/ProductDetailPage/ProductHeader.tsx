@@ -70,7 +70,7 @@ export const ProductHeader: React.FC<ProductHeaderProps> = ({ product }) => {
     parseFloat(price) !== 0;
 
   return (
-    // 🚀 STEP 5: Replace motion.div with lightweight FadeIn
+    // 🚀 STEP 5: Replace OptimizedFadeIn with lightweight FadeIn
     <FadeIn duration={600} className="mb-8">
       <GoBackButton sectionName="products" title={backLinkText} />
     

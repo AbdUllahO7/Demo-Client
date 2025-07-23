@@ -1,13 +1,12 @@
 "use client"
 
-import { useRef } from "react"
-import { useInView } from "framer-motion"
 import { useLanguage } from "@/contexts/language-context"
 import SectionBackground from "./SectionBackground"
 import SectionHeader from "./SectionHeader"
 import IndustriesGrid from "./IndustriesGrid"
 import { useSectionLogic } from "@/hooks/useSectionLogic"
 import { useSectionContent } from "@/hooks/useSectionContent"
+import { useOptimizedIntersection } from "@/hooks/useIntersectionObserver"
 
 interface Industry {
   id: string
@@ -19,9 +18,12 @@ interface Industry {
 }
 
 export default function IndustrySolutionsSection({ sectionId, websiteId }) {
-  const ref = useRef(null)
-  const isInView = useInView(ref, { once: false, amount: 0.2 })
-  const { language, direction } = useLanguage()
+  const { ref, isInView } = useOptimizedIntersection({
+    threshold: 0.2,
+    triggerOnce: true,
+    rootMargin: '100px'
+  })
+  const {  direction } = useLanguage()
 
   const { content, isLoading: sectionLoading, error: sectionError, refetch, formatDate } = useSectionLogic({
       sectionId,

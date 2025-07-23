@@ -1,5 +1,4 @@
 import React from "react"
-import { motion } from "framer-motion"
 import { Package, ArrowLeft } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
@@ -22,23 +21,19 @@ export const ProductNotFound: React.FC = () => {
           <Package className="w-24 h-24 mx-auto text-gray-400" />
         </FadeIn>
 
-        <motion.h1
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.3 }}
+        <h1
+
           className="text-3xl font-bold text-wtheme-text mb-4"
         >
           Product Not Found
-        </motion.h1>
+        </h1>
 
-        <motion.p
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.4 }}
+        <p
+       
           className="text-gray-600 mb-8 leading-relaxed"
         >
           Sorry, the product you're looking for doesn't exist or has been removed.
-        </motion.p>
+        </p>
 
         <FadeIn
         

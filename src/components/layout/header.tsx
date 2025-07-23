@@ -13,7 +13,6 @@ import { useScrollToSection } from "@/hooks/use-scroll-to-section"
 import { useRouter, usePathname } from "next/navigation"
 import { ThemeToggle } from "../theme-toggle"
 import { useSubSections } from "@/lib/subSections/use-subSections"
-import { FadeIn } from "@/utils/lightweightAnimations"
 
 // Define interfaces for type safety
 interface SubNavItem {
@@ -261,6 +260,8 @@ export default function Header({
     ?.filter((item: NavItem | null) => item !== null && item.label)
     ?.sort((a, b) => a.order - b.order) || []
 
+
+    console.log("navItems",navItems)
   // Hover handlers
   const handleMouseEnter = (navId: string) => {
     if (timeoutRef.current) clearTimeout(timeoutRef.current)
@@ -405,7 +406,7 @@ export default function Header({
       initial={{ y: -100, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.5, ease: "easeOut" }}
-      className={`sticky top-0 left-0 right-0 z-50 w-full border-b border-wtheme-border transition-all duration-300 ${
+      className={`fixed top-0 left-0 right-0 z-50 w-full border-b border-wtheme-border transition-all duration-300 ${
         isOpen
           ? "bg-primary shadow-xl"
           : scrolled
@@ -417,7 +418,7 @@ export default function Header({
       <div className="mx-auto px-4 sm:px-6 lg:px-8">
         <div className={`flex h-16 items-center justify-between ${isRTL ? 'flex-row-reverse' : ''}`}>
           {/* Logo */}
-          <FadeIn
+          <motion.div
             className="flex-shrink-0"
             whileHover={{ scale: 1.05 }}
             transition={{ type: "spring", stiffness: 400, damping: 10 }}
@@ -426,18 +427,17 @@ export default function Header({
               <Image
                 src={logo || "/placeholder.svg"}
                 alt="Logo"
-                priority={true}
                 width={120}
                 height={40}
                 className={`h-8 w-auto transition-all duration-300 ${isOpen ? "brightness-0 invert" : ""}`}
               />
             </Link>
-          </FadeIn>
+          </motion.div>
 
           {/* Desktop Navigation */}
           <nav className={`hidden lg:flex items-center ${isRTL ? 'space-x-reverse space-x-8' : 'space-x-8'}`}>
             {navItems.map((item) => (
-              <FadeIn
+              <motion.div
                 key={item.id}
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -466,7 +466,7 @@ export default function Header({
                 {item.subNavItems.length > 0 && (
                   <AnimatePresence>
                     {hoveredNavId === item.id && (
-                      <FadeIn
+                      <motion.div
                         initial={{ opacity: 0, y: 10, scale: 0.95 }}
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         exit={{ opacity: 0, y: 10, scale: 0.95 }}
@@ -479,7 +479,7 @@ export default function Header({
                       >
                         <div className="py-2">
                           {item.subNavItems.map((subItem, index) => (
-                            <FadeIn
+                            <motion.div
                               key={subItem.id}
                               initial={{ opacity: 0, x: isRTL ? 10 : -10 }}
                               animate={{ opacity: 1, x: 0 }}
@@ -511,14 +511,14 @@ export default function Header({
                                   </div>
                                 </Link>
                               )}
-                            </FadeIn>
+                            </motion.div>
                           ))}
                         </div>
-                      </FadeIn>
+                      </motion.div>
                     )}
                   </AnimatePresence>
                 )}
-              </FadeIn>
+              </motion.div>
             ))}
           </nav>
 
@@ -540,9 +540,9 @@ export default function Header({
                   : "text-wtheme-text hover:text-wtheme-hover hover:bg-wtheme-hover/10"
               }`}
             >
-              <FadeIn animate={{ rotate: isOpen ? 180 : 0 }} transition={{ duration: 0.2 }}>
+              <motion.div animate={{ rotate: isOpen ? 180 : 0 }} transition={{ duration: 0.2 }}>
                 {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
-              </FadeIn>
+              </motion.div>
             </Button>
           </div>
         </div>
@@ -583,15 +583,22 @@ function MobileNav({ isOpen, setIsOpen, navItems, handleNavClick, handleSubNavCl
   return (
     <AnimatePresence>
       {isOpen && (
-        <FadeIn
-          className="lg:hidden sticky inset-x-0 top-16 bottom-0 z-40 bg-primary overflow-y-auto"
+        <motion.div
+          className="lg:hidden fixed inset-x-0 top-16 bottom-0 z-40 bg-primary overflow-y-auto"
+          initial={{ opacity: 0, height: 0 }}
+          animate={{ opacity: 1, height: "auto" }}
+          exit={{ opacity: 0, height: 0 }}
+          transition={{ duration: 0.3, ease: "easeInOut" }}
+          dir={direction}
         >
           <div className="container mx-auto px-4 py-6">
             <nav className="space-y-4">
               {navItems.map((item, index) => (
-                <FadeIn
+                <motion.div
                   key={item.id}
-
+                  initial={{ opacity: 0, x: isRTL ? 20 : -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: index * 0.1 }}
                   className="space-y-2"
                 >
                   <div
@@ -608,20 +615,20 @@ function MobileNav({ isOpen, setIsOpen, navItems, handleNavClick, handleSubNavCl
                   >
                     <span className={isRTL ? 'font-arabic' : ''}>{item.label}</span>
                     {item.subNavItems.length > 0 && (
-                      <FadeIn 
+                      <motion.div 
                         animate={{ rotate: openSubNav === item.id ? 180 : 0 }} 
                         transition={{ duration: 0.2 }}
                         className={isRTL ? 'ml-2' : 'mr-2'}
                       >
                         <ChevronDown className="h-5 w-5" />
-                      </FadeIn>
+                      </motion.div>
                     )}
                   </div>
 
                   {/* Mobile Submenu */}
                   <AnimatePresence>
                     {item.subNavItems.length > 0 && openSubNav === item.id && (
-                      <FadeIn
+                      <motion.div
                         initial={{ opacity: 0, height: 0 }}
                         animate={{ opacity: 1, height: "auto" }}
                         exit={{ opacity: 0, height: 0 }}
@@ -633,7 +640,7 @@ function MobileNav({ isOpen, setIsOpen, navItems, handleNavClick, handleSubNavCl
                         }`}
                       >
                         {item.subNavItems.map((subItem, subIndex) => (
-                          <FadeIn
+                          <motion.div
                             key={subItem.id}
                             initial={{ opacity: 0, x: isRTL ? 10 : -10 }}
                             animate={{ opacity: 1, x: 0 }}
@@ -666,16 +673,16 @@ function MobileNav({ isOpen, setIsOpen, navItems, handleNavClick, handleSubNavCl
                                 </div>
                               </Link>
                             )}
-                          </FadeIn>
+                          </motion.div>
                         ))}
-                      </FadeIn>
+                      </motion.div>
                     )}
                   </AnimatePresence>
-                </FadeIn>
+                </motion.div>
               ))}
 
               {/* Mobile Controls */}
-              <FadeIn
+              <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: navItems.length * 0.1 + 0.2 }}
@@ -685,10 +692,10 @@ function MobileNav({ isOpen, setIsOpen, navItems, handleNavClick, handleSubNavCl
               >
                 <ThemeToggle />
                 <LanguageToggle />
-              </FadeIn>
+              </motion.div>
             </nav>
           </div>
-        </FadeIn>
+        </motion.div>
       )}
     </AnimatePresence>
   )

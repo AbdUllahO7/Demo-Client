@@ -5,12 +5,11 @@ import { useRef } from "react"
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { ArrowRight, ShoppingCart, Car, Code, Loader2 } from "lucide-react"
-import { useInView } from "framer-motion"
-import { motion } from "framer-motion"
 import { ButtonSectionLink } from "@/components/SectionLinks"
 import { useSectionLogic } from "@/hooks/useSectionLogic"
 import { useSectionContent } from "@/hooks/useSectionContent"
 import { FadeIn } from "@/utils/lightweightAnimations"
+import { useOptimizedIntersection } from "@/hooks/useIntersectionObserver"
 
 // Define interfaces for type safety
 interface ServiceItem {
@@ -58,9 +57,11 @@ const DynamicIcon: React.FC<DynamicIconProps> = ({ name, className = "" }) => {
 };
 
 export default function ServicesSection({ sectionId, websiteId }: ServicesSectionProps) {
-  const ref = useRef<HTMLDivElement>(null);
-  const isInView = useInView(ref, { once: false, amount: 0.1 });
-
+const { ref, isInView } = useOptimizedIntersection({
+  threshold: 0.2,
+  triggerOnce: true,
+  rootMargin: '100px'
+})
   const { content, isLoading: sectionLoading, error: sectionError, refetch, direction } = useSectionLogic({
     sectionId,
     websiteId,
@@ -104,30 +105,24 @@ export default function ServicesSection({ sectionId, websiteId }: ServicesSectio
       
       <div className="container px-4 md:px-6 relative">
         <div ref={ref} className="mb-16 text-center">
-          <motion.span
-            initial={{ opacity: 0, y: 20 }}
-            animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-            transition={{ duration: 0.5 }}
+          <span
+         
             className="inline-block mb-2 text-body text-primary tracking-wider uppercase"
           >
             {content.sectionLabel || "Services"}
-          </motion.span>
-          <motion.h2
-            initial={{ opacity: 0, y: 20 }}
-            animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-            transition={{ duration: 0.5, delay: 0.1 }}
+          </span>
+          <h2
+           
             className="text-3xl md:text-4xl lg:text-5xl font-heading font-bold tracking-tight mb-4 text-wtheme-text"
           >
             {content.sectionTitle || "Our Services"}
-          </motion.h2>
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-            transition={{ duration: 0.5, delay: 0.2 }}
+          </h2>
+          <p
+          
             className="max-w-2xl mx-auto text-wtheme-text/70 text-lg font-body"
           >
             {content.sectionDescription || "Discover our comprehensive range of services"}
-          </motion.p>
+          </p>
         </div>
 
         {isLoading ? (
@@ -162,7 +157,6 @@ export default function ServicesSection({ sectionId, websiteId }: ServicesSectio
 
 function ServiceCard({ service, index, direction, serviceDetails }: ServiceCardProps) {
   const ref = useRef<HTMLDivElement>(null);
-  const isInView = useInView(ref, { once: false, amount: 0.2 });
   const isEven = index % 2 === 0;
   const isRTL = direction === "rtl";
   
@@ -209,8 +203,8 @@ function ServiceCard({ service, index, direction, serviceDetails }: ServiceCardP
             <Image
               src={service.image || "/placeholder.svg"}
               alt={service.title || "Service image"}
-              fill
               priority={true}
+              fill
               className="object-cover transition-transform duration-500 hover:scale-105"
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
             />
