@@ -10,6 +10,20 @@ import HeroSlide from "./HeroSlide"
 import DotsNavigation from "./DotsNavigation"
 import { useSectionContent } from "@/hooks/useSectionContent"
 
+interface Slide {
+  id: string
+  image: string
+  title: string
+  excerpt: string
+  exploreButton: string
+  requestButton: string
+  exploreButtonType: string
+  requestButtonType: string
+  exploreButtonUrl: string
+  requestButtonUrl: string
+  color: string
+  order: number
+}
 
 interface HeroSectionProps {
   sectionId: string
@@ -125,7 +139,7 @@ export default function HeroSection({ sectionId, websiteId }: HeroSectionProps) 
 
   return (
     <motion.section
-      initial={{ opacity: 1 }}
+      initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
       className="relative w-full bg-wtheme-background overflow-hidden"
