@@ -2,14 +2,13 @@
 
 import type React from "react"
 import Image from "next/image"
-import { motion } from "framer-motion"
 import { useScrollAnimation } from "@/hooks/use-scroll-animation"
 import { useLanguage } from "@/contexts/language-context"
 import { useState, useRef, useEffect } from "react"
 import { useSectionLogic } from "@/hooks/useSectionLogic"
 import { useSectionContent } from "@/hooks/useSectionContent"
 import { OptimizedFadeIn } from "@/utils/OptimizedAnimations"
-import { useOptimizedIntersection } from "@/hooks/useIntersectionObserver"
+import { FadeIn } from "@/utils/lightweightAnimations"
 
 export default function PartnersSection({ websiteId, sectionId }) {
   const { ref, isInView } = useScrollAnimation()
@@ -18,10 +17,6 @@ export default function PartnersSection({ websiteId, sectionId }) {
 
   const {
     content,
-    isLoading: sectionLoading,
-    error: sectionError,
-    refetch,
-    formatDate,
   } = useSectionLogic({
     sectionId,
     websiteId,
@@ -41,8 +36,6 @@ export default function PartnersSection({ websiteId, sectionId }) {
 
   const {
     contentItems,
-    isLoading: itemsLoading,
-    error: itemsError,
   } = useSectionContent({
     sectionId,
     websiteId,
@@ -51,7 +44,6 @@ export default function PartnersSection({ websiteId, sectionId }) {
     filter: featureFilter,
   })
 
-console.log(content)
   const isRTL = direction === "rtl"
 
   return (
@@ -71,15 +63,8 @@ console.log(content)
               left: `${20 + i * 15}%`,
               top: `${10 + (i % 3) * 30}%`,
             }}
-            animate={{
-              y: [-10, 10, -10],
-              opacity: [0.2, 0.6, 0.2],
-            }}
-            transition={{
-              duration: 3 + i,
-              repeat: Infinity,
-              ease: "easeInOut",
-            }}
+      
+         
           />
         ))}
       </div>
@@ -87,56 +72,39 @@ console.log(content)
       <div className="relative container px-4 md:px-6" ref={containerRef}>
         <OptimizedFadeIn
           ref={ref}
-          initial="hidden"
-          animate={isInView ? "visible" : "hidden"}
-          variants={{
-            hidden: { opacity: 0, y: 30 },
-            visible: {
-              opacity: 1,
-              y: 0,
-              transition: { 
-                duration: 0.8,
-                ease: "easeOut"
-              },
-            },
-          }}
+      
           className="flex flex-col items-center justify-center space-y-6 text-center mb-16"
         >
           {/* Enhanced Label */}
           <OptimizedFadeIn
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={isInView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.8 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
+        
             className="relative"
           >
             <div className="absolute inset-0 bg-primary/10 rounded-full blur-xl"></div>
-            <span className="relative inline-flex items-center px-6 py-2 text-sm font-semibold text-primary bg-primary/5 border border-primary/20 rounded-full backdrop-blur-sm">
-              <span className="w-2 h-2 bg-primary rounded-full mr-2 animate-pulse"></span>
+              <span
+          
+              className="inline-block mb-2 text-body  text-primary tracking-wider  uppercase"
+            >
               {content.sectionLabel}
-            </span>
+          </span>
+            
           </OptimizedFadeIn>
 
           {/* Enhanced Title */}
           <div className="space-y-4">
             <h2
-              transition={{ duration: 0.8, delay: 0.4 }}
               className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-wtheme-text relative"
             >
               <span className="relative inline-block">
                 {content.sectionTitle}
                 <OptimizedFadeIn
                   className="absolute -bottom-2 left-0 h-1 bg-gradient-to-r from-primary to-primary/60 rounded-full"
-                  initial={{ width: 0 }}
-                  animate={isInView ? { width: "100%" } : { width: 0 }}
-                  transition={{ duration: 1, delay: 0.8 }}
                 />
               </span>
             </h2>
 
             <p
-              initial={{ opacity: 0, y: 20 }}
-              animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-              transition={{ duration: 0.8, delay: 0.6 }}
+          
               className="max-w-3xl text-lg text-wtheme-text/70 leading-relaxed"
             >
               {content.sectionDescription}
@@ -158,29 +126,22 @@ console.log(content)
         </div>
 
         {/* Trust Indicator */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-          transition={{ duration: 0.8, delay: 1 }}
+        <FadeIn
+         
           className="text-center mt-12"
         >
           <div className="inline-flex items-center space-x-2 text-wtheme-text/60">
             <div className="flex space-x-1">
               {[...Array(5)].map((_, i) => (
-                <motion.div
+                <FadeIn
                   key={i}
                   className="w-1 h-1 bg-primary/60 rounded-full"
-                  animate={{ opacity: [0.3, 1, 0.3] }}
-                  transition={{
-                    duration: 2,
-                    delay: i * 0.2,
-                    repeat: Infinity,
-                  }}
+                
                 />
               ))}
             </div>
           </div>
-        </motion.div>
+        </FadeIn>
       </div>
     </section>
   )
@@ -359,15 +320,10 @@ function PartnersCarousel({ partners, isInView, isRTL, containerRef }: PartnersC
         }
       `}</style>
 
-      <motion.div
-        initial={{ opacity: 0, scale: 0.95 }}
-        animate={isInView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.95 }}
-        transition={{ duration: 0.8, delay: 0.6 }}
+      <FadeIn
+    
         className="marquee-container relative w-full"
-        onMouseEnter={() => setIsPaused(true)}
-        onMouseLeave={() => setIsPaused(false)}
-        onTouchStart={() => setIsPaused(true)}
-        onTouchEnd={() => setIsPaused(false)}
+     
       >
         {/* Background Pattern */}
         <div className="absolute inset-0 opacity-30">
@@ -387,7 +343,7 @@ function PartnersCarousel({ partners, isInView, isRTL, containerRef }: PartnersC
             </div>
           ))}
         </div>
-      </motion.div>
+      </FadeIn>
     </>
   )
 }
@@ -421,26 +377,9 @@ function PartnerLogo({ partner, index, heightClass, screenSize, isRTL }: Partner
   const imageConfig = getImageSize()
 
   return (
-    <motion.div
-      variants={{
-        hidden: { opacity: 0, y: 30, scale: 0.8 },
-        visible: { 
-          opacity: 1, 
-          y: 0, 
-          scale: 1,
-          transition: { 
-            duration: 0.5,
-            delay: (index % 10) * 0.1 
-          }
-        },
-      }}
-      whileHover={{
-        y: -8,
-        scale: 1.08,
-        rotateY: 5,
-        boxShadow: "0 20px 40px -15px rgba(var(--primary), 0.3)",
-        borderColor: "rgba(var(--primary), 0.4)",
-      }}
+    <div
+  
+   
       className={`
         partner-logo flex items-center justify-center 
         rounded-2xl border border-white/10 
@@ -477,6 +416,6 @@ function PartnerLogo({ partner, index, heightClass, screenSize, isRTL }: Partner
 
       {/* Hover Glow Effect */}
       <div className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-gradient-to-r from-primary/10 via-transparent to-primary/10"></div>
-    </motion.div>
+    </div>
   )
 }

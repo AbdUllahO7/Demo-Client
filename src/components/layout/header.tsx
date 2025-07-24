@@ -5,7 +5,7 @@ import Link from "next/link"
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { Menu, X, ChevronDown } from "lucide-react"
-import { useState, useEffect, useRef } from "react"
+import { useState, useEffect, useRef, useMemo, useCallback, memo } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { LanguageToggle } from "@/components/language-toggle"
 import { useLanguage } from "@/contexts/language-context"
@@ -42,6 +42,226 @@ interface HeaderProps {
   sectionsData?: any[]
 }
 
+// Optimized helper functions - moved outside component to prevent recreation
+const getTranslatedContent = (element: any, language: string) => {
+  if (!element) return ""
+  
+  const translation = element.translations?.find((t: any) => t.language.languageID === language)
+  const content = translation?.content || element.defaultContent || ""
+  
+  if (typeof content === "object" && content !== null) {
+    return content[language] || content["en"] || Object.values(content)[0] || ""
+  }
+  
+  return content || ""
+}
+
+const getMultilingualSectionName = (section: any, language: string) => {
+  if (!section?.name) return ""
+  
+  if (typeof section.name === "object" && section.name !== null) {
+    return section.name[language] || section.name["en"] || Object.values(section.name)[0] || ""
+  }
+  return section.name || ""
+}
+
+const isNavigationVisible = (navigationData: any) => {
+  if (!navigationData) return true
+
+  const allElements = [...(navigationData.elements || []), ...(navigationData.contentElements || [])]
+  const visibilityElement = allElements.find(
+    (el: any) => el.name === "Navigation Visibility" && el.type === "boolean"
+  )
+
+  return visibilityElement ? visibilityElement.defaultContent === "true" || visibilityElement.defaultContent === true : true
+}
+
+const hasAddSubNavigation = (section: any) => {
+  const allElements = [...(section.elements || []), ...(section.contentElements || [])]
+  const addSubNavElement = allElements.find(
+    (el: any) => el.name === "Add SubNavigation" && el.type === "boolean"
+  )
+  return addSubNavElement?.defaultContent === "true" || addSubNavElement?.defaultContent === true
+}
+
+const getSectionTitle = (section: any, language: string) => {
+  const allElements = [...(section.elements || []), ...(section.contentElements || [])]
+  const titleElement = allElements.find((el: any) => el.name === "Title" && el.type === "text")
+  const title = titleElement ? getTranslatedContent(titleElement, language) : ""
+  
+  if (typeof title === "object" && title !== null) {
+    return title[language] || title["en"] || Object.values(title)[0] || ""
+  }
+  
+  return title || ""
+}
+
+const getDynamicUrl = (section: any) => {
+  const allElements = [...(section.elements || []), ...(section.contentElements || [])]
+  const dynamicUrlElement = allElements.find((el: any) => el.name === "Dynamic URL" && el.type === "text")
+  return dynamicUrlElement?.defaultContent || null
+}
+
+const generateFallbackSectionUrl = (section: any, language: string) => {
+  const sectionName = getMultilingualSectionName(section, language)
+  return section.slug ? `#${section.slug}` : `#${sectionName.toLowerCase().replace(/\s+/g, "-")}`
+}
+
+const isInternalLink = (href: string) => href.startsWith("#") || href === "#"
+
+const extractSectionId = (href: string) => {
+  if (href.startsWith("#")) {
+    return href.substring(1)
+  }
+  return null
+}
+
+// Memoized MobileNav component
+const MobileNav = memo(function MobileNav({ 
+  isOpen, 
+  setIsOpen, 
+  navItems, 
+  handleNavClick, 
+  handleSubNavClick, 
+  direction, 
+  isRTL 
+}: {
+  isOpen: boolean
+  setIsOpen: (isOpen: boolean) => void
+  navItems: NavItem[]
+  handleNavClick: (e: React.MouseEvent<HTMLAnchorElement>, href: string, isDynamicUrl?: boolean, navItem?: NavItem) => void
+  handleSubNavClick: (subItem: SubNavItem) => void
+  direction: string
+  isRTL: boolean
+}) {
+  const [openSubNav, setOpenSubNav] = useState<string | null>(null)
+
+  // Reset submenu when mobile nav closes
+  useEffect(() => {
+    if (!isOpen) {
+      setOpenSubNav(null)
+    }
+  }, [isOpen])
+
+  if (!isOpen) return null
+
+  return (
+    <motion.div
+      className="lg:hidden fixed inset-x-0 top-16 bottom-0 z-40 bg-primary overflow-y-auto"
+      initial={{ opacity: 0, height: 0 }}
+      animate={{ opacity: 1, height: "auto" }}
+      exit={{ opacity: 0, height: 0 }}
+      transition={{ duration: 0.3, ease: "easeInOut" }}
+      dir={direction}
+    >
+      <div className="container mx-auto px-4 py-6">
+        <nav className="space-y-4">
+          {navItems.map((item, index) => (
+            <motion.div
+              key={item.id}
+              initial={{ opacity: 0, x: isRTL ? 20 : -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: index * 0.1 }}
+              className="space-y-2"
+            >
+              <div
+                className={`flex items-center justify-between py-3 text-lg font-medium text-white hover:text-accent transition-colors duration-200 cursor-pointer ${
+                  isRTL ? 'flex-row-reverse text-right' : 'text-left'
+                }`}
+                onClick={(e) => {
+                  if (item.subNavItems.length > 0) {
+                    setOpenSubNav(openSubNav === item.id ? null : item.id)
+                  } else {
+                    handleNavClick(e as any, item.href, false, item)
+                  }
+                }}
+              >
+                <span className={isRTL ? 'font-arabic' : ''}>{item.label}</span>
+                {item.subNavItems.length > 0 && (
+                  <motion.div 
+                    animate={{ rotate: openSubNav === item.id ? 180 : 0 }} 
+                    transition={{ duration: 0.2 }}
+                    className={isRTL ? 'ml-2' : 'mr-2'}
+                  >
+                    <ChevronDown className="h-5 w-5" />
+                  </motion.div>
+                )}
+              </div>
+
+              {/* Mobile Submenu */}
+              <AnimatePresence>
+                {item.subNavItems.length > 0 && openSubNav === item.id && (
+                  <motion.div
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: "auto" }}
+                    exit={{ opacity: 0, height: 0 }}
+                    transition={{ duration: 0.2 }}
+                    className={`space-y-2 ${
+                      isRTL 
+                        ? 'mr-4 border-r-2 border-accent/30 pr-4' 
+                        : 'ml-4 border-l-2 border-accent/30 pl-4'
+                    }`}
+                  >
+                    {item.subNavItems.map((subItem, subIndex) => (
+                      <motion.div
+                        key={subItem.id}
+                        initial={{ opacity: 0, x: isRTL ? 10 : -10 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: subIndex * 0.05 }}
+                      >
+                        {subItem.isInternal ? (
+                          <button
+                            onClick={() => handleSubNavClick(subItem)}
+                            className={`w-full flex items-center justify-between py-2 text-white/80 hover:text-accent transition-colors duration-200 ${
+                              isRTL ? 'flex-row-reverse text-right' : 'text-left'
+                            }`}
+                          >
+                            <span className={`text-base ${isRTL ? 'font-arabic' : ''}`}>{subItem.label}</span>
+                            <div className={`flex items-center gap-2 ${isRTL ? 'flex-row-reverse' : ''}`}>
+                              {subItem.source === "section" && <div className="w-2 h-2 rounded-full bg-accent" />}
+                            </div>
+                          </button>
+                        ) : (
+                          <Link
+                            href={subItem.href}
+                            target={subItem.isDynamicUrl ? "_self" : "_self"}
+                            className={`flex items-center justify-between py-2 text-white/80 hover:text-accent transition-colors duration-200 ${
+                              isRTL ? 'flex-row-reverse text-right' : 'text-left'
+                            }`}
+                            onClick={() => setIsOpen(false)}
+                          >
+                            <span className={`text-base ${isRTL ? 'font-arabic' : ''}`}>{subItem.label}</span>
+                            <div className={`flex items-center gap-2 ${isRTL ? 'flex-row-reverse' : ''}`}>
+                              {subItem.source === "section" && <div className="w-2 h-2 rounded-full bg-accent" />}
+                            </div>
+                          </Link>
+                        )}
+                      </motion.div>
+                    ))}
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </motion.div>
+          ))}
+
+          {/* Mobile Controls */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: navItems.length * 0.1 + 0.2 }}
+            className={`flex items-center gap-4 pt-6 border-t border-white/20 ${
+              isRTL ? 'flex-row-reverse justify-end' : 'justify-start'
+            }`}
+          >
+            <ThemeToggle />
+            <LanguageToggle />
+          </motion.div>
+        </nav>
+      </div>
+    </motion.div>
+  )
+})
+
 export default function Header({
   sectionId,
   websiteId,
@@ -54,104 +274,26 @@ export default function Header({
   const router = useRouter()
   const pathname = usePathname()
 
-  // Check if current language is RTL
-  const isRTL = direction === 'rtl' || language === 'ar'
+  // Memoize computed values
+  const isRTL = useMemo(() => direction === 'rtl' || language === 'ar', [direction, language])
+  const actualWebsiteId = useMemo(() => 
+    websiteId || (typeof window !== "undefined" ? localStorage.getItem("websiteId") : null), 
+    [websiteId]
+  )
 
-  // Get websiteId from props or localStorage
-  const actualWebsiteId = websiteId || (typeof window !== "undefined" ? localStorage.getItem("websiteId") : null)
-
+  // State
   const [isOpen, setIsOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
   const [hoveredNavId, setHoveredNavId] = useState<string | null>(null)
   const timeoutRef = useRef<NodeJS.Timeout | null>(null)
 
+  // API calls
   const { useGetNavigationByWebSiteId, useGetCompleteByWebSiteId } = useSubSections()
   const { data: sections } = useGetNavigationByWebSiteId(actualWebsiteId)
   const { data: allSections } = useGetCompleteByWebSiteId(actualWebsiteId)
 
-  // Helper function to get translated content
-  const getTranslatedContent = (element: any, language: string) => {
-    const translation = element?.translations?.find((t: any) => t.language.languageID === language)
-    const content = translation?.content || element?.defaultContent || ""
-    
-    if (typeof content === "object" && content !== null) {
-      return content[language] || content["en"] || Object.values(content)[0] || ""
-    }
-    
-    return content || ""
-  }
-
-  // Helper function to get multilingual section name
-  const getMultilingualSectionName = (section: any, language: string) => {
-    if (typeof section?.name === "object" && section?.name !== null) {
-      return section?.name[language] || section?.name["en"] || Object.values(section?.name)[0] || ""
-    }
-    return section?.name || ""
-  }
-
-  // Helper function to check if navigation is visible
-  const isNavigationVisible = (navigationData: any) => {
-    if (!navigationData) return true
-
-    const allElements = [...(navigationData.elements || []), ...(navigationData.contentElements || [])]
-    
-    const visibilityElement = allElements.find(
-      (el: any) => el.name === "Navigation Visibility" && el.type === "boolean"
-    )
-
-    return visibilityElement ? visibilityElement.defaultContent === "true" || visibilityElement.defaultContent === true : true
-  }
-
-  // Helper function to check if a section has addSubNavigation enabled
-  const hasAddSubNavigation = (section: any) => {
-    const allElements = [...(section.elements || []), ...(section.contentElements || [])]
-    const addSubNavElement = allElements.find(
-      (el: any) => el.name === "Add SubNavigation" && el.type === "boolean"
-    )
-    return addSubNavElement?.defaultContent === "true" || addSubNavElement?.defaultContent === true
-  }
-
-  // Helper function to get section title
-  const getSectionTitle = (section: any, language: string) => {
-    const allElements = [...(section.elements || []), ...(section.contentElements || [])]
-    const titleElement = allElements.find((el: any) => el.name === "Title" && el.type === "text")
-    const title = titleElement ? getTranslatedContent(titleElement, language) : ""
-    
-    if (typeof title === "object" && title !== null) {
-      return title[language] || title["en"] || Object.values(title)[0] || ""
-    }
-    
-    return title || ""
-  }
-
-  // Helper function to get dynamic URL from section
-  const getDynamicUrl = (section: any) => {
-    const allElements = [...(section.elements || []), ...(section.contentElements || [])]
-    const dynamicUrlElement = allElements.find((el: any) => el.name === "Dynamic URL" && el.type === "text")
-    return dynamicUrlElement?.defaultContent || null
-  }
-
-  // Helper function to generate fallback URL from section
-  const generateFallbackSectionUrl = (section: any) => {
-    const sectionName = getMultilingualSectionName(section, language)
-    return section.slug ? `#${section.slug}` : `#${sectionName.toLowerCase().replace(/\s+/g, "-")}`
-  }
-
-  // Helper function to determine if a link is internal
-  const isInternalLink = (href: string) => {
-    return href.startsWith("#") || href === "#"
-  }
-
-  // Helper function to extract sectionId from href
-  const extractSectionId = (href: string) => {
-    if (href.startsWith("#")) {
-      return href.substring(1)
-    }
-    return null
-  }
-
-  // Function to find sections with addSubNavigation enabled
-  const getAdditionalSubNavItems = (parentSectionName: string, language: string): SubNavItem[] => {
+  // Memoized helper function for additional sub nav items
+  const getAdditionalSubNavItems = useCallback((parentSectionName: string, language: string): SubNavItem[] => {
     if (!allSections?.data) return []
 
     const filteredSections = allSections.data.filter((section: any) => {
@@ -165,7 +307,7 @@ export default function Header({
     return filteredSections
       .map((section: any) => {
         const dynamicUrl = getDynamicUrl(section)
-        const fallbackUrl = generateFallbackSectionUrl(section)
+        const fallbackUrl = generateFallbackSectionUrl(section, language)
         const finalUrl = dynamicUrl || fallbackUrl
         const title = getSectionTitle(section, language)
         const isInternal = isInternalLink(finalUrl)
@@ -181,152 +323,91 @@ export default function Header({
         }
       })
       .filter((item: SubNavItem) => item.label)
-  }
+  }, [allSections?.data])
 
-  // Process navigation items with visibility check
-  const navItems: NavItem[] = sectionsData
-    ?.filter((section: any) => {
-      if (section.subName === "Header" || section.subName === "Footer") {
-        return false
-      }
+  // Memoized navigation items processing
+  const navItems: NavItem[] = useMemo(() => {
+    if (!sectionsData) return []
 
-      const navigationData = sections?.data?.find(
-        (navSection: any) => navSection.section?.name === section.name || navSection.section?.subName === section.subName
-      )
-
-      return navigationData ? isNavigationVisible(navigationData) : true
-    })
-    ?.map((section: any) => {
-      const navigationData = sections?.data?.find(
-        (navSection: any) => navSection.section?.name === section.name || navSection.section?.subName === section.subName
-      )
-
-      let navLabel = getMultilingualSectionName(section, language)
-      let navHref = `#${section.subName || navLabel.toLowerCase().replace(/\s+/g, "-")}`
-
-      if (navigationData) {
-        const nameElement = navigationData.elements?.find((el: any) => el.name === "name")
-        const urlElement = navigationData.elements?.find((el: any) => el.name === "url")
-        
-        if (nameElement) {
-          const customLabel = getTranslatedContent(nameElement, language)
-          if (customLabel) navLabel = customLabel
+    return sectionsData
+      .filter((section: any) => {
+        if (section.subName === "Header" || section.subName === "Footer") {
+          return false
         }
-        
-        if (urlElement) {
-          const customUrl = getTranslatedContent(urlElement, language)
-          if (customUrl && customUrl !== "#") navHref = customUrl
-        }
-      }
 
-      const existingSubNavItems = navigationData?.elements
-        ?.filter((el: any) => el.metadata?.isSubNavigation && el.metadata?.fieldType === "title")
-        ?.map((titleEl: any) => {
-          const urlEl = navigationData.elements.find(
-            (el: any) =>
-              el.metadata?.isSubNavigation &&
-              el.metadata?.subNavId === titleEl.metadata?.subNavId &&
-              el.metadata?.fieldType === "url"
-          )
+        const navigationData = sections?.data?.find(
+          (navSection: any) => navSection.section?.name === section.name || navSection.section?.subName === section.subName
+        )
+
+        return navigationData ? isNavigationVisible(navigationData) : true
+      })
+      .map((section: any) => {
+        const navigationData = sections?.data?.find(
+          (navSection: any) => navSection.section?.name === section.name || navSection.section?.subName === section.subName
+        )
+
+        let navLabel = getMultilingualSectionName(section, language)
+        let navHref = `#${section.subName || navLabel.toLowerCase().replace(/\s+/g, "-")}`
+
+        if (navigationData) {
+          const nameElement = navigationData.elements?.find((el: any) => el.name === "name")
+          const urlElement = navigationData.elements?.find((el: any) => el.name === "url")
           
-          const subNavLabel = getTranslatedContent(titleEl, language)
-          const subNavHref = getTranslatedContent(urlEl, language) || "#"
-          const isInternal = isInternalLink(subNavHref)
-          
-          return {
-            id: titleEl._id,
-            label: subNavLabel,
-            href: subNavHref,
-            source: "navigation" as const,
-            isDynamicUrl: false,
-            isInternal: isInternal,
-            sectionId: isInternal ? extractSectionId(subNavHref) : undefined,
+          if (nameElement) {
+            const customLabel = getTranslatedContent(nameElement, language)
+            if (customLabel) navLabel = customLabel
           }
-        })
-        ?.filter((item: any) => item.label) || []
+          
+          if (urlElement) {
+            const customUrl = getTranslatedContent(urlElement, language)
+            if (customUrl && customUrl !== "#") navHref = customUrl
+          }
+        }
 
-      const additionalSubNavItems = getAdditionalSubNavItems(getMultilingualSectionName(section, language), language)
-      const allSubNavItems = [...existingSubNavItems, ...additionalSubNavItems]
+        const existingSubNavItems = navigationData?.elements
+          ?.filter((el: any) => el.metadata?.isSubNavigation && el.metadata?.fieldType === "title")
+          ?.map((titleEl: any) => {
+            const urlEl = navigationData.elements.find(
+              (el: any) =>
+                el.metadata?.isSubNavigation &&
+                el.metadata?.subNavId === titleEl.metadata?.subNavId &&
+                el.metadata?.fieldType === "url"
+            )
+            
+            const subNavLabel = getTranslatedContent(titleEl, language)
+            const subNavHref = getTranslatedContent(urlEl, language) || "#"
+            const isInternal = isInternalLink(subNavHref)
+            
+            return {
+              id: titleEl._id,
+              label: subNavLabel,
+              href: subNavHref,
+              source: "navigation" as const,
+              isDynamicUrl: false,
+              isInternal: isInternal,
+              sectionId: isInternal ? extractSectionId(subNavHref) : undefined,
+            }
+          })
+          ?.filter((item: any) => item.label) || []
 
-      return {
-        id: section._id,
-        href: navHref,
-        label: navLabel,
-        order: section.order || 0,
-        subNavItems: allSubNavItems,
-        sectionName: getMultilingualSectionName(section, language),
-      }
-    })
-    ?.filter((item: NavItem | null) => item !== null && item.label)
-    ?.sort((a, b) => a.order - b.order) || []
+        const additionalSubNavItems = getAdditionalSubNavItems(getMultilingualSectionName(section, language), language)
+        const allSubNavItems = [...existingSubNavItems, ...additionalSubNavItems]
 
+        return {
+          id: section._id,
+          href: navHref,
+          label: navLabel,
+          order: section.order || 0,
+          subNavItems: allSubNavItems,
+          sectionName: getMultilingualSectionName(section, language),
+        }
+      })
+      .filter((item: NavItem | null) => item !== null && item.label)
+      .sort((a, b) => a.order - b.order)
+  }, [sectionsData, sections?.data, language, getAdditionalSubNavItems])
 
-    console.log("navItems",navItems)
-  // Hover handlers
-  const handleMouseEnter = (navId: string) => {
-    if (timeoutRef.current) clearTimeout(timeoutRef.current)
-    setHoveredNavId(navId)
-  }
-
-  const handleMouseLeave = () => {
-    timeoutRef.current = setTimeout(() => {
-      setHoveredNavId(null)
-    }, 150)
-  }
-
-  const handleDropdownMouseEnter = () => {
-    if (timeoutRef.current) clearTimeout(timeoutRef.current)
-  }
-
-  const handleDropdownMouseLeave = () => {
-    timeoutRef.current = setTimeout(() => {
-      setHoveredNavId(null)
-    }, 150)
-  }
-
-  // Scroll effect
-  useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 10)
-    }
-    window.addEventListener("scroll", handleScroll)
-    return () => window.removeEventListener("scroll", handleScroll)
-  }, [])
-
-  // Mobile menu body scroll lock
-  useEffect(() => {
-    if (isOpen) {
-      document.body.style.overflow = "hidden"
-    } else {
-      document.body.style.overflow = "unset"
-    }
-    return () => {
-      document.body.style.overflow = "unset"
-    }
-  }, [isOpen])
-
-  // Handle initial scroll to section
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      const hash = window.location.hash || (subName ? `#${subName}` : "")
-      if (hash) {
-        const sectionId = hash.substring(1)
-        setTimeout(() => {
-          scrollToSection(sectionId)
-        }, 500)
-      }
-    }
-  }, [pathname, scrollToSection, subName])
-
-  // Cleanup timeout
-  useEffect(() => {
-    return () => {
-      if (timeoutRef.current) clearTimeout(timeoutRef.current)
-    }
-  }, [])
-
-  // Find section ID by section name
-  const findSectionIdBySectionName = (sectionName: string): string | null => {
+  // Memoized helper function for finding section ID
+  const findSectionIdBySectionName = useCallback((sectionName: string): string | null => {
     if (sectionsData && sectionsData.length > 0) {
       const matchingSection = sectionsData.find(
         (section: any) => {
@@ -348,9 +429,32 @@ export default function Header({
     }
 
     return null
-  }
+  }, [sectionsData, sections?.data, language])
 
-  const handleNavClick = (
+  // Optimized hover handlers with useCallback
+  const handleMouseEnter = useCallback((navId: string) => {
+    if (timeoutRef.current) clearTimeout(timeoutRef.current)
+    setHoveredNavId(navId)
+  }, [])
+
+  const handleMouseLeave = useCallback(() => {
+    timeoutRef.current = setTimeout(() => {
+      setHoveredNavId(null)
+    }, 150)
+  }, [])
+
+  const handleDropdownMouseEnter = useCallback(() => {
+    if (timeoutRef.current) clearTimeout(timeoutRef.current)
+  }, [])
+
+  const handleDropdownMouseLeave = useCallback(() => {
+    timeoutRef.current = setTimeout(() => {
+      setHoveredNavId(null)
+    }, 150)
+  }, [])
+
+  // Optimized navigation handlers
+  const handleNavClick = useCallback((
     e: React.MouseEvent<HTMLAnchorElement>,
     href: string,
     isDynamicUrl?: boolean,
@@ -389,17 +493,70 @@ export default function Header({
     }
     
     setIsOpen(false)
-  }
+  }, [findSectionIdBySectionName, pathname, router, scrollToSection])
 
-  // Enhanced subnav link handler like footer
-  const handleSubNavClick = (subItem: SubNavItem) => {
+  const handleSubNavClick = useCallback((subItem: SubNavItem) => {
     if (subItem.isInternal && subItem.sectionId) {
-      // Use scrollToSection for internal links
       scrollToSection(subItem.sectionId)
       setIsOpen(false)
     }
-    // For external links, let the Link component handle it normally
-  }
+  }, [scrollToSection])
+
+  // Optimized scroll handler with throttling
+  useEffect(() => {
+    let ticking = false
+    const handleScroll = () => {
+      if (!ticking) {
+        requestAnimationFrame(() => {
+          setScrolled(window.scrollY > 10)
+          ticking = false
+        })
+        ticking = true
+      }
+    }
+    
+    window.addEventListener("scroll", handleScroll, { passive: true })
+    return () => window.removeEventListener("scroll", handleScroll)
+  }, [])
+
+  // Combined effect for body scroll lock and initial scroll
+  useEffect(() => {
+    // Body scroll lock
+    if (isOpen) {
+      document.body.style.overflow = "hidden"
+    } else {
+      document.body.style.overflow = "unset"
+    }
+
+    // Initial scroll to section
+    if (typeof window !== "undefined") {
+      const hash = window.location.hash || (subName ? `#${subName}` : "")
+      if (hash) {
+        const sectionId = hash.substring(1)
+        const timeoutId = setTimeout(() => {
+          scrollToSection(sectionId)
+        }, 500)
+        
+        return () => {
+          document.body.style.overflow = "unset"
+          clearTimeout(timeoutId)
+        }
+      }
+    }
+
+    return () => {
+      document.body.style.overflow = "unset"
+    }
+  }, [isOpen, pathname, scrollToSection, subName])
+
+  // Cleanup timeout
+  useEffect(() => {
+    return () => {
+      if (timeoutRef.current) clearTimeout(timeoutRef.current)
+    }
+  }, [])
+
+  console.log("navItems", navItems)
 
   return (
     <motion.header
@@ -430,6 +587,7 @@ export default function Header({
                 width={120}
                 height={40}
                 className={`h-8 w-auto transition-all duration-300 ${isOpen ? "brightness-0 invert" : ""}`}
+                priority
               />
             </Link>
           </motion.div>
@@ -549,154 +707,17 @@ export default function Header({
       </div>
 
       {/* Mobile Navigation */}
-      <MobileNav
-        isOpen={isOpen}
-        setIsOpen={setIsOpen}
-        navItems={navItems}
-        handleNavClick={handleNavClick}
-        handleSubNavClick={handleSubNavClick}
-        direction={direction}
-        isRTL={isRTL}
-      />
+      <AnimatePresence>
+        <MobileNav
+          isOpen={isOpen}
+          setIsOpen={setIsOpen}
+          navItems={navItems}
+          handleNavClick={handleNavClick}
+          handleSubNavClick={handleSubNavClick}
+          direction={direction}
+          isRTL={isRTL}
+        />
+      </AnimatePresence>
     </motion.header>
-  )
-}
-
-interface MobileNavProps {
-  isOpen: boolean
-  setIsOpen: (isOpen: boolean) => void
-  navItems: NavItem[]
-  handleNavClick: (
-    e: React.MouseEvent<HTMLAnchorElement>,
-    href: string,
-    isDynamicUrl?: boolean,
-    navItem?: NavItem
-  ) => void
-  handleSubNavClick: (subItem: SubNavItem) => void
-  direction: string
-  isRTL: boolean
-}
-
-function MobileNav({ isOpen, setIsOpen, navItems, handleNavClick, handleSubNavClick, direction, isRTL }: MobileNavProps) {
-  const [openSubNav, setOpenSubNav] = useState<string | null>(null)
-
-  return (
-    <AnimatePresence>
-      {isOpen && (
-        <motion.div
-          className="lg:hidden fixed inset-x-0 top-16 bottom-0 z-40 bg-primary overflow-y-auto"
-          initial={{ opacity: 0, height: 0 }}
-          animate={{ opacity: 1, height: "auto" }}
-          exit={{ opacity: 0, height: 0 }}
-          transition={{ duration: 0.3, ease: "easeInOut" }}
-          dir={direction}
-        >
-          <div className="container mx-auto px-4 py-6">
-            <nav className="space-y-4">
-              {navItems.map((item, index) => (
-                <motion.div
-                  key={item.id}
-                  initial={{ opacity: 0, x: isRTL ? 20 : -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: index * 0.1 }}
-                  className="space-y-2"
-                >
-                  <div
-                    className={`flex items-center justify-between py-3 text-lg font-medium text-white hover:text-accent transition-colors duration-200 cursor-pointer ${
-                      isRTL ? 'flex-row-reverse text-right' : 'text-left'
-                    }`}
-                    onClick={(e) => {
-                      if (item.subNavItems.length > 0) {
-                        setOpenSubNav(openSubNav === item.id ? null : item.id)
-                      } else {
-                        handleNavClick(e as any, item.href, false, item)
-                      }
-                    }}
-                  >
-                    <span className={isRTL ? 'font-arabic' : ''}>{item.label}</span>
-                    {item.subNavItems.length > 0 && (
-                      <motion.div 
-                        animate={{ rotate: openSubNav === item.id ? 180 : 0 }} 
-                        transition={{ duration: 0.2 }}
-                        className={isRTL ? 'ml-2' : 'mr-2'}
-                      >
-                        <ChevronDown className="h-5 w-5" />
-                      </motion.div>
-                    )}
-                  </div>
-
-                  {/* Mobile Submenu */}
-                  <AnimatePresence>
-                    {item.subNavItems.length > 0 && openSubNav === item.id && (
-                      <motion.div
-                        initial={{ opacity: 0, height: 0 }}
-                        animate={{ opacity: 1, height: "auto" }}
-                        exit={{ opacity: 0, height: 0 }}
-                        transition={{ duration: 0.2 }}
-                        className={`space-y-2 ${
-                          isRTL 
-                            ? 'mr-4 border-r-2 border-accent/30 pr-4' 
-                            : 'ml-4 border-l-2 border-accent/30 pl-4'
-                        }`}
-                      >
-                        {item.subNavItems.map((subItem, subIndex) => (
-                          <motion.div
-                            key={subItem.id}
-                            initial={{ opacity: 0, x: isRTL ? 10 : -10 }}
-                            animate={{ opacity: 1, x: 0 }}
-                            transition={{ delay: subIndex * 0.05 }}
-                          >
-                            {subItem.isInternal ? (
-                              <button
-                                onClick={() => handleSubNavClick(subItem)}
-                                className={`w-full flex items-center justify-between py-2 text-white/80 hover:text-accent transition-colors duration-200 ${
-                                  isRTL ? 'flex-row-reverse text-right' : 'text-left'
-                                }`}
-                              >
-                                <span className={`text-base ${isRTL ? 'font-arabic' : ''}`}>{subItem.label}</span>
-                                <div className={`flex items-center gap-2 ${isRTL ? 'flex-row-reverse' : ''}`}>
-                                  {subItem.source === "section" && <div className="w-2 h-2 rounded-full bg-accent" />}
-                                </div>
-                              </button>
-                            ) : (
-                              <Link
-                                href={subItem.href}
-                                target={subItem.isDynamicUrl ? "_self" : "_self"}
-                                className={`flex items-center justify-between py-2 text-white/80 hover:text-accent transition-colors duration-200 ${
-                                  isRTL ? 'flex-row-reverse text-right' : 'text-left'
-                                }`}
-                                onClick={() => setIsOpen(false)}
-                              >
-                                <span className={`text-base ${isRTL ? 'font-arabic' : ''}`}>{subItem.label}</span>
-                                <div className={`flex items-center gap-2 ${isRTL ? 'flex-row-reverse' : ''}`}>
-                                  {subItem.source === "section" && <div className="w-2 h-2 rounded-full bg-accent" />}
-                                </div>
-                              </Link>
-                            )}
-                          </motion.div>
-                        ))}
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                </motion.div>
-              ))}
-
-              {/* Mobile Controls */}
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: navItems.length * 0.1 + 0.2 }}
-                className={`flex items-center gap-4 pt-6 border-t border-white/20 ${
-                  isRTL ? 'flex-row-reverse justify-end' : 'justify-start'
-                }`}
-              >
-                <ThemeToggle />
-                <LanguageToggle />
-              </motion.div>
-            </nav>
-          </div>
-        </motion.div>
-      )}
-    </AnimatePresence>
   )
 }
