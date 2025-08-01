@@ -10,7 +10,7 @@ export function useWebSiteThemes() {
   const endpoint = '/themes';
 
   // Get user ID from auth context, fallback to hardcoded ID for compatibility
-  const userId =  '683b23edd6fa6b23f0af8099';
+  const userId =  '6844b3d1ffb148655206581c';
 
   // Query keys include user ID to prevent cross-user cache conflicts
   const themesKey = ['themes', userId];
