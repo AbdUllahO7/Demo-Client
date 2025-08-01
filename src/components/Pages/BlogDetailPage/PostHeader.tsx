@@ -3,7 +3,7 @@
   import { useLanguage } from "@/contexts/language-context"
   import { formatDate } from "@/lib/utils"
   import { GoBackButton } from "@/components/GoBackButton"
-import { FadeIn } from "@/utils/lightweightAnimations"
+import { FadeIn } from "@/utils/OptimizedAnimations"
 
   interface PostHeaderProps {
     blog: {

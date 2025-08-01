@@ -1,7 +1,7 @@
 "use client"
 
-import { FadeIn } from "@/utils/lightweightAnimations"
-import { motion } from "framer-motion"
+import { FadeIn } from "@/utils/OptimizedAnimations"
+
 
 export default function SectionBackground() {
   return (

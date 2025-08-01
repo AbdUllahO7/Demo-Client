@@ -1,8 +1,7 @@
 "use client"
 
-import Image from "next/image"
 import { motion } from "framer-motion"
-import { FadeIn } from "@/utils/lightweightAnimations"
+import { FadeIn } from "@/utils/OptimizedAnimations"
 
 interface SlideImageProps {
   image: string

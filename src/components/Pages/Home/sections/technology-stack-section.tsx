@@ -6,8 +6,8 @@ import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { ArrowRight, Sparkles } from 'lucide-react'
 import { useLanguage } from "@/contexts/language-context"
-import { FadeIn } from "@/utils/lightweightAnimations"
 import { useOptimizedIntersection } from "@/hooks/useIntersectionObserver"
+import { FadeIn } from "@/utils/OptimizedAnimations"
 
 export default function TechnologyStackSection() {
 const { ref, isInView } = useOptimizedIntersection({

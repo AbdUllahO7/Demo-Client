@@ -2,7 +2,7 @@
 
 import Image from "next/image"
 import { SectionSkeleton } from "@/components/Skeleton/SectionSkeleton"
-import { FadeIn } from "@/utils/lightweightAnimations"
+import { FadeIn } from "@/utils/OptimizedAnimations";
 
 interface FeatureImageProps {
     isInView: boolean
@@ -18,6 +18,7 @@ export default function FeatureImage({ isInView, image }: FeatureImageProps) {
 
     return (
         <FadeIn
+
       
         className="relative mx-auto lg:ml-auto"
         >

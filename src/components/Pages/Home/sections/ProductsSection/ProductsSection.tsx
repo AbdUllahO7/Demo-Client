@@ -7,17 +7,16 @@ import { useLanguage } from "@/contexts/language-context";
 import { useSectionLogic } from "@/hooks/useSectionLogic";
 import { useSectionContent } from "@/hooks/useSectionContent";
 import { ProductsGrid } from "./ProductsGrid";
-import { FadeIn } from "@/utils/lightweightAnimations";
+import { FadeIn } from "@/utils/OptimizedAnimations";
 
 export default function ProductsSection({ websiteId, sectionId }: { websiteId: string; sectionId: string }) {
-  const { ref, isInView } = useScrollAnimation();
+  const { isInView } = useScrollAnimation();
   const { direction } = useLanguage();
   const containerRef = useRef<HTMLDivElement>(null);
 
   const {
     content,
-    isLoading: sectionLoading,
-    error: sectionError,
+
   } = useSectionLogic({
     sectionId,
     websiteId,
@@ -26,8 +25,7 @@ export default function ProductsSection({ websiteId, sectionId }: { websiteId: s
 
   const {
     contentItems,
-    isLoading: itemsLoading,
-    error: itemsError,
+
   } = useSectionContent({
     sectionId,
     websiteId,

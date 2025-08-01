@@ -29,8 +29,7 @@ export interface ContactFormResponse {
 export function useContactForm() {
   const queryClient = useQueryClient();
   
-  // Get API version from environment or config
-  const apiVersion = process.env.REACT_APP_API_VERSION || 'v1';
+
   const endpoint = `/contactForm`;
 
   // Create contact form submission
@@ -50,13 +49,7 @@ export function useContactForm() {
     });
   };
 
-  // Optional: Reset any contact-related cache (if you add more queries later)
-  const resetContactFormCache = () => {
-    queryClient.invalidateQueries({ queryKey: ['contactForm'] });
-  };
-
   return {
     useCreateContactForm,
-    resetContactFormCache,
   };
 }

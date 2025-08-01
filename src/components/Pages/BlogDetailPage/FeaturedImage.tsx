@@ -1,6 +1,6 @@
 import React from "react"
 import Image from "next/image"
-import { FadeIn } from "@/utils/lightweightAnimations"
+import { FadeIn } from "@/utils/OptimizedAnimations"
 
 interface FeaturedImageProps {
   product: {

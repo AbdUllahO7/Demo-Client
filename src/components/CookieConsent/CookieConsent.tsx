@@ -4,7 +4,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { AnimatePresence } from 'framer-motion';
 import styles from './cookie-consent.module.css';
 import { CookieCategory, CookieCategoryInfo, CookieConsentData, CookiePreferences } from '@/api/types/cookie-consent';
-import { FadeIn } from '@/utils/lightweightAnimations';
+import { FadeIn } from '@/utils/OptimizedAnimations';
 
 const CONSENT_VERSION = '1.0.0';
 const CONSENT_STORAGE_KEY = 'cookieConsent';

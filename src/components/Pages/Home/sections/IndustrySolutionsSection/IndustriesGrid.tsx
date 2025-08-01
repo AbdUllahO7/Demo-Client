@@ -1,8 +1,7 @@
 "use client"
 
-import { motion } from "framer-motion"
+import { FadeIn } from "@/utils/OptimizedAnimations"
 import IndustryCard from "./IndustryCard"
-import { FadeIn } from "@/utils/lightweightAnimations"
 
 interface Industry {
   id: string

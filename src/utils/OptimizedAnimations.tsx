@@ -2,8 +2,8 @@ import { useOptimizedIntersection } from '@/hooks/useIntersectionObserver';
 import React, { useEffect, useRef, useState, forwardRef } from 'react'
 import { JSX } from 'react';
 
-interface OptimizedFadeInProps {
-  children: React.ReactNode
+interface FadeInProps {
+  children?: React.ReactNode
   className?: string
   duration?: number
   delay?: number
@@ -15,9 +15,7 @@ interface OptimizedFadeInProps {
   as?: keyof JSX.IntrinsicElements
 }
 
-
-
-export const OptimizedFadeIn = forwardRef<HTMLElement, OptimizedFadeInProps>(({
+export const FadeIn = forwardRef<HTMLElement, FadeInProps>(({
   children,
   className = '',
   duration = 600,
@@ -37,8 +35,7 @@ export const OptimizedFadeIn = forwardRef<HTMLElement, OptimizedFadeInProps>(({
   
   const [animationState, setAnimationState] = useState<'enter' | 'enter-active' | 'enter-done'>('enter')
   const elementRef = useRef<HTMLElement>(null)
-  const animationTimeoutRef = useRef<NodeJS.Timeout>(null)
-
+  const animationTimeoutRef = useRef<NodeJS.Timeout | null>(null)
 
   useEffect(() => {
     if (isInView && animationState === 'enter') {
@@ -55,7 +52,7 @@ export const OptimizedFadeIn = forwardRef<HTMLElement, OptimizedFadeInProps>(({
     }
   }, [isInView, animationState, duration, delay])
 
-  // تنظيف التايمرز
+  // Cleanup timers
   useEffect(() => {
     return () => {
       if (animationTimeoutRef.current) {
@@ -80,7 +77,7 @@ export const OptimizedFadeIn = forwardRef<HTMLElement, OptimizedFadeInProps>(({
     }
   }
 
-  // دمج الـ refs
+  // Combine refs
   const combinedRef = (node: HTMLElement | null) => {
     if (node) {
       ref.current = node
@@ -121,9 +118,4 @@ export const OptimizedFadeIn = forwardRef<HTMLElement, OptimizedFadeInProps>(({
   )
 })
 
-OptimizedFadeIn.displayName = 'OptimizedFadeIn'
-
-
-export const FadeIn: React.FC<OptimizedFadeInProps> = (props) => (
-  <OptimizedFadeIn {...props} />
-)
+FadeIn.displayName = 'FadeIn'

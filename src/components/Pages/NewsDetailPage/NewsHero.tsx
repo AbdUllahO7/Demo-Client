@@ -4,8 +4,7 @@ import { Calendar } from "lucide-react"
 import { GoBackButton } from "@/components/GoBackButton"
 import { useLanguage } from "@/contexts/language-context"
 import { formatDate } from "@/lib/utils"
-import { FadeIn } from "@/utils/lightweightAnimations"
-import { useOptimizedIntersection } from "@/hooks/useIntersectionObserver"
+import { FadeIn } from "@/utils/OptimizedAnimations"
 
 export function NewsHero({ news }) {
 

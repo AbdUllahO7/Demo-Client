@@ -3,7 +3,7 @@
 import Link from "next/link"
 import Image from "next/image"
 import { Calendar, ChevronRight } from "lucide-react"
-import { FadeIn } from "@/utils/lightweightAnimations"
+import { FadeIn } from "@/utils/OptimizedAnimations"
 
 export function NewsCard({ news }) {
 

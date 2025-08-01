@@ -1,9 +1,8 @@
 "use client";
 
 import React from "react";
-import { useLanguage } from "@/contexts/language-context";
 import { iconMap } from "@/utils/IconMap";
-import { FadeIn } from "@/utils/lightweightAnimations";
+import { FadeIn } from "@/utils/OptimizedAnimations";
 
 interface FeatureCardProps {
   feature: {

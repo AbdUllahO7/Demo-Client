@@ -6,8 +6,8 @@ import {  useScroll, useTransform } from "framer-motion"
 import { useLanguage } from "@/contexts/language-context"
 import { useSectionLogic } from "@/hooks/useSectionLogic"
 import { useSectionContent } from "@/hooks/useSectionContent"
-import { FadeIn } from "@/utils/lightweightAnimations"
 import { useOptimizedIntersection } from "@/hooks/useIntersectionObserver"
+import { FadeIn } from "@/utils/OptimizedAnimations"
 
 export default function ProcessSection({websiteId , sectionId}) {
   const { t,  language } = useLanguage()

@@ -1,7 +1,7 @@
 "use client"
 
+import { FadeIn } from "@/utils/OptimizedAnimations"
 import { memo } from "react"
-import { FadeIn } from "@/utils/lightweightAnimations"
 
 interface ContactHeaderProps {
   isInView: boolean

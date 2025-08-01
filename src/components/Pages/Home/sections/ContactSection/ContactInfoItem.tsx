@@ -1,7 +1,7 @@
 "use client"
 
+import { FadeIn } from "@/utils/OptimizedAnimations"
 import { ReactNode } from "react"
-import { FadeIn } from "@/utils/lightweightAnimations"
 
 interface ContactInfoItemProps {
   icon: ReactNode

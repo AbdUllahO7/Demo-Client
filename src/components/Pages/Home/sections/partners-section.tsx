@@ -7,8 +7,7 @@ import { useLanguage } from "@/contexts/language-context"
 import { useState, useRef, useEffect } from "react"
 import { useSectionLogic } from "@/hooks/useSectionLogic"
 import { useSectionContent } from "@/hooks/useSectionContent"
-import { OptimizedFadeIn } from "@/utils/OptimizedAnimations"
-import { FadeIn } from "@/utils/lightweightAnimations"
+import { FadeIn } from "@/utils/OptimizedAnimations"
 
 export default function PartnersSection({ websiteId, sectionId }) {
   const { ref, isInView } = useScrollAnimation()
@@ -56,7 +55,7 @@ export default function PartnersSection({ websiteId, sectionId }) {
       {/* Floating Particles */}
       <div className="absolute inset-0 overflow-hidden">
         {[...Array(6)].map((_, i) => (
-          <OptimizedFadeIn
+          <FadeIn
             key={i}
             className="absolute w-2 h-2 bg-primary/20 rounded-full"
             style={{
@@ -70,13 +69,13 @@ export default function PartnersSection({ websiteId, sectionId }) {
       </div>
 
       <div className="relative container px-4 md:px-6" ref={containerRef}>
-        <OptimizedFadeIn
+        <FadeIn
           ref={ref}
       
           className="flex flex-col items-center justify-center space-y-6 text-center mb-16"
         >
           {/* Enhanced Label */}
-          <OptimizedFadeIn
+          <FadeIn
         
             className="relative"
           >
@@ -88,7 +87,7 @@ export default function PartnersSection({ websiteId, sectionId }) {
               {content.sectionLabel}
           </span>
             
-          </OptimizedFadeIn>
+          </FadeIn>
 
           {/* Enhanced Title */}
           <div className="space-y-4">
@@ -97,7 +96,7 @@ export default function PartnersSection({ websiteId, sectionId }) {
             >
               <span className="relative inline-block">
                 {content.sectionTitle}
-                <OptimizedFadeIn
+                <FadeIn
                   className="absolute -bottom-2 left-0 h-1 bg-gradient-to-r from-primary to-primary/60 rounded-full"
                 />
               </span>
@@ -110,7 +109,7 @@ export default function PartnersSection({ websiteId, sectionId }) {
               {content.sectionDescription}
             </p>
           </div>
-        </OptimizedFadeIn>
+        </FadeIn>
 
         {/* Enhanced Partners Carousel */}
         <div className="relative">
@@ -127,6 +126,7 @@ export default function PartnersSection({ websiteId, sectionId }) {
 
         {/* Trust Indicator */}
         <FadeIn
+
          
           className="text-center mt-12"
         >

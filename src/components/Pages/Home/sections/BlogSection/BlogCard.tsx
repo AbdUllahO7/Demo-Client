@@ -7,7 +7,7 @@ import { useLanguage } from "@/contexts/language-context";
 import { ButtonSectionLink } from "@/components/SectionLinks";
 import { Post } from "./types";
 import { formatDate } from "@/lib/utils";
-import { FadeIn } from "@/utils/lightweightAnimations";
+import { FadeIn } from "@/utils/OptimizedAnimations";
 
 interface BlogCardProps {
   post: Post;
@@ -21,6 +21,7 @@ export function BlogCard({ post, index, isInView, isRTL }: BlogCardProps) {
 
   return (
     <FadeIn
+
      
       className="group flex flex-col h-full rounded-2xl border border-wtheme-border/40 bg-wtheme-background/80 backdrop-blur-sm shadow-lg shadow-primary/5 overflow-hidden transition-all duration-300 hover:border-primary/30 hover:shadow-xl hover:shadow-primary/10"
     >

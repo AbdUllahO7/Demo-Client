@@ -8,8 +8,8 @@ import { ArrowRight, ShoppingCart, Car, Code, Loader2 } from "lucide-react"
 import { ButtonSectionLink } from "@/components/SectionLinks"
 import { useSectionLogic } from "@/hooks/useSectionLogic"
 import { useSectionContent } from "@/hooks/useSectionContent"
-import { FadeIn } from "@/utils/lightweightAnimations"
 import { useOptimizedIntersection } from "@/hooks/useIntersectionObserver"
+import { FadeIn } from "@/utils/OptimizedAnimations"
 
 // Define interfaces for type safety
 interface ServiceItem {

@@ -3,8 +3,8 @@
 
 import Link from "next/link"
 import { ArrowLeft } from "lucide-react"
-import { FadeIn } from "@/utils/lightweightAnimations"
 import { useOptimizedIntersection } from "@/hooks/useIntersectionObserver"
+import { FadeIn } from "@/utils/OptimizedAnimations"
 
     export const TestimonialsHero = ({ t, direction }) => {
     const { ref, isInView } = useOptimizedIntersection({

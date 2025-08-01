@@ -3,7 +3,7 @@
 
 import Image from "next/image"
 import { Quote } from "lucide-react"
-import { FadeIn } from "@/utils/lightweightAnimations"
+import { FadeIn } from "@/utils/OptimizedAnimations"
 
 export const TestimonialCard = ({ testimonial, index, direction }) => {
 

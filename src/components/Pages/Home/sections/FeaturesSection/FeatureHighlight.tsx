@@ -1,6 +1,6 @@
 "use client"
 
-import { FadeIn } from "@/utils/lightweightAnimations"
+import { FadeIn } from "@/utils/OptimizedAnimations"
 import type React from "react"
 
 interface FeatureHighlightProps {

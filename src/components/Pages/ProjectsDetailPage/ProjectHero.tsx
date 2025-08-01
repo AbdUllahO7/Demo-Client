@@ -2,8 +2,8 @@
 
 import { GoBackButton } from "@/components/GoBackButton"
 import { useLanguage } from "@/contexts/language-context"
-import { FadeIn } from "@/utils/lightweightAnimations"
 import { useOptimizedIntersection } from "@/hooks/useIntersectionObserver"
+import { FadeIn } from "@/utils/OptimizedAnimations"
 
 interface ProjectHeroProps {
   project: {

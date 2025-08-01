@@ -8,18 +8,16 @@ import { ContactInfo } from "./ContactInfo"
 import { ContactForm } from "./ContactForm"
 import { useSectionLogic } from "@/hooks/useSectionLogic"
 import { useSectionContent } from "@/hooks/useSectionContent"
-import { FadeIn } from "@/utils/lightweightAnimations"
+import { FadeIn } from "@/utils/OptimizedAnimations"
 
 export default function ContactSection({ websiteId, sectionId }: { websiteId: string; sectionId: string }) {
   const { ref, isInView } = useScrollAnimation()
-  const { direction, language } = useLanguage()
+  const { direction } = useLanguage()
   const [isSubmitted, setIsSubmitted] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
 
   const {
     content,
-    isLoading: sectionLoading,
-    error: sectionError,
   } = useSectionLogic({
     sectionId,
     websiteId,
@@ -27,7 +25,7 @@ export default function ContactSection({ websiteId, sectionId }: { websiteId: st
   })
 
   // Fetch all subsections once with generic field mappings
-  const { contentItems, isLoading: itemsLoading, error: itemsError } = useSectionContent({
+  const { contentItems } = useSectionContent({
     sectionId,
     websiteId,
     fieldMappings: {

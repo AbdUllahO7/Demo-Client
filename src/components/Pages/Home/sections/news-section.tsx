@@ -10,8 +10,8 @@ import { CardContent, CardFooter } from "@/components/ui/card"
 import { useSectionLogic } from "@/hooks/useSectionLogic"
 import { useSectionContent } from "@/hooks/useSectionContent"
 import { useLanguage } from "@/contexts/language-context"
-import { FadeIn } from "@/utils/lightweightAnimations"
 import { useOptimizedIntersection } from "@/hooks/useIntersectionObserver"
+import { FadeIn } from "@/utils/OptimizedAnimations"
 
 export default function NewsSection({ sectionId, websiteId }) {
   const carouselRef = useRef(null)
@@ -88,8 +88,7 @@ export default function NewsSection({ sectionId, websiteId }) {
   return (
     <section id="news" className="relative w-full py-20 overflow-hidden bg-wtheme-background" dir={direction}>
     
-      <FadeIn
-   
+      <FadeIn   
         className="absolute top-1/3 left-0 w-96 h-96 rounded-full bg-accent blur-3xl"
       />
       <FadeIn
@@ -111,9 +110,6 @@ export default function NewsSection({ sectionId, websiteId }) {
           </h2>
 
           <p
-            initial={{ opacity: 0, y: 20 }}
-            animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
             className="max-w-2xl text-wtheme-text font-body text-lg"
           >
             {content.sectionDescription}

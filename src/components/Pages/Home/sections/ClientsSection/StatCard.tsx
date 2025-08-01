@@ -1,7 +1,7 @@
 "use client"
 
+import { FadeIn } from "@/utils/OptimizedAnimations"
 import { StatType } from "./types"
-import { FadeIn } from "@/utils/lightweightAnimations"
 
 interface StatCardProps {
   stat: StatType
