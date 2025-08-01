@@ -556,7 +556,6 @@ export default function Header({
     }
   }, [])
 
-  console.log("navItems", navItems)
 
   return (
     <motion.header
