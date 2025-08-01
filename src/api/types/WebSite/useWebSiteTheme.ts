@@ -72,20 +72,8 @@ export interface WebSiteTheme {
   id: string;
 }
 
-export interface CreateWebSiteThemeDto {
-  websiteId: string;
-  themeName: string;
-  colors: WebSiteTheme['colors'];
-  fonts: WebSiteTheme['fonts'];
-  isActive?: boolean;
-}
 
-export interface UpdateWebSiteThemeDto {
-  themeName?: string;
-  colors?: Partial<WebSiteTheme['colors']>;
-  fonts?: Partial<WebSiteTheme['fonts']>;
-  isActive?: boolean;
-}
+
 
 export interface WebSiteThemeResponse {
   success: boolean;

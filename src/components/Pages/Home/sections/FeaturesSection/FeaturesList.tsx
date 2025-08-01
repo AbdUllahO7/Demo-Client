@@ -2,7 +2,7 @@
 
 import type React from "react"
 import FeatureCard from "./FeatureCard"
-import { FadeIn } from "@/utils/lightweightAnimations"
+import { FadeIn } from "@/utils/OptimizedAnimations"
 
 interface FeaturesListProps {
     features: Array<{

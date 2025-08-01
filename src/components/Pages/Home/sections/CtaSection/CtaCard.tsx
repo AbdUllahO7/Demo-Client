@@ -3,7 +3,7 @@
 import { forwardRef } from "react"
 import { CtaHeader } from "./CtaHeader"
 import { CtaForm } from "./CtaForm"
-import { FadeIn } from "@/utils/lightweightAnimations"
+import { FadeIn } from "@/utils/OptimizedAnimations"
 
 
 interface CtaCardProps {

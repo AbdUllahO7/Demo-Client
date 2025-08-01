@@ -2,7 +2,7 @@
 
 import Image from "next/image"
 import { ClientLogoType } from "./types"
-import { FadeIn } from "@/utils/lightweightAnimations"
+import { FadeIn } from "@/utils/OptimizedAnimations"
 
 interface ClientLogoProps {
   client: ClientLogoType

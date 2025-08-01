@@ -4,8 +4,8 @@ import { useLanguage } from "@/contexts/language-context"
 import { ClientLogo } from "./ClientLogo"
 import { StatCard } from "./StatCard"
 import { clientsData } from "./data"
-import { FadeIn } from "@/utils/lightweightAnimations"
 import { useOptimizedIntersection } from "@/hooks/useIntersectionObserver"
+import { FadeIn } from "@/utils/OptimizedAnimations"
 
 
 export default function ClientsSection() {

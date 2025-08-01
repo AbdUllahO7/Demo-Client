@@ -9,8 +9,8 @@ import { FaqItem } from "./FaqItem"
 import { BackgroundEffects } from "./BackgroundEffects"
 import { useSectionLogic } from "@/hooks/useSectionLogic"
 import { useSectionContent } from "@/hooks/useSectionContent"
-import { FadeIn } from "@/utils/lightweightAnimations"
 import { useOptimizedIntersection } from "@/hooks/useIntersectionObserver"
+import { FadeIn } from "@/utils/OptimizedAnimations"
 
 export default function FaqSection({ websiteId, sectionId }) {
  const { ref, isInView } = useOptimizedIntersection({

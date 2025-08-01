@@ -8,7 +8,7 @@ import { useLanguage } from "@/contexts/language-context"
 import { useSectionLogic } from "@/hooks/useSectionLogic"
 import { useSectionContent } from "@/hooks/useSectionContent"
 import { iconMap } from "@/utils/IconMap"
-import { FadeIn } from "@/utils/lightweightAnimations"
+import { FadeIn } from "@/utils/OptimizedAnimations"
 
 export default function TestimonialsSection({ websiteId, sectionId }) {
   const ref = useRef(null)

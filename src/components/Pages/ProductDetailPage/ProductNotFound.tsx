@@ -3,7 +3,7 @@ import { Package, ArrowLeft } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import { useLanguage } from "@/contexts/language-context"
-import { FadeIn } from "@/utils/lightweightAnimations"
+import { FadeIn } from "@/utils/OptimizedAnimations"
 
 export const ProductNotFound: React.FC = () => {
   const { direction } = useLanguage()

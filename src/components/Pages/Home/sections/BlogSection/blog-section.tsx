@@ -7,7 +7,7 @@ import { useLanguage } from "@/contexts/language-context";
 import { useSectionLogic } from "@/hooks/useSectionLogic";
 import { useSectionContent } from "@/hooks/useSectionContent";
 import { BlogCarousel } from "./BlogCarousel";
-import { FadeIn } from "@/utils/lightweightAnimations";
+import { FadeIn } from "@/utils/OptimizedAnimations";
 
 export default function BlogSection({ websiteId, sectionId }: { websiteId: string; sectionId: string }) {
   const {  isInView } = useScrollAnimation();

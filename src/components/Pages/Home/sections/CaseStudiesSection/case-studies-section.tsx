@@ -7,8 +7,8 @@ import { Button } from "@/components/ui/button"
 import { useLanguage } from "@/contexts/language-context"
 import { caseStudiesData, sectionTranslations } from "./data"
 import { CaseStudyCard } from "./CaseStudyCard"
-import { FadeIn } from "@/utils/lightweightAnimations"
 import { useOptimizedIntersection } from "@/hooks/useIntersectionObserver"
+import { FadeIn } from "@/utils/OptimizedAnimations"
 
 
 export default function CaseStudiesSection() {

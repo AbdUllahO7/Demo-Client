@@ -1,7 +1,7 @@
 "use client"
 
 import { motion } from "@/components/ui/framer-motion"
-import { FadeIn } from "@/utils/lightweightAnimations"
+import { FadeIn } from "@/utils/OptimizedAnimations"
 
 interface FormFieldProps {
   id: string

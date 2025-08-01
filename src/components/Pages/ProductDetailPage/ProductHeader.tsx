@@ -4,7 +4,7 @@ import { Calendar, DollarSign } from "lucide-react"
 import { useLanguage } from "@/contexts/language-context"
 import { formatDate } from "@/lib/utils"
 import { GoBackButton } from "@/components/GoBackButton"
-import { FadeIn } from "@/utils/lightweightAnimations" // 🚀 STEP 5: Lightweight alternative
+import { FadeIn } from "@/utils/OptimizedAnimations"
 
 interface ProductHeaderProps {
   product: {

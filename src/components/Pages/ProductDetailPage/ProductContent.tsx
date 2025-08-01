@@ -1,7 +1,7 @@
 import React from "react"
 import { getTranslatedContent } from "@/utils/getTranslatedContent"
 import { useLanguage } from "@/contexts/language-context"
-import { FadeIn } from "@/utils/lightweightAnimations"
+import { FadeIn } from "@/utils/OptimizedAnimations"
 
 interface ProductContentProps {
   product: {
