@@ -1,6 +1,6 @@
 "use client"
 
-import { motion } from "framer-motion"
+import { FadeIn } from "@/utils/OptimizedAnimations"
 
 interface SectionHeaderProps {
   isInView: boolean
@@ -11,7 +11,6 @@ interface SectionHeaderProps {
 }
 
 export default function SectionHeader({ 
-  isInView, 
   sectionTitle, 
   mainTitle, 
   mainDescription,
@@ -19,32 +18,24 @@ export default function SectionHeader({
 }: SectionHeaderProps) {
   return (
     <>
-    <motion.span
-      initial={{ opacity: 0, y: 20 }}
-      animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-      transition={{ duration: 0.5 }}
+    <FadeIn
       className="inline-block mb-2 text-body  text-primary tracking-wider  uppercase"
     >
       {sectionTitle}
-    </motion.span>
+    </FadeIn>
 
-      <motion.h2
-        initial={{ opacity: 0, y: 20 }}
-        animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-        transition={{ duration: 0.6, delay: 0.1 }}
+      <FadeIn
+    
         className={`text-3xl md:text-4xl lg:text-5xl font-heading tracking-tight text-wtheme-text ${centered ? 'max-w-3xl mx-auto' : 'max-w-[600px]'}`}
       >
         {mainTitle}
-      </motion.h2>
+      </FadeIn>
 
-      <motion.p
-        initial={{ opacity: 0, y: 20 }}
-        animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-        transition={{ duration: 0.6, delay: 0.2 }}
+      <FadeIn    
         className={`text-lg font-body text-wtheme-text ${centered ? 'max-w-2xl mx-auto' : 'max-w-[600px]'}`}
       >
         {mainDescription}
-      </motion.p>
+      </FadeIn>
     </>
   )
 }

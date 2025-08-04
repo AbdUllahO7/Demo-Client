@@ -5,13 +5,13 @@ import FeatureCard from "./FeatureCard"
 import { FadeIn } from "@/utils/OptimizedAnimations"
 
 interface FeaturesListProps {
-    features: Array<{
-        title: string
+    features?: Array<{
+        title?: string
         excerpt: string
         icon?: React.ReactNode
-        color: string
+        colo?: string
     }>
-    isInView: boolean
+    isInView?: boolean
 }
 
 export default function FeaturesList({ features, isInView }: FeaturesListProps) {
@@ -22,12 +22,9 @@ export default function FeaturesList({ features, isInView }: FeaturesListProps) 
                 <FeatureCard key={index} feature={feature} isInView={isInView} />
             ))}
         </div>
-
         <FadeIn
-          
             className="mt-10"
         >
-            {/* Content can be added here in the future */}
         </FadeIn>
         </>
     )

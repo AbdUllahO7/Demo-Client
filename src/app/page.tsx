@@ -21,43 +21,10 @@ import { useScrollToSection } from "@/hooks/use-scroll-to-section";
 import { SectionSkeleton } from "@/components/Skeleton/SectionSkeleton";
 import ProductsSection from "@/components/Pages/Home/sections/ProductsSection/ProductsSection";
 import BlogSection from '@/components/Pages/Home/sections/BlogSection/blog-section';
+import { Section } from "@/api/types/section/section.type";
 
 
 
-interface ContentElement {
-  _id: string;
-  name: string;
-  type: string;
-  value: string | null;
-}
-
-interface Subsection {
-  _id: string;
-  name: string;
-  elements: ContentElement[];
-}
-
-interface SectionItem {
-  _id: string;
-  name: string;
-  subName: string;
-  subsections: Subsection[];
-}
-
-interface Section {
-  _id: string;
-  name: string;
-  subName: string;
-  order: number;
-  isActive: boolean;
-  sectionItems: SectionItem[];
-  // Properties for duplicated sections
-  originalSectionId?: string;
-  duplicateIndex?: number;
-  isDuplicate?: boolean;
-  duplicateOf?: string;
-  uniqueIdentifier?: string;
-}
 
 // Helper function to get the original component key for duplicated sections
 const getOriginalSubName = (subName: string): string => {
@@ -115,7 +82,6 @@ export default function LandingPage() {
     }
   }, [sectionsData, scrollToSection]);
 
-  // Map section names to components with section ID
   const sectionComponents: { [key: string]: (id: string, websiteId?: string) => JSX.Element } = {
     Hero: (id: string, websiteId?: string) => <HeroSection websiteId={websiteId} sectionId={id} />,
     News: (id: string, websiteId?: string) => <NewsSection websiteId={websiteId} sectionId={id} />,

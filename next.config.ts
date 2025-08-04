@@ -1,7 +1,6 @@
 import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
-  // Your original working settings
   typescript: {
     ignoreBuildErrors: true,
   },
@@ -10,16 +9,7 @@ const nextConfig: NextConfig = {
   },
   
   images: {
-    // 🚀 REMOVE unoptimized: true for better LCP performance
-    // unoptimized: true, // Comment this out
-    
-    // Configure domains for external images
-    domains: [
-      'res.cloudinary.com',
-      'images.unsplash.com',
-      'via.placeholder.com',
-    ],
-    
+
     remotePatterns: [
       {
         protocol: 'https',
@@ -33,12 +23,16 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: 'https',
-        hostname: '**', // Allow all HTTPS domains
+        hostname: 'via.placeholder.com',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: '**', 
         pathname: '/**',
       },
     ],
     
-    // Image optimization settings for better LCP
     formats: ['image/webp', 'image/avif'],
     minimumCacheTTL: 60 * 60 * 24 * 30, // 30 days cache
     deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
@@ -48,10 +42,7 @@ const nextConfig: NextConfig = {
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
   },
 
-  swcMinify: true, // Use SWC for faster builds
-  
   compiler: {
-    // Remove console logs in production
     removeConsole: process.env.NODE_ENV === 'production' ? {
       exclude: ['error', 'warn']
     } : false,
@@ -65,7 +56,6 @@ const nextConfig: NextConfig = {
       {
         source: '/:path*',
         headers: [
-          // 🚀 FIX: Preconnect to Vercel scripts (fixes Lighthouse warning)
           {
             key: 'Link',
             value: '<https://vercel-scripts.com>; rel=preconnect, <https://va.vercel-scripts.com>; rel=preconnect, <https://res.cloudinary.com>; rel=preconnect'
@@ -97,7 +87,6 @@ const nextConfig: NextConfig = {
           },
         ],
       },
-      // Cache optimized images
       {
         source: '/_next/image(.*)',
         headers: [

@@ -13,9 +13,7 @@ interface FeatureHighlightProps {
 }
 
 export default function FeatureHighlight({ 
-  position, 
-  delay, 
-  isInView, 
+  position,
   color, 
   icon, 
   text 

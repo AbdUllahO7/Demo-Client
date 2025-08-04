@@ -73,8 +73,6 @@ export default function HeroSection({ sectionId, websiteId }: HeroSectionProps) 
 
   const {
     contentItems: slides,
-    isLoading,
-    error,
   } = useSectionContent({
     sectionId,
     websiteId,
@@ -157,19 +155,7 @@ export default function HeroSection({ sectionId, websiteId }: HeroSectionProps) 
     }
   }, [currentSlide, autoplay, slides.length, nextSlide, imagesLoaded])
 
-  // Show loading state while images are loading
-  if (isLoading || !imagesLoaded) {
-    return (
-      <section className="relative w-full bg-wtheme-background overflow-hidden h-[100vh]" id="hero">
-        <div className="container relative z-10 px-4 md:py-24 h-[100vh] flex items-center justify-center">
-          <div className="animate-pulse">
-            <div className="h-8 bg-gray-300 rounded w-64 mb-4"></div>
-            <div className="h-4 bg-gray-300 rounded w-48"></div>
-          </div>
-        </div>
-      </section>
-    )
-  }
+  
 
   return (
     <motion.section
@@ -218,7 +204,6 @@ export default function HeroSection({ sectionId, websiteId }: HeroSectionProps) 
                       direction={direction}
                       language={language}
                       handleNavClick={handleNavClick}
-                      priority={index === 0} // Critical for LCP optimization
                     />
                   ),
               )}

@@ -1,7 +1,6 @@
 "use client"
 
 import Link from "next/link"
-import { motion } from "framer-motion"
 import { Button } from "@/components/ui/button"
 import { ArrowRight } from "lucide-react"
 import SlideContent from "./SlideContent"
@@ -9,20 +8,20 @@ import SlideImage from "./SlideImage"
 
 interface HeroSlideProps {
   slide: {
-    id: string
-    image: string
-    title: string
-    excerpt: string
-    exploreButton: string
-    requestButton: string
-    exploreButtonType: string
-    requestButtonType: string
-    exploreButtonUrl: string
-    requestButtonUrl: string
-    color: string
+    id?: string
+    image?: string
+    title?: string
+    excerpt?: string
+    exploreButton?: string
+    requestButton?: string
+    exploreButtonType?: string
+    requestButtonType?: string
+    exploreButtonUrl?: string
+    requestButtonUrl?: string
+    color?: string
   }
   index: number
-  direction: string
+  direction?: 'ltr' | 'rtl'
   language: string
   handleNavClick: (e: React.MouseEvent<HTMLAnchorElement>, sectionId: string) => void
 }
@@ -31,30 +30,17 @@ export default function HeroSlide({
   slide,
   index,
   direction,
-  language,
   handleNavClick
 }: HeroSlideProps) {
   
-  // Helper function to determine if URL is external
   const isExternalUrl = (url: string) => {
     return url && (url.startsWith('http://') || url.startsWith('https://') || url.startsWith('//'))
   }
-  
-
-  
-  // Helper function to get button class based on type
-
-
   return (
     <nav
       key={index}
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      transition={{ duration: 0.5 }}
       className="absolute inset-0 grid lg:grid-cols-2 gap-8 items-center"
     >
-      {/* Content */}
       <SlideContent
         title={slide.title}
         description={slide.excerpt}
@@ -62,7 +48,6 @@ export default function HeroSlide({
         direction={direction}
       >
         <div className="flex flex-col sm:flex-row gap-4 pt-4">
-          {/* Explore Button */}
           {slide.exploreButton && (
             <Button
               asChild
@@ -100,7 +85,6 @@ export default function HeroSlide({
         </div>
       </SlideContent>
 
-      {/* Image */}
       <SlideImage
         image={slide.image || "/placeholder.svg"}
         title={slide.title}

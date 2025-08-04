@@ -8,19 +8,19 @@ interface FeatureCardProps {
   feature: {
     title: string;
     excerpt: string;
-    icon?: React.ReactNode | string; // Allow string or ReactNode
-    color: string;
+    icon?: React.ReactNode | string; 
+    color?: string;
   };
   isInView: boolean;
 }
 
-export default function FeatureCard({ feature, isInView }: FeatureCardProps) {
-  // Determine the icon to render
+export default function FeatureCard({ feature }: FeatureCardProps) {
+  
   const renderIcon = () => {
     if (React.isValidElement(feature.icon)) {
-      return feature.icon; // If it's already a React element, use it
+      return feature.icon; 
     }
-    return iconMap[feature.icon as string] || null; // Map string to component, fallback to null
+    return iconMap[feature.icon as string] || null; 
   };
 
   return (

@@ -43,9 +43,7 @@ export interface MultilingualDescription {
 }
 export interface SectionItem {
   _id: string;
-  // 🎯 UPDATED: Support both legacy string and new multilingual object
   name: string | MultilingualName;
-  // 🎯 UPDATED: Support both legacy string and new multilingual object
   description?: string | MultilingualDescription;
   image?: string | null;
   isActive: boolean;
@@ -58,19 +56,14 @@ export interface SectionItem {
   createdAt?: string;
   updatedAt?: string;
   
-  // 🎯 NEW: Server-provided localized fields (optional)
-  displayName?: string; // Localized name based on request language
-  displayDescription?: string; // Localized description based on request language
+  displayName?: string; 
+  displayDescription?: string; 
   
-  // 🎯 NEW: Multilingual metadata
-  isMultilingual?: boolean; // Indicates if section item has multilingual names
+  isMultilingual?: boolean; 
 }
 
-// 🎯 UPDATED: Section interface with multilingual support
 export interface Section extends Resource {
-  // 🎯 UPDATED: Support both legacy string and new multilingual object
   name: string | MultilingualName;
-  // 🎯 UPDATED: Support both legacy string and new multilingual object
   description?: string | MultilingualDescription;
   order?: number;
   image?: string;
@@ -84,20 +77,15 @@ export interface Section extends Resource {
   type?: string;
   slug?: string;
   
-  // 🎯 NEW: Server-provided localized fields (optional)
-  displayName?: string; // Localized name based on request language
-  displayDescription?: string; // Localized description based on request language
+  displayName?: string; 
+  displayDescription?: string; 
   
-  // 🎯 NEW: Multilingual metadata
-  isMultilingual?: boolean; // Indicates if section has multilingual names
+  isMultilingual?: boolean; 
 }
 
 export interface SubSection {
   _id: string;
-  // 🎯 UPDATED: Support both legacy string and new multilingual object
   name: string | MultilingualName;
-  // 🎯 UPDATED: Support both legacy string and new multilingual object
-  description?: string | MultilingualDescription;
   slug: string;
   isActive: boolean;
   order: number;
@@ -114,17 +102,12 @@ export interface SubSection {
   section?: SubSection | string;
   elements?: ContentElement[];
   WebSiteId: string;
-  
-  // 🎯 NEW: Server-provided localized fields (optional)
-  displayName?: string; // Localized name based on request language
-  displayDescription?: string; // Localized description based on request language
-  
-  // 🎯 NEW: Multilingual metadata
-  isMultilingual?: boolean; // Indicates if subsection has multilingual names
+  displayName?: string; 
+  displayDescription?: string;
+  isMultilingual?: boolean; 
 }
 
 
-// 🎯 NEW: Type guards for checking multilingual vs legacy formats
 export function isMultilingualName(name: string | MultilingualName): name is MultilingualName {
   return typeof name === 'object' && name !== null && 'en' in name && 'ar' in name && 'tr' in name;
 }
@@ -134,7 +117,6 @@ export function isMultilingualDescription(description: string | MultilingualDesc
          ('en' in description || 'ar' in description || 'tr' in description);
 }
 
-// 🎯 NEW: Utility types for language operations
 export type SupportedLanguage = 'en' | 'ar' | 'tr';
 
 export interface LanguageInfo {
@@ -145,7 +127,6 @@ export interface LanguageInfo {
   direction: 'ltr' | 'rtl';
 }
 
-// 🎯 NEW: Language configuration
 export const SUPPORTED_LANGUAGES: Record<SupportedLanguage, LanguageInfo> = {
   en: {
     code: 'en',
@@ -170,7 +151,6 @@ export const SUPPORTED_LANGUAGES: Record<SupportedLanguage, LanguageInfo> = {
   }
 };
 
-// 🎯 NEW: Helper functions for working with multilingual data
 export interface MultilingualHelpers {
   /**
    * Get name in specific language with fallback
@@ -201,7 +181,6 @@ export interface MultilingualHelpers {
   }): SupportedLanguage[];
 }
 
-// 🎯 NEW: API response interfaces
 export interface SectionResponse {
   success: boolean;
   data: Section | Section[];
@@ -223,7 +202,6 @@ export interface SubSectionResponse {
   message?: string;
 }
 
-// 🎯 NEW: Query parameters for API requests
 export interface SectionQueryParams {
   language?: SupportedLanguage;
   includeInactive?: boolean;
@@ -242,7 +220,6 @@ export interface SectionOrderUpdateRequest {
   }>;
 }
 
-// 🎯 NEW: Validation interfaces
 export interface MultilingualValidationError {
   language: SupportedLanguage;
   field: 'name' | 'description';

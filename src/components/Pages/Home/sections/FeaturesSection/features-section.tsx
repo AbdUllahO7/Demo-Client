@@ -3,31 +3,19 @@
 import { useRef } from "react"
 import { useInView } from "framer-motion"
 import { useLanguage } from "@/contexts/language-context"
-import { translationsDataFeatures } from "../../ConstData/ConstData"
 import BackgroundElements from "./BackgroundElements"
 import SectionHeader from "./SectionHeader"
 import FeaturesList from "./FeaturesList"
 import FeatureImage from "./FeatureImage"
 import { useSectionLogic } from "@/hooks/useSectionLogic"
 import { useSectionContent } from "@/hooks/useSectionContent"
-import { SectionSkeleton } from "@/components/Skeleton/SectionSkeleton"
 
-interface Features {
-  id: string
-  title: string
-  excerpt: string
-  icon: string
-  color: string
-  order: number
-  image: string
-}
 
 export default function FeaturesSection({ sectionId, websiteId }) {
   const ref = useRef(null)
   const isInView = useInView(ref, { once: false, amount: 0.2 })
-  const { language, direction } = useLanguage()
-
-  const { content, isLoading: sectionLoading, error: sectionError, refetch, formatDate } = useSectionLogic({
+  const {  direction } = useLanguage()
+  const { content} = useSectionLogic({
       sectionId,
       websiteId,
       itemsKey: "Features",
@@ -49,8 +37,7 @@ export default function FeaturesSection({ sectionId, websiteId }) {
       order: (subsection: any, index?: number) => subsection.order || index || 0
   }
 
-  // For SINGLE items (each subsection has one industry)
-  const { contentItems, isLoading: itemsLoading, error: itemsError } = useSectionContent({
+  const { contentItems,  } = useSectionContent({
     sectionId,
     websiteId,
     fieldMappings: heroFieldMappings,
@@ -60,7 +47,6 @@ export default function FeaturesSection({ sectionId, websiteId }) {
 
   return (
     <section id="features" className="relative w-full py-20 overflow-hidden bg-wtheme-background" dir={direction}>
-      {/* Background elements */}
       <BackgroundElements />
 
       <div className="container relative z-10 px-4 md:px-6">
