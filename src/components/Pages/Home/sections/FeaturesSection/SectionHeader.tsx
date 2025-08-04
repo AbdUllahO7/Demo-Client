@@ -18,24 +18,15 @@ export default function SectionHeader({
 }: SectionHeaderProps) {
   return (
     <>
-      <span
-          
-            className="inline-block mb-2 text-body  text-primary tracking-wider  uppercase"
-          >
+      <span className="inline-block mb-2 text-body  text-primary tracking-wider  uppercase">
             {sectionTitle}
-        </span>
+      </span>
 
-     <h2
-            
-            className="text-3xl md:text-4xl lg:text-5xl font-heading font-bold tracking-tight max-w-3xl text-wtheme-text"
-          >
+     <h2 className="text-3xl md:text-4xl lg:text-5xl font-heading font-bold tracking-tight max-w-3xl text-wtheme-text">
             {mainTitle}
-          </h2>
+      </h2>
 
-      <p
-     
-        className={`mt-4 text-lg font-body text-wtheme-text ${centered ? 'max-w-2xl mx-auto' : 'max-w-[600px]'}`}
-      >
+      <p className={`mt-4 text-lg font-body text-wtheme-text ${centered ? 'max-w-2xl mx-auto' : 'max-w-[600px]'}`} >
         {mainDescription}
       </p>
     </>

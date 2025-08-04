@@ -4,11 +4,11 @@ import { FadeIn } from "@/utils/OptimizedAnimations"
 import IndustryCard from "./IndustryCard"
 
 interface Industry {
-  id: string
-  title: string
-  excerpt: string
-  image: string
-  color: string
+  id?: string
+  title?: string
+  excerpt?: string
+  image?: string
+  color?: string
   order?: number
 }
 
@@ -23,7 +23,7 @@ export default function IndustriesGrid({ industries, isInView }: IndustriesGridP
       <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-4">
         {industries.map((industry, index) => (
           <IndustryCard 
-            key={industry.id || index}  // Use id for better React keys
+            key={industry.id || index} 
             industry={industry} 
             index={index} 
             isInView={isInView} 
@@ -35,7 +35,6 @@ export default function IndustriesGrid({ industries, isInView }: IndustriesGridP
       
         className="mt-16 text-center"
       >
-        {/* This space can be used for a CTA button or additional content */}
       </FadeIn>
     </>
   )

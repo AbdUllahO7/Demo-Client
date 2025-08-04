@@ -67,7 +67,7 @@ export default function ProcessSection({websiteId , sectionId}) {
       <div className="absolute inset-0" />
       
       {/* Animated grid pattern */}
-      <div className="absolute inset-0 bg-[url('/grid-pattern.svg')] bg-center opacity-5" />
+      <div className="absolute inset-0  bg-center opacity-5" />
       
       {/* Background decorative shapes */}
       <FadeIn

@@ -1,12 +1,9 @@
-/* 🚀 STEP 5: ULTRA-MINIMAL CSS - Only absolute essentials */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* 🚀 STEP 5: CRITICAL CSS ONLY - Everything else removed */
 @layer base {
   :root {
-    /* 🚀 Only the most essential variables */
     --website-theme-primary: #E91E63;
     --website-theme-background: #ffffff;
     --website-theme-text: #000000;
@@ -20,7 +17,6 @@
   }
 }
 
-/* 🚀 STEP 5: ESSENTIAL BASE STYLES ONLY */
 @layer base {
   html {
     scroll-behavior: smooth;
@@ -35,14 +31,12 @@
     color: var(--website-theme-text);
   }
   
-  /* 🚀 Critical image optimization */
   img {
     loading: lazy;
     decoding: async;
   }
 }
 
-/* 🚀 STEP 5: MINIMAL UTILITIES - Only what's actually used */
 @layer utilities {
   .bg-wtheme-background {
     background-color: var(--website-theme-background);
@@ -70,7 +64,6 @@
     font-weight: 400;
   }
   
-  /* 🚀 Essential prose styles (replacing typography plugin) */
   .prose {
     color: var(--website-theme-text);
     max-width: none;
@@ -88,7 +81,6 @@
     margin-bottom: 1.25em;
   }
   
-  /* 🚀 Essential animation - only loading skeleton */
   .animate-pulse {
     animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
   }

@@ -1,6 +1,6 @@
 "use client"
 
-import { useRef, useState, useEffect } from "react"
+import { useRef, useState, useEffect, useCallback } from "react"
 import Link from "next/link"
 import Image from "next/image"
 import {  AnimatePresence } from "framer-motion"
@@ -15,11 +15,7 @@ import { FadeIn } from "@/utils/OptimizedAnimations"
 
 export default function NewsSection({ sectionId, websiteId }) {
   const carouselRef = useRef(null)
-  const { ref, isInView } = useOptimizedIntersection({
-    threshold: 0.2,
-    triggerOnce: true,
-    rootMargin: '100px'
-  })
+
   const [activeIndex, setActiveIndex] = useState(0)
   const [isAutoPlaying, setIsAutoPlaying] = useState(true)
   const { language } = useLanguage()
@@ -53,7 +49,19 @@ export default function NewsSection({ sectionId, websiteId }) {
     setActiveIndex(0)
   }, [language])
 
-  // Auto-play carousel
+ 
+
+  const handleMouseEnter = () => setIsAutoPlaying(false)
+  const handleMouseLeave = () => setIsAutoPlaying(true)
+
+  const nextNews = useCallback(() => {
+    setActiveIndex((prev) => (prev === contentItems.length - 1 ? 0 : prev + 1))
+  }, [contentItems.length])
+
+  const prevNews = () =>
+    setActiveIndex((prev) => (prev === 0 ? contentItems.length - 1 : prev - 1))
+
+   // Auto-play carousel
   useEffect(() => {
     let interval
     if (isAutoPlaying && contentItems.length > 1) {
@@ -62,17 +70,8 @@ export default function NewsSection({ sectionId, websiteId }) {
       }, 5000)
     }
     return () => interval && clearInterval(interval)
-  }, [isAutoPlaying, activeIndex, contentItems])
-
-  const handleMouseEnter = () => setIsAutoPlaying(false)
-  const handleMouseLeave = () => setIsAutoPlaying(true)
-
-  const nextNews = () =>
-    setActiveIndex((prev) => (prev === contentItems.length - 1 ? 0 : prev + 1))
-
-  const prevNews = () =>
-    setActiveIndex((prev) => (prev === 0 ? contentItems.length - 1 : prev - 1))
-
+  }, [isAutoPlaying, activeIndex, contentItems, nextNews])
+  
   const getVisibleItems = () => {
     const items = contentItems
     if (items.length <= 3) return items
@@ -97,7 +96,7 @@ export default function NewsSection({ sectionId, websiteId }) {
       />
 
       <div className="container relative z-10 px-4 md:px-6">
-        <div ref={ref} className="flex flex-col items-center justify-center space-y-6 text-center mb-16">
+        <div  className="flex flex-col items-center justify-center space-y-6 text-center mb-16">
           <span
               className="inline-block mb-2 text-body  text-primary tracking-wider  uppercase"
             >
@@ -152,8 +151,6 @@ export default function NewsSection({ sectionId, websiteId }) {
                       <NewsCard
                         key={`${news.id}-${index}`}
                         news={news}
-                        index={index}
-                        isInView={isInView}
                         direction={direction}
                         formatDate={formatDate}
                         readMoreText={content.readMore}
@@ -198,8 +195,6 @@ export default function NewsSection({ sectionId, websiteId }) {
                   >
                     <NewsCard
                       news={contentItems[activeIndex]}
-                      index={0}
-                      isInView={true}
                       direction={direction}
                       formatDate={formatDate}
                       readMoreText={content.readMore}
@@ -239,7 +234,7 @@ export default function NewsSection({ sectionId, websiteId }) {
   )
 }
 
-function NewsCard({ news, index, direction, formatDate, readMoreText, sectionId, websiteId }) {
+function NewsCard({ news, direction, formatDate, readMoreText, sectionId, websiteId }) {
   const isRTL = direction === "rtl"
 
   return (

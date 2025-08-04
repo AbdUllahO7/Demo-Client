@@ -13,11 +13,11 @@ import { FadeIn } from "@/utils/OptimizedAnimations"
 
 // Define interfaces for type safety
 interface ServiceItem {
-  id: string;
-  title: string;
-  description: string;
-  icon: string;
-  image: string;
+  id?: string;
+  title?: string;
+  description?: string;
+  icon?: string;
+  image?: string;
   slug?: string;
   BackButton?: string;
   readMore?: string;
@@ -57,18 +57,13 @@ const DynamicIcon: React.FC<DynamicIconProps> = ({ name, className = "" }) => {
 };
 
 export default function ServicesSection({ sectionId, websiteId }: ServicesSectionProps) {
-const { ref, isInView } = useOptimizedIntersection({
-  threshold: 0.2,
-  triggerOnce: true,
-  rootMargin: '100px'
-})
+
   const { content, isLoading: sectionLoading, error: sectionError, refetch, direction } = useSectionLogic({
     sectionId,
     websiteId,
     itemsKey: "news",
   });
 
-  // Type the filter function properly
   const serviceFilter = (item: { title?: string }): item is { title: string } & typeof item => {
     return !!(item.title && item.title.trim() !== "");
   };
@@ -93,7 +88,7 @@ const { ref, isInView } = useOptimizedIntersection({
   const error = sectionError || itemsError;
 
   // Type guard for contentItems
-  const typedContentItems = contentItems as ServiceItem[];
+  const typedContentItems = contentItems;
 
   return (
     <section 
@@ -104,7 +99,7 @@ const { ref, isInView } = useOptimizedIntersection({
       <div className="absolute inset-0 bg-wtheme-background"></div>
       
       <div className="container px-4 md:px-6 relative">
-        <div ref={ref} className="mb-16 text-center">
+        <div  className="mb-16 text-center">
           <span
          
             className="inline-block mb-2 text-body text-primary tracking-wider uppercase"
@@ -156,11 +151,9 @@ const { ref, isInView } = useOptimizedIntersection({
 }
 
 function ServiceCard({ service, index, direction, serviceDetails }: ServiceCardProps) {
-  const ref = useRef<HTMLDivElement>(null);
   const isEven = index % 2 === 0;
   const isRTL = direction === "rtl";
   
-  // Adjust flex direction based on both index and language direction
   const getFlexDirection = (): string => {
     if (isRTL) {
       return isEven ? "lg:flex-row-reverse" : "lg:flex-row";
@@ -169,34 +162,16 @@ function ServiceCard({ service, index, direction, serviceDetails }: ServiceCardP
     }
   };
 
-  // Adjust animation direction based on both index and language direction
-  const getAnimationDirection = (isLeft: boolean): number => {
-    if (isRTL) {
-      if (isEven) {
-        return isLeft ? 50 : -50;
-      } else {
-        return isLeft ? -50 : 50;
-      }
-    } else {
-      if (isEven) {
-        return isLeft ? -50 : 50;
-      } else {
-        return isLeft ? 50 : -50;
-      }
-    }
-  };
+
 
   return (
     <FadeIn
-      
       className="relative group"
     >
-      {/* Background decoration */}
       <div className="absolute inset-0 bg-theme-gradient opacity-5 rounded-2xl blur-xl group-hover:opacity-10 transition-opacity duration-500"></div>
       
       <div className={`flex flex-col ${getFlexDirection()} gap-8 items-center relative`}>
         <FadeIn
-
           className="w-full lg:w-1/2"
         >
           <div className="relative overflow-hidden rounded-2xl shadow-theme-lg aspect-video border border-wtheme-border/20">
@@ -210,7 +185,6 @@ function ServiceCard({ service, index, direction, serviceDetails }: ServiceCardP
             />
             <div className="absolute inset-0 bg-gradient-to-t from-primary/60 via-transparent to-accent/20 opacity-70"></div>
             
-            {/* Overlay gradient using theme colors */}
             <div className="absolute inset-0 bg-theme-gradient-radial opacity-20 mix-blend-overlay"></div>
           </div>
         </FadeIn>

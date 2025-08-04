@@ -6,10 +6,12 @@ import { FadeIn } from "@/utils/OptimizedAnimations"
 
 interface IndustryCardProps {
   industry: {
-    title: string
-    excerpt: string
-    image: string
-    color: string
+    id?: string
+    title?: string
+    excerpt?: string
+    image?: string
+    color?: string
+    order?: number
   }
   index: number
   isInView: boolean
@@ -21,10 +23,8 @@ export default function IndustryCard({ industry, index, isInView }: IndustryCard
       
       className="group relative overflow-hidden rounded-2xl  border border-wtheme-border/50 shadow-sm hover:shadow-xl transition-all duration-500"
     >
-      {/* Gradient background that appears on hover */}
       <div className="absolute inset-0 bg-gradient-to-br opacity-0 group-hover:opacity-5 transition-opacity duration-500 z-0"></div>
 
-      {/* Top gradient bar */}
       <div className={`h-2 w-full bg-gradient-to-r ${industry.color}`}></div>
 
       <div className="p-6 md:p-8">
@@ -42,7 +42,6 @@ export default function IndustryCard({ industry, index, isInView }: IndustryCard
         </div>
       </div>
 
-      {/* Corner accent */}
       <div className={`absolute -bottom-8 -right-8 w-16 h-16 rounded-full bg-gradient-to-r ${industry.color} opacity-10 group-hover:opacity-30 transition-opacity duration-500`}></div>
     </FadeIn>
   )
@@ -67,7 +66,6 @@ function IndustryIcon({ icon, name }: IndustryIconProps) {
         priority={true}
       />
 
-      {/* Animated circles */}
       <FadeIn
       
         className="absolute -inset-1 rounded-3xl border-2 border-dashed border-primary/20 opacity-0 group-hover:opacity-100 transition-opacity"

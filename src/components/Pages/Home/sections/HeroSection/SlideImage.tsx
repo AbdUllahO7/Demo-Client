@@ -1,6 +1,7 @@
 "use client"
 
 import { memo, useState } from "react"
+import Image from "next/image"
 
 interface SlideImageProps {
   image: string
@@ -45,12 +46,10 @@ const SlideImage = memo(function SlideImage({
   return (
     <div className="relative mx-auto lg:ml-auto h-full flex items-center">
       {/* Simplified background effect - only render for active slide */}
-      {isActive && (
         <div
-          className={`absolute inset-0 bg-gradient-to-r ${color} opacity-10 rounded-2xl blur-xl transform rotate-3 scale-105`}
-          style={{ willChange: 'auto' }}
+          className={`absolute inset-0 bg-gradient-to-r ${color} opacity-10 rounded-2xl blur-xl transform rotate-3 scale-105 slide-image-bg-effect`}
         />
-      )}
+      )
 
       <div className={`relative bg-gradient-to-r p-1 ${color} rounded-2xl shadow-xl`}>
         <div className="bg-background rounded-xl overflow-hidden">
@@ -61,26 +60,18 @@ const SlideImage = memo(function SlideImage({
                 <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin" />
               </div>
             )}
-            
-            {/* Optimized img tag for unoptimized images */}
-            <img
+            <Image
               src={displayImage}
+              width={100}
+              height={100}
               alt={title}
-              className={`w-full h-full object-cover rounded-xl transition-all duration-300 hover:scale-105 ${
+              className={`w-full h-auto max-w-full aspect-[16/10] object-cover rounded-xl transition-all duration-300 hover:scale-105 ${
                 imageLoading ? 'opacity-0' : 'opacity-100'
               }`}
-              loading={priority ? "eager" : "lazy"}
-              decoding={priority ? "sync" : "async"}
-              fetchPriority={priority ? "high" : "auto"}
               onLoad={handleImageLoad}
               onError={handleImageError}
-              // Add responsive image attributes
               sizes="(max-width: 768px) 100vw, 50vw"
-              style={{
-                maxWidth: '100%',
-                height: 'auto',
-                aspectRatio: '16/10'
-              }}
+              style={{ objectFit: "cover" }}
             />
           </div>
         </div>
