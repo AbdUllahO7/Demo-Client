@@ -15,7 +15,6 @@ const SlideImage = memo(function SlideImage({
   image, 
   title, 
   color, 
-  isActive = false,
   priority = false 
 }: SlideImageProps) {
   const [imageError, setImageError] = useState(false)
@@ -49,7 +48,6 @@ const SlideImage = memo(function SlideImage({
         <div
           className={`absolute inset-0 bg-gradient-to-r ${color} opacity-10 rounded-2xl blur-xl transform rotate-3 scale-105 slide-image-bg-effect`}
         />
-      )
 
       <div className={`relative bg-gradient-to-r p-1 ${color} rounded-2xl shadow-xl`}>
         <div className="bg-background rounded-xl overflow-hidden">
