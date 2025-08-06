@@ -1,20 +1,14 @@
 // FaqItem.jsx
 "use client"
 
-import React, { useState } from "react"
+import React from "react"
 import { ChevronDown } from "lucide-react"
 import { AnimatePresence } from "framer-motion"
 import { FadeIn } from "@/utils/OptimizedAnimations"
 
-export const FaqItem = ({ faq, index, isInView, isRTL }) => {
-  const [isOpen, setIsOpen] = useState(false)
-  const toggleOpen = () => setIsOpen(!isOpen)
-
+export const FaqItem = ({ faq, index, isInView, isRTL, isOpen, onToggle }) => {
   return (
-    <FadeIn
-     
-      className="group relative"
-    >
+    <FadeIn className="group relative">
       {/* Enhanced glass card effect with theme gradient */}
       <div
         className={`absolute inset-0 rounded-2xl bg-primary/5 opacity-0 ${
@@ -25,14 +19,12 @@ export const FaqItem = ({ faq, index, isInView, isRTL }) => {
       <FadeIn
         className={`relative rounded-2xl ${
           isOpen 
-            ? "border-primary  border-2" 
+            ? "border-primary border-2" 
             : "border-primary "
         } backdrop-blur-sm shadow-sm overflow-hidden transition-all border-primary duration-300 border bg-wtheme-background`}
-   
-      
       >
         <button
-          onClick={toggleOpen}
+          onClick={onToggle}
           className={`flex items-center justify-between w-full p-6 text-left ${isRTL ? "flex-row-reverse" : ""}`}
           aria-expanded={isOpen}
         >
@@ -56,25 +48,25 @@ export const FaqItem = ({ faq, index, isInView, isRTL }) => {
           </div>
           <div className={`flex items-center gap-3 ${isRTL ? "flex-row-reverse" : ""}`}>
             <span className="text-xs font-accent px-2 py-1 rounded-full bg-primary/10 text-primary font-medium">
-              {faq.category }
+              {faq.category}
             </span>
             <FadeIn
-            
               className={`flex items-center justify-center w-8 h-8 rounded-full ${
                 isOpen ? "bg-primary/10 text-primary" : "bg-wtheme-text/10 text-wtheme-text/60"
               } transition-colors duration-300`}
             >
-              <ChevronDown className="w-4 h-4" />
+              <ChevronDown 
+                className={`w-4 h-4 transition-transform duration-300 ${
+                  isOpen ? "rotate-180" : ""
+                }`} 
+              />
             </FadeIn>
           </div>
         </button>
 
         <AnimatePresence>
           {isOpen && (
-            <FadeIn
-            
-              className="overflow-hidden"
-            >
+            <FadeIn className="overflow-hidden">
               <div className={`p-6 pt-0 border-t border-primary ${isRTL ? "pr-20 text-right" : "pl-20 text-left"} text-wtheme-text`}>
                 <p className="leading-relaxed font-body">{faq.answer}</p>
               </div>

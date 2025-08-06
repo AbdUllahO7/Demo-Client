@@ -13,12 +13,14 @@ import { useOptimizedIntersection } from "@/hooks/useIntersectionObserver"
 import { FadeIn } from "@/utils/OptimizedAnimations"
 
 export default function FaqSection({ websiteId, sectionId }) {
- const { ref, isInView } = useOptimizedIntersection({
-  threshold: 0.2,
-  triggerOnce: true,
-  rootMargin: '100px'
-})
+  const { ref, isInView } = useOptimizedIntersection({
+    threshold: 0.2,
+    triggerOnce: true,
+    rootMargin: '100px'
+  })
+  
   const [searchQuery, setSearchQuery] = useState("")
+  const [openItemId, setOpenItemId] = useState(null) // Track which item is open
   const { t, direction, language } = useLanguage()
   
   const isRTL = direction === "rtl"
@@ -30,18 +32,18 @@ export default function FaqSection({ websiteId, sectionId }) {
   } = useSectionLogic({
     sectionId,
     websiteId,
-    itemsKey: "faqs", // Updated to "faqs" to match the context
+    itemsKey: "faqs",
   })
 
   const featureFilter = (item: { answer: string }) => item.answer && item.answer.trim() !== ""
     
-    const ContentItemsMappings = {
-      id: (subsection: any, index?: number) => `${subsection._id}-${index || 0}`,
-      question: "FAQ {index} - Question",
-      answer: "FAQ {index} - Answer",
-      color: () => "theme-gradient",
-      order: (subsection: any, index?: number) => subsection.order || index || 0,
-    }
+  const ContentItemsMappings = {
+    id: (subsection: any, index?: number) => `${subsection._id}-${index || 0}`,
+    question: "FAQ {index} - Question",
+    answer: "FAQ {index} - Answer",
+    color: () => "theme-gradient",
+    order: (subsection: any, index?: number) => subsection.order || index || 0,
+  }
 
   const {
     contentItems,
@@ -62,6 +64,11 @@ export default function FaqSection({ websiteId, sectionId }) {
       faq.answer.toLowerCase().includes(searchQuery.toLowerCase())
   )
 
+  // Handle FAQ item toggle
+  const handleItemToggle = (faqId) => {
+    setOpenItemId(openItemId === faqId ? null : faqId)
+  }
+
   return (
     <section 
       className="relative w-full py-32 overflow-hidden bg-wtheme-background " 
@@ -79,18 +86,17 @@ export default function FaqSection({ websiteId, sectionId }) {
           setSearchQuery={setSearchQuery}
         />
 
-        <FadeIn
-      
-          className="max-w-4xl mx-auto"
-        >
+        <FadeIn className="max-w-4xl mx-auto">
           <div className="grid gap-6">
             {filteredFaqs.map((faq, index) => (
               <FaqItem 
-                key={faq.id} // Use faq.id for unique key
-                faq={faq} // Add default category if missing
+                key={faq.id}
+                faq={faq}
                 index={index} 
                 isInView={isInView} 
                 isRTL={isRTL}
+                isOpen={openItemId === faq.id}
+                onToggle={() => handleItemToggle(faq.id)}
               />
             ))}
           </div>
@@ -99,3 +105,4 @@ export default function FaqSection({ websiteId, sectionId }) {
     </section>
   )
 }
+
