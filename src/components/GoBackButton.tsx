@@ -26,33 +26,30 @@ export function GoBackButton({
   const handleGoBack = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     
-    // Get the current path and the home path
     const homePath = '/'
     const currentPath = pathname
     
     if (currentPath === homePath) {
-      // If already on home page, just scroll to the section
-      scrollToSection(sectionName)
+      // If already on home page, scroll to section and immediately clear hash
+      if (sectionName && sectionName !== 'home') {
+        // Set hash temporarily for the scroll logic to work
+        window.history.replaceState(null, '', `${homePath}#${sectionName}`);
+        // Clear it immediately after
+        setTimeout(() => {
+          window.history.replaceState(null, '', homePath);
+        }, 100);
+      }
     } else {
-      // If on another page, navigate to home page with hash
-      router.push(`/${sectionName !== 'home' ? `#${sectionName}` : ''}`)
-    }
-  };
-
-  // Helper function to scroll to a section
-  const scrollToSection = (sectionId: string) => {
-    if (typeof window === 'undefined') return;
-    
-    const element = document.getElementById(sectionId);
-    if (element) {
-      const headerOffset = 100;
-      const elementPosition = element.getBoundingClientRect().top;
-      const offsetPosition = elementPosition + window.scrollY - headerOffset;
-      
-      window.scrollTo({
-        top: offsetPosition,
-        behavior: "smooth",
-      });
+      // If on another page, navigate to home page
+      if (sectionName && sectionName !== 'home') {
+        router.push(`/#${sectionName}`);
+        // Clear hash after navigation and scroll
+        setTimeout(() => {
+          window.history.replaceState(null, '', homePath);
+        }, 2000);
+      } else {
+        router.push('/');
+      }
     }
   };
 

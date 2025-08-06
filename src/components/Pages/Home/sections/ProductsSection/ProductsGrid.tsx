@@ -69,32 +69,33 @@ export function ProductsGrid({ products, isInView, containerRef, isRTL }: Produc
 
   return (
     <>
-      <FadeIn
-      
-        className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-6 lg:gap-8 auto-rows-fr"
-      >
-        {products.map((product, index) => (
-          <FadeIn
-            key={product.id}
-            className="w-full h-full flex" // Added h-full and flex
-          >
-            <ProductCard 
-              product={product} 
-              index={index} 
-              isInView={isInView} 
-              isRTL={isRTL}
-              onImageClick={openImageModal}
-              className="flex-1" // Added flex-1 prop
-            />
-          </FadeIn>
-        ))}
-      </FadeIn>
+      {/* Centered Flex Container */}
+      <div className="flex justify-center w-full">
+        <FadeIn
+          className="flex flex-wrap justify-center gap-4 md:gap-6 lg:gap-8 w-full max-w-screen-2xl"
+        >
+          {products.map((product, index) => (
+            <FadeIn
+              key={product.id}
+              className="flex justify-center w-full sm:w-[calc(50%-0.75rem)] md:w-[calc(33.333%-1rem)] lg:w-[calc(25%-1.125rem)] xl:w-[calc(20%-1.5rem)]"
+            >
+              <ProductCard 
+                product={product} 
+                index={index} 
+                isInView={isInView} 
+                isRTL={isRTL}
+                onImageClick={openImageModal}
+                className="w-full max-w-sm h-full"
+              />
+            </FadeIn>
+          ))}
+        </FadeIn>
+      </div>
 
       {/* Image Modal */}
       {selectedImage && (
         <div
-      
-          className="fixed inset-0 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+          className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4"
           onClick={closeImageModal}
         >
           <FadeIn
@@ -117,7 +118,7 @@ export function ProductsGrid({ products, isInView, containerRef, isRTL }: Produc
               alt="Product detail"
               className="w-full h-full object-contain rounded-lg"
             />
-          </FadeIn >
+          </FadeIn>
         </div>
       )}
     </>

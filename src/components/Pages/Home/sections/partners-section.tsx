@@ -14,9 +14,7 @@ export default function PartnersSection({ websiteId, sectionId }) {
   const { t, direction, language } = useLanguage()
   const containerRef = useRef<HTMLDivElement>(null)
 
-  const {
-    content,
-  } = useSectionLogic({
+  const { content } = useSectionLogic({
     sectionId,
     websiteId,
     itemsKey: "partners",
@@ -33,9 +31,7 @@ export default function PartnersSection({ websiteId, sectionId }) {
     order: (subsection: any, index?: number) => subsection.order || index || 0,
   }
 
-  const {
-    contentItems,
-  } = useSectionContent({
+  const { contentItems } = useSectionContent({
     sectionId,
     websiteId,
     fieldMappings: ContentItemsMappings,
@@ -51,7 +47,7 @@ export default function PartnersSection({ websiteId, sectionId }) {
       <div className="absolute inset-0 bg-gradient-to-br from-wtheme-background via-wtheme-background to-primary/5"></div>
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(var(--primary),0.1)_0%,transparent_50%)]"></div>
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_80%,rgba(var(--primary),0.05)_0%,transparent_50%)]"></div>
-      
+
       {/* Floating Particles */}
       <div className="absolute inset-0 overflow-hidden">
         {[...Array(6)].map((_, i) => (
@@ -62,8 +58,6 @@ export default function PartnersSection({ websiteId, sectionId }) {
               left: `${20 + i * 15}%`,
               top: `${10 + (i % 3) * 30}%`,
             }}
-      
-         
           />
         ))}
       </div>
@@ -71,41 +65,25 @@ export default function PartnersSection({ websiteId, sectionId }) {
       <div className="relative container px-4 md:px-6" ref={containerRef}>
         <FadeIn
           ref={ref}
-      
           className="flex flex-col items-center justify-center space-y-6 text-center mb-16"
         >
           {/* Enhanced Label */}
-          <FadeIn
-        
-            className="relative"
-          >
+          <FadeIn className="relative">
             <div className="absolute inset-0 bg-primary/10 rounded-full blur-xl"></div>
-              <span
-          
-              className="inline-block mb-2 text-body  text-primary tracking-wider  uppercase"
-            >
+            <span className="inline-block mb-2 text-body text-primary tracking-wider uppercase">
               {content.sectionLabel}
-          </span>
-            
+            </span>
           </FadeIn>
 
           {/* Enhanced Title */}
           <div className="space-y-4">
-            <h2
-              className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-wtheme-text relative"
-            >
+            <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-wtheme-text relative">
               <span className="relative inline-block">
                 {content.sectionTitle}
-                <FadeIn
-                  className="absolute -bottom-2 left-0 h-1 bg-gradient-to-r from-primary to-primary/60 rounded-full"
-                />
+                <FadeIn className="absolute -bottom-2 left-0 h-1 bg-gradient-to-r from-primary to-primary/60 rounded-full" />
               </span>
             </h2>
-
-            <p
-          
-              className="max-w-3xl text-lg text-wtheme-text/70 leading-relaxed"
-            >
+            <p className="max-w-3xl text-lg text-wtheme-text/70 leading-relaxed">
               {content.sectionDescription}
             </p>
           </div>
@@ -115,7 +93,6 @@ export default function PartnersSection({ websiteId, sectionId }) {
         <div className="relative">
           {/* Glow Effect */}
           <div className="absolute inset-0 bg-gradient-to-r from-transparent via-primary/5 to-transparent blur-3xl"></div>
-          
           <PartnersCarousel 
             partners={contentItems} 
             isInView={isInView} 
@@ -125,18 +102,13 @@ export default function PartnersSection({ websiteId, sectionId }) {
         </div>
 
         {/* Trust Indicator */}
-        <FadeIn
-
-         
-          className="text-center mt-12"
-        >
+        <FadeIn className="text-center mt-12">
           <div className="inline-flex items-center space-x-2 text-wtheme-text/60">
             <div className="flex space-x-1">
               {[...Array(5)].map((_, i) => (
                 <FadeIn
                   key={i}
                   className="w-1 h-1 bg-primary/60 rounded-full"
-                
                 />
               ))}
             </div>
@@ -174,7 +146,7 @@ function PartnersCarousel({ partners, isInView, isRTL, containerRef }: PartnersC
   const [screenSize, setScreenSize] = useState("desktop")
 
   // Duplicate partners array to create seamless loop
-  const duplicatedPartners = [...partners, ...partners, ...partners]
+  const duplicatedPartners = [...partners, ...partners, ...partners, ...partners]
 
   // Handle responsive screen detection
   useEffect(() => {
@@ -243,88 +215,71 @@ function PartnersCarousel({ partners, isInView, isRTL, containerRef }: PartnersC
   return (
     <>
       <style jsx>{`
-        @keyframes scroll-ltr {
-          0% { transform: translateX(-33.333%); }
-          100% { transform: translateX(-66.666%); }
-        }
-        @keyframes scroll-rtl {
-          0% { transform: translateX(-33.333%); }
-          100% { transform: translateX(0%); }
-        }
-        @keyframes glow {
-          0%, 100% { box-shadow: 0 0 20px rgba(var(--primary), 0.1); }
-          50% { box-shadow: 0 0 40px rgba(var(--primary), 0.2); }
-        }
-        .marquee-container {
-          overflow: hidden;
-          position: relative;
-          width: 100%;
-          background: linear-gradient(135deg, 
-            rgba(var(--primary), 0.02) 0%, 
-            transparent 50%, 
-            rgba(var(--primary), 0.02) 100%);
-          border-radius: 24px;
-          padding: 32px 0;
-          mask-image: ${isRTL 
-            ? `linear-gradient(
-                to left,
-                transparent 0%,
-                black 8%,
-                black 92%,
-                transparent 100%
-              )`
-            : `linear-gradient(
-                to right,
-                transparent 0%,
-                black 8%,
-                black 92%,
-                transparent 100%
-              )`
-          };
-          -webkit-mask-image: ${isRTL 
-            ? `linear-gradient(
-                to left,
-                transparent 0%,
-                black 8%,
-                black 92%,
-                transparent 100%
-              )`
-            : `linear-gradient(
-                to right,
-                transparent 0%,
-                black 8%,
-                black 92%,
-                transparent 100%
-              )`
-          };
-        }
-        .marquee-content {
-          display: flex;
-          width: fit-content;
-          will-change: transform;
-          animation: ${isRTL ? "scroll-rtl" : "scroll-ltr"} ${config.duration}s linear infinite;
-          animation-play-state: ${isPaused ? "paused" : "running"};
-          transform: translateX(-33.333%);
-          ${isRTL ? 'flex-direction: row-reverse;' : ''}
-        }
-        .marquee-content:hover {
-          animation-play-state: paused;
-        }
-        .partner-logo:hover {
-          animation: glow 2s ease-in-out infinite;
-        }
-        @media (prefers-reduced-motion: reduce) {
-          .marquee-content {
-            animation-duration: ${config.duration * 2}s;
-          }
-        }
-      `}</style>
+  @keyframes scroll-ltr {
+    0% { transform: translateX(0%); }
+    100% { transform: translateX(-33.333%); }
+  }
 
-      <FadeIn
-    
-        className="marquee-container relative w-full"
-     
-      >
+  @keyframes scroll-rtl {
+    0% { transform: translateX(-33.333%); }
+    100% { transform: translateX(0%); }
+  }
+
+  @keyframes glow {
+    0%, 100% { box-shadow: 0 0 20px rgba(var(--primary), 0.1); }
+    50% { box-shadow: 0 0 40px rgba(var(--primary), 0.2); }
+  }
+
+  .marquee-container {
+    overflow: hidden;
+    position: relative;
+    width: 100%;
+    background: linear-gradient(135deg, rgba(var(--primary), 0.02) 0%, transparent 50%, rgba(var(--primary), 0.02) 100%);
+    border-radius: 24px;
+    padding: 32px 0;
+    mask-image: linear-gradient(
+      to right,
+      transparent 0%,
+      black 8%,
+      black 92%,
+      transparent 100%
+    );
+    -webkit-mask-image: linear-gradient(
+      to right,
+      transparent 0%,
+      black 8%,
+      black 92%,
+      transparent 100%
+    );
+  }
+
+  .marquee-content {
+    display: flex;
+    width: fit-content;
+    will-change: transform;
+    animation: ${isRTL ? "scroll-rtl" : "scroll-ltr"} ${config.duration}s linear infinite;
+    animation-play-state: ${isPaused ? "paused" : "running"};
+    transform: translateX(${isRTL ? '-33.333%' : '0%'});
+    ${isRTL ? 'flex-direction: row;' : 'flex-direction: row;'}
+  }
+
+  .marquee-content:hover {
+    animation-play-state: paused;
+  }
+
+  .partner-logo:hover {
+    animation: glow 2s ease-in-out infinite;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .marquee-content {
+      animation-duration: ${config.duration * 2}s;
+    }
+  }
+`}
+</style>
+
+      <FadeIn className="marquee-container relative w-full">
         {/* Background Pattern */}
         <div className="absolute inset-0 opacity-30">
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(var(--primary),0.1)_0%,transparent_50%)]"></div>
@@ -332,7 +287,10 @@ function PartnersCarousel({ partners, isInView, isRTL, containerRef }: PartnersC
 
         <div className="marquee-content">
           {duplicatedPartners.map((partner, index) => (
-            <div key={`partner-${index}`} className={`flex-shrink-0 ${config.padding} ${config.logoWidth}`}>
+            <div 
+              key={`partner-${index}`} 
+              className={`flex-shrink-0 ${config.padding} ${config.logoWidth}`}
+            >
               <PartnerLogo 
                 partner={partner} 
                 index={index} 
@@ -378,8 +336,6 @@ function PartnerLogo({ partner, index, heightClass, screenSize, isRTL }: Partner
 
   return (
     <div
-  
-   
       className={`
         partner-logo flex items-center justify-center 
         rounded-2xl border border-white/10 
@@ -395,7 +351,7 @@ function PartnerLogo({ partner, index, heightClass, screenSize, isRTL }: Partner
     >
       {/* Animated Background */}
       <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-      
+
       {/* Shimmer Effect */}
       <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000 bg-gradient-to-r from-transparent via-white/10 to-transparent"></div>
 

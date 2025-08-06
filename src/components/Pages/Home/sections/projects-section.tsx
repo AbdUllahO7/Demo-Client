@@ -85,84 +85,61 @@ export default function ProjectsSection({ sectionId, websiteId }) {
     return () => stopAutoPlay()
   }, [validProjects.length])
 
-  // Navigation functions - Fixed for RTL
+  // Simplified navigation functions
   const nextSlide = () => {
     if (isTransitioning || validProjects.length === 0) return
     setIsTransitioning(true)
-    // In RTL, "next" means moving left (decreasing index)
-    setCurrentIndex((prev) => (isRTL ? prev - 1 : prev + 1))
+    setCurrentIndex((prev) => prev + 1)
     setTimeout(() => setIsTransitioning(false), 500)
   }
 
   const prevSlide = () => {
     if (isTransitioning || validProjects.length === 0) return
     setIsTransitioning(true)
-    // In RTL, "previous" means moving right (increasing index)
-    setCurrentIndex((prev) => (isRTL ? prev + 1 : prev - 1))
+    setCurrentIndex((prev) => prev - 1)
     setTimeout(() => setIsTransitioning(false), 500)
   }
 
-  // Handle infinite loop reset - Fixed for RTL
+  // Handle infinite loop reset
   useEffect(() => {
     if (validProjects.length === 0) return
-    if (isRTL) {
-      // RTL logic: when we go too far left (index too low), reset to right side
-      if (currentIndex <= 0) {
-        setTimeout(() => {
-          setCurrentIndex(validProjects.length * 2)
-        }, 500)
-      } else if (currentIndex >= validProjects.length * 2 + 1) {
-        setTimeout(() => {
-          setCurrentIndex(1)
-        }, 500)
-      }
-    } else {
-      // LTR logic (original)
-      if (currentIndex <= 0) {
-        setTimeout(() => {
-          setCurrentIndex(validProjects.length * 2)
-        }, 500)
-      } else if (currentIndex >= validProjects.length * 2 + 1) {
-        setTimeout(() => {
-          setCurrentIndex(1)
-        }, 500)
-      }
+    if (currentIndex <= 0) {
+      setTimeout(() => {
+        setCurrentIndex(validProjects.length * 2)
+      }, 500)
+    } else if (currentIndex >= validProjects.length * 2 + 1) {
+      setTimeout(() => {
+        setCurrentIndex(1)
+      }, 500)
     }
-  }, [currentIndex, validProjects.length, isRTL])
+  }, [currentIndex, validProjects.length])
 
-  // Get current slide for dots - Fixed for RTL
+  // Get current slide for dots
   const getCurrentSlide = () => {
     if (validProjects.length === 0) return 0
-    let slideIndex = (currentIndex - 1) % validProjects.length
-    // In RTL, we need to reverse the slide index for display
-    if (isRTL) {
-      slideIndex = validProjects.length - 1 - slideIndex
-    }
-    return slideIndex
+    return (currentIndex - 1) % validProjects.length
   }
 
-  // Calculate transform for responsive design - Fixed for RTL
+  // Calculate transform for responsive design
   const getTransform = () => {
     const itemsPerView = getItemsPerView()
     const percentage = 100 / itemsPerView
     const gap = isMobile ? 16 : 24 // 16px for mobile, 24px for desktop
     const gapOffset = (currentIndex * gap) / itemsPerView
+    
+    // Always use standard LTR transform, but reverse in RTL
     if (isRTL) {
-      // In RTL, we reverse the direction of movement
       return `translateX(calc(${currentIndex * percentage}% - ${gapOffset}px))`
     } else {
-      // LTR (original)
       return `translateX(calc(-${currentIndex * percentage}% + ${gapOffset}px))`
     }
   }
 
-  // Handle dot navigation - Fixed for RTL
+  // Handle dot navigation
   const handleDotClick = (index) => {
     if (isTransitioning) return
     stopAutoPlay()
-    // In RTL, reverse the index mapping
-    const targetIndex = isRTL ? validProjects.length - 1 - index : index
-    setCurrentIndex(validProjects.length + targetIndex + 1)
+    setCurrentIndex(validProjects.length + index + 1)
     setTimeout(startAutoPlay, 5000)
   }
 
@@ -212,7 +189,7 @@ export default function ProjectsSection({ sectionId, websiteId }) {
         {/* Carousel Container with External Navigation */}
         <div className="relative max-w-7xl mx-auto">
           <div className="flex items-center gap-4">
-            {/* Left Arrow - Outside Content */}
+            {/* Left Arrow - Always Previous */}
             <div className="flex-shrink-0">
               <Button
                 variant="outline"
@@ -221,11 +198,9 @@ export default function ProjectsSection({ sectionId, websiteId }) {
                 disabled={isTransitioning}
                 className={`${isMobile ? "w-8 h-8" : "w-12 h-12"} rounded-full bg-white/90 backdrop-blur border shadow-lg hover:bg-white transition-all duration-200 hover:scale-105`}
               >
-                {isRTL ? (
-                  <ChevronRight className={`${isMobile ? "w-4 h-4" : "w-6 h-6"}`} />
-                ) : (
-                  <ChevronLeft className={`${isMobile ? "w-4 h-4" : "w-6 h-6"}`} />
-                )}
+                {
+                  isRTL ?  <ChevronRight className={`${isMobile ? "w-4 h-4" : "w-6 h-6"}`} /> :  <ChevronLeft className={`${isMobile ? "w-4 h-4" : "w-6 h-6"}`} />
+                }
               </Button>
             </div>
 
@@ -253,7 +228,7 @@ export default function ProjectsSection({ sectionId, websiteId }) {
               </div>
             </div>
 
-            {/* Right Arrow - Outside Content */}
+            {/* Right Arrow - Always Next */}
             <div className="flex-shrink-0">
               <Button
                 variant="outline"
@@ -262,11 +237,9 @@ export default function ProjectsSection({ sectionId, websiteId }) {
                 disabled={isTransitioning}
                 className={`${isMobile ? "w-8 h-8" : "w-12 h-12"} rounded-full bg-white/90 backdrop-blur border shadow-lg hover:bg-white transition-all duration-200 hover:scale-105`}
               >
-                {isRTL ? (
-                  <ChevronLeft className={`${isMobile ? "w-4 h-4" : "w-6 h-6"}`} />
-                ) : (
-                  <ChevronRight className={`${isMobile ? "w-4 h-4" : "w-6 h-6"}`} />
-                )}
+                 {
+                  isRTL ?  <ChevronLeft className={`${isMobile ? "w-4 h-4" : "w-6 h-6"}`} /> :  <ChevronRight className={`${isMobile ? "w-4 h-4" : "w-6 h-6"}`} />
+                }
               </Button>
             </div>
           </div>
@@ -304,7 +277,7 @@ function ProjectCard({ project, viewCaseStudyText, isMobile, isRTL }) {
       href={`/Pages/ProjectsDetailPage/${project.id}`}
       className="block rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 group relative"
     >
-      {/* Arrow Button - Outside Content */}
+      {/* Arrow Button - Positioned correctly for RTL */}
       <div
         className={`absolute top-4 ${isRTL ? "left-4" : "right-4"} z-10 opacity-0 group-hover:opacity-100 transition-all duration-300 transform ${isRTL ? "translate-x-2" : "-translate-x-2"} group-hover:translate-x-0`}
       >
