@@ -23,9 +23,6 @@ import ProductsSection from "@/components/Pages/Home/sections/ProductsSection/Pr
 import BlogSection from '@/components/Pages/Home/sections/BlogSection/blog-section';
 import { Section } from "@/api/types/section/section.type";
 
-
-
-
 // Helper function to get the original component key for duplicated sections
 const getOriginalSubName = (subName: string): string => {
   // Remove duplicate suffix like "-duplicate-1", "-duplicate-2", etc.
