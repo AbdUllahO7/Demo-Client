@@ -37,11 +37,18 @@ function setStoredWebsiteId(id: string): void {
   }
 }
 
+// Fixed: This function should ONLY return what's actually in localStorage or default to 'dark'
 function getStoredColorMode(): 'light' | 'dark' {
   if (typeof window !== 'undefined') {
-    return (localStorage.getItem('colorMode') as 'light' | 'dark') || 'light';
+    const stored = localStorage.getItem('colorMode') as 'light' | 'dark' | null;
+    // If nothing is stored, set 'dark' as default AND store it
+    if (!stored) {
+      localStorage.setItem('colorMode', 'dark');
+      return 'dark';
+    }
+    return stored;
   }
-  return 'light';
+  return 'dark';
 }
 
 function setStoredColorMode(mode: 'light' | 'dark'): void {
@@ -57,12 +64,18 @@ export function WebsiteThemeProvider({ children }: WebsiteThemeProviderProps) {
 
   const websites = websitesResponse?.data || [];
 
-  // Initialize states
+  // Initialize states - IMPORTANT: Don't set a default here, let useEffect handle it
   const [currentWebsiteId, setCurrentWebsiteId] = useState<string | null>(null);
   const [isInitialized, setIsInitialized] = useState(false);
-  const [colorMode, setColorMode] = useState<'light' | 'dark'>(getStoredColorMode());
+  const [colorMode, setColorMode] = useState<'light' | 'dark'>(() => {
+    // Initialize with the stored value or default to 'dark' on first render
+    if (typeof window !== 'undefined') {
+      return getStoredColorMode();
+    }
+    return 'dark';
+  });
 
-  // Initialize websiteId and colorMode
+  // Initialize websiteId ONLY - colorMode is already set correctly
   useEffect(() => {
     const storedWebsiteId = getStoredWebsiteId();
     const websiteId = websites.length > 0 ? websites[0]._id : null;
@@ -77,7 +90,7 @@ export function WebsiteThemeProvider({ children }: WebsiteThemeProviderProps) {
     setIsInitialized(true);
   }, [websites]);
 
-  // Sync localStorage
+  // Sync localStorage when colorMode changes
   useEffect(() => {
     if (currentWebsiteId) {
       setStoredWebsiteId(currentWebsiteId);
@@ -133,6 +146,8 @@ export function WebsiteThemeProvider({ children }: WebsiteThemeProviderProps) {
 
   const handleSetColorMode = (mode: 'light' | 'dark') => {
     setColorMode(mode);
+    // Immediately sync to localStorage
+    setStoredColorMode(mode);
   };
 
   const contextValue: WebsiteThemeContextType = {
@@ -168,7 +183,6 @@ function applyThemeToCSS(theme: WebSiteTheme, mode: 'light' | 'dark') {
 
   const root = document.documentElement;
   const colors = theme.colors[mode];
-
 
   // Apply color variables
   root.style.setProperty('--website-theme-primary', colors.primary);
@@ -211,46 +225,47 @@ function applyThemeToCSS(theme: WebSiteTheme, mode: 'light' | 'dark') {
     root.style.setProperty('--website-theme-primary-900', `rgb(${darken(primaryRGB, 0.4)})`);
   }
 
-  // Update theme class
+  // Update theme class - ensure dark class is applied by default
   document.body.className = document.body.className.replace(/website-theme-\w+/g, '');
   document.body.classList.add(`website-theme-${theme._id}`);
   document.body.classList.toggle('dark', mode === 'dark');
-
 }
 
-// Function to reset to default theme
+// Function to reset to default theme - updated with better dark mode defaults
 function resetToDefaultTheme(mode: 'light' | 'dark') {
   if (typeof window === 'undefined') return;
 
-
   const root = document.documentElement;
+  
+  // Updated default colors - using the Dark Mode preset from your COLOR_PRESETS
   const defaultColors = mode === 'light' ? {
-    primary: '#E91E63',
-    secondary: '#6A1B9A',
-    accent: '#FF6D00',
+    primary: '#bb86fc',
+    secondary: '#03dac6',
+    accent: '#cf6679',
     background: '#ffffff',
     surface: '#f8f9fa',
-    text: '#000000',
+    text: '#121212',
     textSecondary: '#6c757d',
-    border: '#e5e7eb',
-    success: '#10b981',
-    warning: '#f59e0b',
+    border: '#dee2e6',
+    success: '#03dac6',
+    warning: '#ffb74d',
     hover: '#000000',
-    error: '#ef4444',
+    error: '#cf6679',
     info: '#17a2b8',
   } : {
-    primary: '#F06292',
-    secondary: '#BA68C8',
-    accent: '#FF8A65',
+    // Dark mode defaults using the "Dark Mode" preset
+    primary: '#bb86fc',
+    secondary: '#03dac6',
+    accent: '#cf6679',
     background: '#121212',
     surface: '#1e1e1e',
     text: '#ffffff',
     textSecondary: '#adb5bd',
     border: '#333333',
-    success: '#34d399',
-    warning: '#fbbf24',
+    success: '#03dac6',
+    warning: '#ffb74d',
     hover: '#000000',
-    error: '#f87171',
+    error: '#cf6679',
     info: '#22b8cf',
   };
 
@@ -259,7 +274,7 @@ function resetToDefaultTheme(mode: 'light' | 'dark') {
     root.style.setProperty(`--website-theme-${key.replace(/([A-Z])/g, '-$1').toLowerCase()}`, value);
   });
 
-  // Apply default fonts
+  // Apply default fonts (Modern Sans preset)
   root.style.setProperty('--website-theme-font-heading', 'Inter, sans-serif');
   root.style.setProperty('--website-theme-font-heading-weight', '700');
   root.style.setProperty('--website-theme-font-heading-size', '2rem');
@@ -285,9 +300,16 @@ function resetToDefaultTheme(mode: 'light' | 'dark') {
     root.style.setProperty('--website-theme-primary-900', `rgb(${darken(primaryRGB, 0.4)})`);
   }
 
-  // Remove theme class
+  // Remove theme class and apply dark mode by default
   document.body.className = document.body.className.replace(/website-theme-\w+/g, '');
   document.body.classList.toggle('dark', mode === 'dark');
+  
+  // Add a default dark class to body if no specific theme is active
+  if (mode === 'dark') {
+    document.body.classList.add('dark');
+  } else {
+    document.body.classList.remove('dark');
+  }
 }
 
 // Utility functions for color manipulation
@@ -305,4 +327,3 @@ function lighten(rgb: [number, number, number], factor: number): string {
 function darken(rgb: [number, number, number], factor: number): string {
   return rgb.map((c) => Math.round(c * (1 - factor))).join(', ');
 }
-

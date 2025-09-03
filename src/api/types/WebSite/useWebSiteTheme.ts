@@ -72,9 +72,6 @@ export interface WebSiteTheme {
   id: string;
 }
 
-
-
-
 export interface WebSiteThemeResponse {
   success: boolean;
   message: string;
@@ -109,43 +106,8 @@ export interface FontPreset {
   fonts: WebSiteTheme['fonts'];
 }
 
-// Common color palettes
+// Common color palettes - Dark Mode moved to first position as default
 export const COLOR_PRESETS: ColorPreset[] = [
-  {
-    name: 'Corporate Blue',
-    colors: {
-      light: {
-        primary: '#007bff',
-        secondary: '#6c757d',
-        accent: '#17a2b8',
-        background: '#ffffff',
-        surface: '#f8f9fa',
-        text: '#212529',
-        textSecondary: '#6c757d',
-        border: '#dee2e6',
-        success: '#28a745',
-        hover:'#000000',
-        warning: '#ffc107',
-        error: '#dc3545',
-        info: '#17a2b8',
-      },
-      dark: {
-        primary: '#0d6efd',
-        secondary: '#adb5bd',
-        accent: '#22b8cf',
-        background: '#212529',
-        surface: '#343a40',
-        text: '#f8f9fa',
-        textSecondary: '#ced4da',
-        border: '#495057',
-        hover:'#000000',
-        success: '#2ecc71',
-        warning: '#ffca2c',
-        error: '#f03e3e',
-        info: '#22b8cf',
-      },
-    },
-  },
   {
     name: 'Dark Mode',
     colors: {
@@ -178,6 +140,41 @@ export const COLOR_PRESETS: ColorPreset[] = [
         error: '#cf6679',
         info: '#22b8cf',
         hover:'#000000',
+      },
+    },
+  },
+  {
+    name: 'Corporate Blue',
+    colors: {
+      light: {
+        primary: '#007bff',
+        secondary: '#6c757d',
+        accent: '#17a2b8',
+        background: '#ffffff',
+        surface: '#f8f9fa',
+        text: '#212529',
+        textSecondary: '#6c757d',
+        border: '#dee2e6',
+        success: '#28a745',
+        hover:'#000000',
+        warning: '#ffc107',
+        error: '#dc3545',
+        info: '#17a2b8',
+      },
+      dark: {
+        primary: '#0d6efd',
+        secondary: '#adb5bd',
+        accent: '#22b8cf',
+        background: '#212529',
+        surface: '#343a40',
+        text: '#f8f9fa',
+        textSecondary: '#ced4da',
+        border: '#495057',
+        hover:'#000000',
+        success: '#2ecc71',
+        warning: '#ffca2c',
+        error: '#f03e3e',
+        info: '#22b8cf',
       },
     },
   },
@@ -456,7 +453,8 @@ export const getContrastColor = (color: string): string => {
   return brightness > 155 ? '#000000' : '#ffffff';
 };
 
-export const generateThemeCSS = (theme: WebSiteTheme, mode: 'light' | 'dark' = 'light'): string => {
+// Updated to default to 'dark' mode instead of 'light'
+export const generateThemeCSS = (theme: WebSiteTheme, mode: 'light' | 'dark' = 'dark'): string => {
   const colors = theme.colors[mode];
   return `
     :root {
@@ -486,4 +484,23 @@ export const generateThemeCSS = (theme: WebSiteTheme, mode: 'light' | 'dark' = '
       --accent-size: ${theme.fonts.accent.size};
     }
   `;
+};
+
+// Helper function to get default theme preset (now Dark Mode)
+export const getDefaultThemePreset = (): ColorPreset => {
+  return COLOR_PRESETS[0]; // Dark Mode is now first in the array
+};
+
+// Helper function to create a default theme object
+export const createDefaultTheme = (websiteId: string, themeName: string = 'Default Dark Theme'): Omit<WebSiteTheme, '_id' | 'createdAt' | 'updatedAt' | 'id'> => {
+  const defaultPreset = getDefaultThemePreset();
+  const defaultFont = FONT_PRESETS[0]; // Modern Sans
+
+  return {
+    websiteId,
+    themeName,
+    colors: defaultPreset.colors,
+    fonts: defaultFont.fonts,
+    isActive: true,
+  };
 };

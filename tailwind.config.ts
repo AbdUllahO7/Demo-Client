@@ -29,7 +29,7 @@ const config = {
         
         // UPDATED: Website theme colors now map to primary, secondary, accent
         primary: {
-          DEFAULT: "var(--website-theme-primary)", // First color from theme
+          DEFAULT: "var(--website-theme-primary)", 
           50: "var(--website-theme-primary-50)",
           100: "var(--website-theme-primary-100)",
           200: "var(--website-theme-primary-200)",
@@ -40,7 +40,7 @@ const config = {
           700: "var(--website-theme-primary-700)",
           800: "var(--website-theme-primary-800)",
           900: "var(--website-theme-primary-900)",
-          foreground: "var(--website-theme-background)", // Contrasting color
+          foreground: "var(--website-theme-background)", 
         },
         secondary: {
           DEFAULT: "var(--website-theme-secondary)", // Second color from theme

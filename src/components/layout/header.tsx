@@ -566,8 +566,8 @@ export default function Header({
         isOpen
           ? "bg-primary shadow-xl"
           : scrolled
-            ? "bg-wtheme-background/95 backdrop-blur-md shadow-lg"
-            : "bg-wtheme-background/80 backdrop-blur-sm"
+            ? "bg-wtheme-background backdrop-blur-md shadow-lg"
+            : "bg-wtheme-background/70 backdrop-blur-sm"
       }`}
       dir={direction}
     >
@@ -605,7 +605,7 @@ export default function Header({
                 <Link
                   href={item.href}
                   onClick={(e) => handleNavClick(e, item.href, false, item)}
-                  className={`flex items-center gap-1 px-1 py-1 text-wtheme-text font-bold hover:text-wtheme-hover transition-colors duration-200 ${
+                  className={`flex items-center gap-1 px-1 py-1 text-primary font-bold hover:text-wtheme-hover transition-colors duration-200 ${
                     isRTL ? '' : ''
                   }`}
                 >
@@ -645,7 +645,7 @@ export default function Header({
                               {subItem.isInternal ? (
                                 <button
                                   onClick={() => handleSubNavClick(subItem)}
-                                  className={`w-full flex items-center justify-between px-4 py-3 text-sm text-wtheme-text hover:bg-wtheme-hover/10 transition-colors duration-200 ${
+                                  className={`w-full flex items-center justify-between px-4 py-3 text-sm text-primary hover:bg-wtheme-hover/10 transition-colors duration-200 ${
                                     subItem.source === "section" ? `${isRTL ? 'border-r-2 border-accent mr-2' : 'border-l-2 border-accent ml-2'}` : ""
                                   } ${isRTL ? 'text-right' : 'text-left'}`}
                                 >

@@ -11,7 +11,7 @@ import { FadeIn } from "@/utils/OptimizedAnimations"
 
 export default function PartnersSection({ websiteId, sectionId }) {
   const { ref, isInView } = useScrollAnimation()
-  const { t, direction, language } = useLanguage()
+  const { t, language } = useLanguage()
   const containerRef = useRef<HTMLDivElement>(null)
 
   const { content } = useSectionLogic({
@@ -39,10 +39,8 @@ export default function PartnersSection({ websiteId, sectionId }) {
     filter: featureFilter,
   })
 
-  const isRTL = direction === "rtl"
-
   return (
-    <section id="partners" className="relative w-full py-20 overflow-hidden" dir={direction}>
+    <section id="partners" className="relative w-full py-20 overflow-hidden">
       {/* Background Elements */}
       <div className="absolute inset-0 bg-gradient-to-br from-wtheme-background via-wtheme-background to-primary/5"></div>
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(var(--primary),0.1)_0%,transparent_50%)]"></div>
@@ -96,7 +94,6 @@ export default function PartnersSection({ websiteId, sectionId }) {
           <PartnersCarousel 
             partners={contentItems} 
             isInView={isInView} 
-            isRTL={isRTL} 
             containerRef={containerRef} 
           />
         </div>
@@ -136,12 +133,10 @@ interface PartnersCarouselProps {
     isMain?: boolean
   }[]
   isInView: boolean
-  isRTL: boolean
   containerRef: React.RefObject<HTMLDivElement>
 }
 
-function PartnersCarousel({ partners, isInView, isRTL, containerRef }: PartnersCarouselProps) {
-  const { direction } = useLanguage()
+function PartnersCarousel({ partners, isInView, containerRef }: PartnersCarouselProps) {
   const [isPaused, setIsPaused] = useState(false)
   const [screenSize, setScreenSize] = useState("desktop")
 
@@ -220,11 +215,6 @@ function PartnersCarousel({ partners, isInView, isRTL, containerRef }: PartnersC
     100% { transform: translateX(-33.333%); }
   }
 
-  @keyframes scroll-rtl {
-    0% { transform: translateX(-33.333%); }
-    100% { transform: translateX(0%); }
-  }
-
   @keyframes glow {
     0%, 100% { box-shadow: 0 0 20px rgba(var(--primary), 0.1); }
     50% { box-shadow: 0 0 40px rgba(var(--primary), 0.2); }
@@ -257,10 +247,8 @@ function PartnersCarousel({ partners, isInView, isRTL, containerRef }: PartnersC
     display: flex;
     width: fit-content;
     will-change: transform;
-    animation: ${isRTL ? "scroll-rtl" : "scroll-ltr"} ${config.duration}s linear infinite;
+    animation: scroll-ltr ${config.duration}s linear infinite;
     animation-play-state: ${isPaused ? "paused" : "running"};
-    transform: translateX(${isRTL ? '-33.333%' : '0%'});
-    ${isRTL ? 'flex-direction: row;' : 'flex-direction: row;'}
   }
 
   .marquee-content:hover {
@@ -296,7 +284,6 @@ function PartnersCarousel({ partners, isInView, isRTL, containerRef }: PartnersC
                 index={index} 
                 heightClass={config.logoHeight} 
                 screenSize={screenSize} 
-                isRTL={isRTL} 
               />
             </div>
           ))}
@@ -313,10 +300,9 @@ interface PartnerLogoProps {
   index: number
   heightClass: string
   screenSize: string
-  isRTL: boolean
 }
 
-function PartnerLogo({ partner, index, heightClass, screenSize, isRTL }: PartnerLogoProps) {
+function PartnerLogo({ partner, index, heightClass, screenSize }: PartnerLogoProps) {
   const getImageSize = () => {
     switch (screenSize) {
       case "mobile":
@@ -365,7 +351,6 @@ function PartnerLogo({ partner, index, heightClass, screenSize, isRTL }: Partner
           object-contain filter
           transition-all duration-700 ease-out
           group-hover:scale-110 relative z-10 bg-white
-          ${isRTL ? '' : ''}
         `}
         loading="lazy"
       />

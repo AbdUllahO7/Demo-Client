@@ -69,14 +69,14 @@ const FeatureContent: React.FC<FeatureContentProps> = ({ content, direction }) =
   
   const ContentSection = () => (
     <div>
-      <h3 className="text-2xl font-heading  mb-4 text-wtheme-text">{heading}</h3>
-      <p className="text-wtheme-text font-body mb-4 leading-relaxed">
+      <h3 className={`text-2xl font-heading  mb-4 text-wtheme-text ${direction === 'rtl' ? 'text-end' : ''}`}>{heading}</h3>
+      <p className={`text-wtheme-text font-body mb-4 leading-relaxed ${direction === 'rtl' ? 'text-end' : ''}`}>
         {description}
       </p>
       {features && features.length > 0 && (
         <ul className="space-y-3">
           {features.map((feature, index) => (
-            <li key={index} className="flex items-start">
+            <li key={index} className={`${direction === 'rtl' ? 'flex-row-reverse' : ''} flex`}>
               <div className={`${direction === 'rtl' ? 'ml-3' : 'mr-3'} mt-1 text-primary`}>
                 <Check className="h-5 w-5" />
               </div>

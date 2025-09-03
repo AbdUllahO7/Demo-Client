@@ -22,13 +22,17 @@ export const FaqItem = ({ faq, index, isInView, isRTL, isOpen, onToggle }) => {
             ? "border-primary border-2" 
             : "border-primary "
         } backdrop-blur-sm shadow-sm overflow-hidden transition-all border-primary duration-300 border bg-wtheme-background`}
+        dir={isRTL ? "rtl" : "ltr"}
       >
         <button
           onClick={onToggle}
-          className={`flex items-center justify-between w-full p-6 text-left ${isRTL ? "flex-row-reverse" : ""}`}
+          className={`flex items-center justify-between w-full p-6 text-left ${
+            isRTL ? "text-right" : "text-left"
+          }`}
           aria-expanded={isOpen}
+          dir={isRTL ? "rtl" : "ltr"}
         >
-          <div className={`flex items-center gap-3 ${isRTL ? "flex-row-reverse" : ""}`}>
+          <div className={`flex items-center gap-3 `}>
             <div className={`
               flex items-center justify-center min-w-10 h-10 rounded-full 
               ${isOpen 
@@ -36,7 +40,7 @@ export const FaqItem = ({ faq, index, isInView, isRTL, isOpen, onToggle }) => {
                 : "bg-primary/10 text-primary"
               } transition-colors duration-300
             `}>
-              <span className="font-body ">{index + 1}</span>
+              <span className="font-body">{index + 1}</span>
             </div>
             <h3
               className={`text-lg font-heading font-medium ${
@@ -46,6 +50,7 @@ export const FaqItem = ({ faq, index, isInView, isRTL, isOpen, onToggle }) => {
               {faq.question}
             </h3>
           </div>
+          
           <div className={`flex items-center gap-3 ${isRTL ? "flex-row-reverse" : ""}`}>
             <span className="text-xs font-accent px-2 py-1 rounded-full bg-primary/10 text-primary font-medium">
               {faq.category}
@@ -58,7 +63,7 @@ export const FaqItem = ({ faq, index, isInView, isRTL, isOpen, onToggle }) => {
               <ChevronDown 
                 className={`w-4 h-4 transition-transform duration-300 ${
                   isOpen ? "rotate-180" : ""
-                }`} 
+                } ${isRTL ? "scale-x-[-1]" : ""}`} 
               />
             </FadeIn>
           </div>
@@ -67,7 +72,14 @@ export const FaqItem = ({ faq, index, isInView, isRTL, isOpen, onToggle }) => {
         <AnimatePresence>
           {isOpen && (
             <FadeIn className="overflow-hidden">
-              <div className={`p-6 pt-0 border-t border-primary ${isRTL ? "pr-20 text-right" : "pl-20 text-left"} text-wtheme-text`}>
+              <div 
+                className={`p-6 pt-0 border-t border-primary text-wtheme-text ${
+                  isRTL 
+                    ? "pr-20 text-right" 
+                    : "pl-20 text-left"
+                }`}
+                dir={isRTL ? "rtl" : "ltr"}
+              >
                 <p className="leading-relaxed font-body">{faq.answer}</p>
               </div>
             </FadeIn>

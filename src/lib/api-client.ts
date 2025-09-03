@@ -12,11 +12,8 @@ const apiClient = axios.create({
   headers: {
     'Content-Type': 'application/json',
   },
-  // ❌ Remove this line if you don't need credentials
-  // withCredentials: true,
 });
 
-// Keep your existing interceptors...
 apiClient.interceptors.request.use(
   (config) => {
  

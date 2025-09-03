@@ -10,16 +10,17 @@ import { CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { useSectionLogic } from "@/hooks/useSectionLogic"
 import { useSectionContent } from "@/hooks/useSectionContent"
-import { FadeIn } from "@/utils/lightweightAnimations"
 
 export default function ProjectsSection({ sectionId, websiteId }) {
-  const { direction } = useLanguage()
+    const { language, direction } = useLanguage();
+
   const isRTL = direction === "rtl"
   const [currentIndex, setCurrentIndex] = useState(1) // Start at 1 (middle set)
   const [isTransitioning, setIsTransitioning] = useState(false)
   const [isMobile, setIsMobile] = useState(false)
   const intervalRef = useRef(null)
 
+  const currentLang = language as 'en' | 'ar' | 'tr';
   const { content, error: sectionError } = useSectionLogic({
     sectionId,
     websiteId,
@@ -262,7 +263,18 @@ export default function ProjectsSection({ sectionId, websiteId }) {
           {/* Counter */}
           <div className="text-center mt-2 md:mt-4">
             <span className="text-xs md:text-sm text-wtheme-text/60">
-              {getCurrentSlide() + 1} of {validProjects.length}
+              {(() => {
+                const current = getCurrentSlide() + 1;
+                const total = validProjects.length;
+                
+                if (currentLang === 'ar') {
+                  return `${total} من ${current}`;
+                } else if (currentLang === 'tr') {
+                  return `${total} tanesinden ${current}`;
+                } else {
+                  return `${current} of ${total}`;
+                }
+              })()}
             </span>
           </div>
         </div>

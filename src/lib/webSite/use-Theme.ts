@@ -14,7 +14,6 @@ export function useWebSiteThemes() {
 
   // Query keys include user ID to prevent cross-user cache conflicts
   const themesKey = ['themes', userId];
-  const themeKey = (id: string) => [...themesKey, id];
   const websiteThemesKey = (websiteId: string) => [...themesKey, 'website', websiteId];
   const activeThemeKey = (websiteId: string) => [...themesKey, 'website', websiteId, 'active'];
 
