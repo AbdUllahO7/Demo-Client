@@ -12,7 +12,7 @@ import { useSectionLogic } from "@/hooks/useSectionLogic"
 import { useSectionContent } from "@/hooks/useSectionContent"
 
 export default function ProjectsSection({ sectionId, websiteId }) {
-    const { language, direction } = useLanguage();
+  const { language, direction } = useLanguage()
 
   const isRTL = direction === "rtl"
   const [currentIndex, setCurrentIndex] = useState(1) // Start at 1 (middle set)
@@ -20,7 +20,7 @@ export default function ProjectsSection({ sectionId, websiteId }) {
   const [isMobile, setIsMobile] = useState(false)
   const intervalRef = useRef(null)
 
-  const currentLang = language as 'en' | 'ar' | 'tr';
+  const currentLang = language as "en" | "ar" | "tr"
   const { content, error: sectionError } = useSectionLogic({
     sectionId,
     websiteId,
@@ -115,19 +115,22 @@ export default function ProjectsSection({ sectionId, websiteId }) {
     }
   }, [currentIndex, validProjects.length])
 
-  // Get current slide for dots
+  // Get current slide for dots - Fixed calculation
   const getCurrentSlide = () => {
     if (validProjects.length === 0) return 0
-    return (currentIndex - 1) % validProjects.length
+    // Ensure we always get a valid index between 0 and validProjects.length - 1
+    let adjustedIndex = (currentIndex - 1) % validProjects.length
+    if (adjustedIndex < 0) adjustedIndex = validProjects.length + adjustedIndex
+    return adjustedIndex
   }
 
   // Calculate transform for responsive design
   const getTransform = () => {
     const itemsPerView = getItemsPerView()
     const percentage = 100 / itemsPerView
-    const gap = isMobile ? 16 : 24 // 16px for mobile, 24px for desktop
-    const gapOffset = (currentIndex * gap) / itemsPerView
-    
+    const gap = isMobile ? 0 : 24 // No gap on mobile to ensure single card display
+    const gapOffset = isMobile ? 0 : (currentIndex * gap) / itemsPerView
+
     // Always use standard LTR transform, but reverse in RTL
     if (isRTL) {
       return `translateX(calc(${currentIndex * percentage}% - ${gapOffset}px))`
@@ -199,9 +202,11 @@ export default function ProjectsSection({ sectionId, websiteId }) {
                 disabled={isTransitioning}
                 className={`${isMobile ? "w-8 h-8" : "w-12 h-12"} rounded-full bg-white/90 backdrop-blur border shadow-lg hover:bg-white transition-all duration-200 hover:scale-105`}
               >
-                {
-                  isRTL ?  <ChevronRight className={`${isMobile ? "w-4 h-4" : "w-6 h-6"}`} /> :  <ChevronLeft className={`${isMobile ? "w-4 h-4" : "w-6 h-6"}`} />
-                }
+                {isRTL ? (
+                  <ChevronRight className={`${isMobile ? "w-4 h-4" : "w-6 h-6"}`} />
+                ) : (
+                  <ChevronLeft className={`${isMobile ? "w-4 h-4" : "w-6 h-6"}`} />
+                )}
               </Button>
             </div>
 
@@ -216,14 +221,20 @@ export default function ProjectsSection({ sectionId, websiteId }) {
                 {projects.map((project, index) => (
                   <div
                     key={`${project.id}-${Math.floor(index / validProjects.length)}`}
-                    className={`flex-shrink-0 ${isMobile ? "w-full px-2" : "w-1/3 px-3"}`}
+                    className={`flex-shrink-0 ${
+                      isMobile
+                        ? "w-full" // Full width on mobile - only 1 card visible
+                        : "w-1/3" // 1/3 width on desktop - 3 cards visible
+                    }`}
                   >
-                    <ProjectCard
-                      project={project}
-                      viewCaseStudyText={content.readMore || "View Project"}
-                      isMobile={isMobile}
-                      isRTL={isRTL}
-                    />
+                    <div className={isMobile ? "" : "px-3"}>
+                      <ProjectCard
+                        project={project}
+                        viewCaseStudyText={content.readMore || "View Project"}
+                        isMobile={isMobile}
+                        isRTL={isRTL}
+                      />
+                    </div>
                   </div>
                 ))}
               </div>
@@ -238,9 +249,11 @@ export default function ProjectsSection({ sectionId, websiteId }) {
                 disabled={isTransitioning}
                 className={`${isMobile ? "w-8 h-8" : "w-12 h-12"} rounded-full bg-white/90 backdrop-blur border shadow-lg hover:bg-white transition-all duration-200 hover:scale-105`}
               >
-                 {
-                  isRTL ?  <ChevronLeft className={`${isMobile ? "w-4 h-4" : "w-6 h-6"}`} /> :  <ChevronRight className={`${isMobile ? "w-4 h-4" : "w-6 h-6"}`} />
-                }
+                {isRTL ? (
+                  <ChevronLeft className={`${isMobile ? "w-4 h-4" : "w-6 h-6"}`} />
+                ) : (
+                  <ChevronRight className={`${isMobile ? "w-4 h-4" : "w-6 h-6"}`} />
+                )}
               </Button>
             </div>
           </div>
@@ -260,19 +273,19 @@ export default function ProjectsSection({ sectionId, websiteId }) {
             ))}
           </div>
 
-          {/* Counter */}
+          {/* Counter - Fixed to always start from 1 */}
           <div className="text-center mt-2 md:mt-4">
             <span className="text-xs md:text-sm text-wtheme-text/60">
               {(() => {
-                const current = getCurrentSlide() + 1;
-                const total = validProjects.length;
-                
-                if (currentLang === 'ar') {
-                  return `${total} من ${current}`;
-                } else if (currentLang === 'tr') {
-                  return `${total} tanesinden ${current}`;
+                const current = getCurrentSlide() + 1 // This will now be 1, 2, 3, 4, 5
+                const total = validProjects.length
+
+                if (currentLang === "ar") {
+                  return `${total} من ${current}`
+                } else if (currentLang === "tr") {
+                  return `${total} tanesinden ${current}`
                 } else {
-                  return `${current} of ${total}`;
+                  return `${current} of ${total}`
                 }
               })()}
             </span>

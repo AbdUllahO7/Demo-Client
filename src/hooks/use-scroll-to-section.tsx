@@ -1,6 +1,6 @@
 "use client"
 
-import { useCallback } from "react"
+import { useCallback, useEffect } from "react"
 
 export function useScrollToSection() {
   const scrollToSection = useCallback((elementId: string) => {
@@ -18,6 +18,29 @@ export function useScrollToSection() {
     }
   }, [])
 
+  // Handle hash navigation on page load
+  useEffect(() => {
+    const handleInitialHash = () => {
+      const hash = window.location.hash.slice(1)
+      if (hash) {
+        // Multiple attempts with increasing delays
+        const attempts = [100, 500, 1000, 2000]
+        
+        attempts.forEach((delay) => {
+          setTimeout(() => {
+            const element = document.getElementById(hash)
+            if (element && window.pageYOffset === 0) {
+              // Only scroll if we haven't scrolled yet
+              scrollToSection(hash)
+            }
+          }, delay)
+        })
+      }
+    }
+
+    // Run on mount
+    handleInitialHash()
+  }, [scrollToSection])
+
   return scrollToSection
 }
-

@@ -3,7 +3,6 @@
 import type React from "react"
 import { useLanguage } from "@/contexts/language-context"
 import { Card, CardContent } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
 
 interface ProjectInfoProps {
   project: {

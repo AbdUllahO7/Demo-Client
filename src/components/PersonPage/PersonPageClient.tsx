@@ -12,17 +12,17 @@ interface PersonPageClientProps {
   personData: PersonProfile;
 }
 
-export default function PersonPageClient({ slug, personData }: PersonPageClientProps) {
+export default function PersonPageClient({  personData }: PersonPageClientProps) {
   const router = useRouter();
   const { language, direction } = useLanguage();
 
   const currentLang = language as 'en' | 'ar' | 'tr';
-
+/* TEST */
   return (
-    <div className="bg-gradient-to-br mt-20 from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800" dir={direction}>
+    <div className="mt-20 bg-indigo-100 dark:bg-[#121212]" dir={direction}>
       {/* Header */}
       <motion.div 
-        className="bg-white dark:bg-gray-900 shadow-lg dark:shadow-gray-700/20 pt-50"
+        className="bg-white dark:bg-[#121212] shadow-lg dark:shadow-gray-700/20 pt-50"
         initial={{ opacity: 0, y: -50 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}

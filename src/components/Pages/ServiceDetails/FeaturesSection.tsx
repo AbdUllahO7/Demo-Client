@@ -32,25 +32,68 @@ const FeaturesSection: React.FC<FeaturesSectionProps> = ({ features = [] }) => {
 
   if (features.length === 0) {
     return (
-      <div className="mb-16 py-16 text-center">
-        <p className="text-wtheme-text font-body">{noFeaturesText}</p>
+      <div className="mb-8 sm:mb-12 lg:mb-16 py-8 sm:py-12 lg:py-16 text-center px-4">
+        <p className="text-wtheme-text font-body text-base sm:text-lg">{noFeaturesText}</p>
       </div>
     );
   }
 
   return (
-    <div className="mb-16" dir={direction}>
+    <div className="mb-8 sm:mb-12 lg:mb-16 px-4 sm:px-6 lg:px-8" dir={direction}>
       <Tabs defaultValue={features[0].id} className="w-full">
-        <TabsList className="grid w-full h-auto" style={{ gridTemplateColumns: `repeat(${features.length}, 1fr)` }}>
-          {features.map((feature) => (
-            <TabsTrigger key={feature.id} value={feature.id} className="py-3  text-sm font-body">
-              {feature.title}
-            </TabsTrigger>
-          ))}
-        </TabsList>
+        {/* Mobile: Scrollable tabs with better spacing, Desktop: Grid layout */}
+        <div className="overflow-x-auto pb-2 mb-6 -mx-2 px-2">
+          <TabsList 
+            className={`
+              flex md:grid w-max md:w-full h-auto
+              ${features.length <= 3 ? 'md:grid-cols-' + features.length : 'md:grid-cols-3'}
+              gap-1 sm:gap-2
+              bg-muted p-1
+            `}
+            style={{ 
+              gridTemplateColumns: features.length <= 3 ? `repeat(${features.length}, 1fr)` : 'repeat(3, 1fr)'
+            }}
+          >
+            {features.map((feature, index) => (
+              <TabsTrigger 
+                key={feature.id} 
+                value={feature.id} 
+                className="
+                  py-2 sm:py-2.5 md:py-3 
+                  px-3 sm:px-4 md:px-6
+                  text-xs sm:text-sm md:text-base 
+                  font-body font-medium
+                  whitespace-nowrap 
+                  min-w-0 
+                  flex-shrink-0
+                  rounded-md
+                  data-[state=active]:text-primary-foreground 
+                  data-[state=active]:bg-primary
+                  data-[state=inactive]:text-muted-foreground
+                  data-[state=inactive]:hover:text-foreground
+                  transition-all duration-200 ease-in-out
+                  focus-visible:outline-none 
+                  focus-visible:ring-2 
+                  focus-visible:ring-ring
+                "
+                style={{
+                  minWidth: 'fit-content'
+                }}
+              >
+                <span className="truncate max-w-[120px] sm:max-w-none">
+                  {feature.title}
+                </span>
+              </TabsTrigger>
+            ))}
+          </TabsList>
+        </div>
         
         {features.map((feature) => (
-          <TabsContent key={feature.id} value={feature.id} className="mt-6 p-6 border rounded-lg">
+          <TabsContent 
+            key={feature.id} 
+            value={feature.id} 
+            className="mt-4 sm:mt-6 p-4 sm:p-6 border rounded-lg sm:rounded-xl shadow-sm bg-card"
+          >
             <FeatureContent content={feature.content} direction={direction} />
           </TabsContent>
         ))}
@@ -68,19 +111,42 @@ const FeatureContent: React.FC<FeatureContentProps> = ({ content, direction }) =
   const { heading, description, features, image, imageAlt, imagePosition } = content;
   
   const ContentSection = () => (
-    <div>
-      <h3 className={`text-2xl font-heading  mb-4 text-wtheme-text ${direction === 'rtl' ? 'text-end' : ''}`}>{heading}</h3>
-      <p className={`text-wtheme-text font-body mb-4 leading-relaxed ${direction === 'rtl' ? 'text-end' : ''}`}>
+    <div className="space-y-4">
+      <h3 className={`
+        text-xl sm:text-2xl lg:text-3xl font-heading font-bold mb-3 sm:mb-4 
+        text-wtheme-text leading-tight
+        ${direction === 'rtl' ? 'text-end' : 'text-start'}
+      `}>
+        {heading}
+      </h3>
+      
+      <p className={`
+        text-wtheme-text font-body text-sm sm:text-base lg:text-lg 
+        mb-4 sm:mb-6 leading-relaxed
+        ${direction === 'rtl' ? 'text-end' : 'text-start'}
+      `}>
         {description}
       </p>
+      
       {features && features.length > 0 && (
-        <ul className="space-y-3">
+        <ul className="space-y-2 sm:space-y-3">
           {features.map((feature, index) => (
-            <li key={index} className={`${direction === 'rtl' ? 'flex-row-reverse' : ''} flex`}>
-              <div className={`${direction === 'rtl' ? 'ml-3' : 'mr-3'} mt-1 text-primary`}>
-                <Check className="h-5 w-5" />
+            <li 
+              key={index} 
+              className={`
+                flex items-start
+                ${direction === 'rtl' ? 'flex-row-reverse' : 'flex-row'}
+              `}
+            >
+              <div className={`
+                flex-shrink-0 mt-0.5 sm:mt-1 text-primary
+                ${direction === 'rtl' ? 'ml-2 sm:ml-3' : 'mr-2 sm:mr-3'}
+              `}>
+                <Check className="h-4 w-4 sm:h-5 sm:w-5" />
               </div>
-              <span className="text-wtheme-text font-body">{feature}</span>
+              <span className="text-wtheme-text font-body text-sm sm:text-base leading-relaxed">
+                {feature}
+              </span>
             </li>
           ))}
         </ul>
@@ -89,13 +155,14 @@ const FeatureContent: React.FC<FeatureContentProps> = ({ content, direction }) =
   )
   
   const ImageSection = () => (
-    <div className="relative h-64 md:h-80 w-full rounded-lg overflow-hidden shadow-lg">
+    <div className="relative h-48 sm:h-64 lg:h-80 w-full rounded-lg sm:rounded-xl overflow-hidden shadow-md sm:shadow-lg">
       <Image
         src={image || "/placeholder.svg"}
         alt={imageAlt || "Feature image"}
         fill
         priority={true}
         className="object-cover transition-transform duration-300 hover:scale-105"
+        sizes="(max-width: 768px) 100vw, 50vw"
         onError={(e) => {
           e.currentTarget.src = "/placeholder.svg"
         }}
@@ -104,20 +171,26 @@ const FeatureContent: React.FC<FeatureContentProps> = ({ content, direction }) =
   )
 
   return (
-    <div className="grid md:grid-cols-2 gap-8 items-center">
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 lg:gap-12 items-center">
       {imagePosition === "left" ? (
         <>
-          <div className="order-2 md:order-1">
+          {/* Mobile: Image first, Desktop: Image left */}
+          <div className="order-1 lg:order-1">
             <ImageSection />
           </div>
-          <div className="order-1 md:order-2">
+          <div className="order-2 lg:order-2">
             <ContentSection />
           </div>
         </>
       ) : (
         <>
-          <ContentSection />
-          <ImageSection />
+          {/* Mobile: Image first, Desktop: Content left */}
+          <div className="order-2 lg:order-1">
+            <ContentSection />
+          </div>
+          <div className="order-1 lg:order-2">
+            <ImageSection />
+          </div>
         </>
       )}
     </div>

@@ -3,6 +3,7 @@
 import { useMemo } from "react"
 import Link from "next/link"
 import Image from "next/image"
+import { useRouter, usePathname } from "next/navigation"
 import { motion } from "@/components/ui/framer-motion"
 import { useScrollAnimation } from "@/hooks/use-scroll-animation"
 import { useSectionContent } from "@/hooks/useSectionContent"
@@ -61,7 +62,7 @@ const generateFieldMappings = (isSpecial: boolean): Record<string, string> => {
       mappings[`socialLink${x}}`] = `Special Footer ${x} - Title`
       for (let y = 1; y <= 8; y++) {
         mappings[`socialLink${x}_${y}`] = `Special Footer ${x} - SocialLink ${y} - Url`
-        mappings[`sectionId${x}_${y}`] = `Special Footer ${x} - SocialLink ${y} - SectionId` // Added sectionId mapping
+        mappings[`sectionId${x}_${y}`] = `Special Footer ${x} - SocialLink ${y} - SectionId`
         mappings[`image${x}_${y}`] = `Special Footer ${x} - SocialLink ${y} - Image`
         mappings[`LinkName${x}_${y}`] = `Special Footer ${x} - SocialLink ${y} - LinkName`
       }
@@ -145,7 +146,7 @@ export default function Footer({ sectionId, logo = "/assets/iDIGITEK.webp", subN
             // Determine if this is an internal link (has sectionId) or external link (has URL)
             const isInternal = Boolean(sectionId && sectionId.trim())
             const href = isInternal 
-              ? `#${sectionId}` // Use sectionId for internal links
+              ? `/#${sectionId}` // Use sectionId for internal links with home path
               : url?.startsWith("http") 
                 ? url 
                 : url ? `https://${url}` : "#"
@@ -167,10 +168,6 @@ export default function Footer({ sectionId, logo = "/assets/iDIGITEK.webp", subN
     }
     return columns
   }, [Special])
-
-  
-
-
 
   return (
     <motion.footer
@@ -212,7 +209,6 @@ export default function Footer({ sectionId, logo = "/assets/iDIGITEK.webp", subN
                               src={social.image} 
                               alt={social.label} 
                               width={20} 
-                          
                               height={20} 
                               className="w-5 h-5 object-contain m-1 "
                             /> : null
@@ -243,16 +239,27 @@ export default function Footer({ sectionId, logo = "/assets/iDIGITEK.webp", subN
 }
 
 /**
- * Enhanced Footer column component with section scrolling support
+ * Enhanced Footer column component with cross-page navigation support
  */
 function FooterColumn({ title, links, scrollToSection }: FooterColumnProps & { scrollToSection: (sectionId: string) => void }) {
-  const handleLinkClick = (link: FooterColumnProps['links'][0]) => {
+  const router = useRouter()
+  const pathname = usePathname()
+
+  const handleLinkClick = (e: React.MouseEvent, link: FooterColumnProps['links'][0]) => {
     if (link.isInternal && link.sectionId) {
-      // Prevent default link behavior for internal links
-      scrollToSection(link.sectionId)
+      const homePath = '/'
+      const currentPath = pathname
+      
+      if (currentPath === homePath) {
+        // If already on home page, prevent default and scroll to section
+        e.preventDefault()
+        scrollToSection(link.sectionId)
+      } else {
+        // If on another page, let the normal navigation happen
+        // The hash will be handled by the useScrollToSection hook
+      }
     }
   }
-
 
   return (
     <motion.div
@@ -268,39 +275,22 @@ function FooterColumn({ title, links, scrollToSection }: FooterColumnProps & { s
               whileHover={{ x: 5 }}
               transition={{ type: "spring", stiffness: 400, damping: 10 }}
             >
-              {link.isInternal ? (
-                <button
-                  onClick={() => handleLinkClick(link)}
-                  className="font-body text-wtheme-text hover:text-wtheme-hover flex items-center gap-2 text-left"
-                >
-                  {link.image && (
-                    <Image 
-                      src={link.image} 
-                      alt={link.label} 
-                      width={16} 
-                      height={16} 
-                      className="w-4 h-4 object-contain"
-                    />
-                  )}
-                  {link.label}
-                </button>
-              ) : (
-                <Link 
-                  href={link.href} 
-                  className="font-body text-wtheme-text hover:text-wtheme-hover flex items-center gap-2"
-                >
-                  {link.image && (
-                    <Image 
-                      src={link.image} 
-                      alt={link.label} 
-                      width={16} 
-                      height={16} 
-                      className="w-4 h-4 object-contain"
-                    />
-                  )}
-                  {link.label}
-                </Link>
-              )}
+              <Link
+                href={link.href}
+                onClick={(e) => handleLinkClick(e, link)}
+                className="font-body text-wtheme-text hover:text-wtheme-hover flex items-center gap-2"
+              >
+                {link.image && (
+                  <Image 
+                    src={link.image} 
+                    alt={link.label} 
+                    width={16} 
+                    height={16} 
+                    className="w-4 h-4 object-contain"
+                  />
+                )}
+                {link.label}
+              </Link>
             </motion.li>
           ))
         ) : (
