@@ -116,7 +116,7 @@ const extractSectionId = (href: string) => {
   return null
 }
 
-// Memoized MobileNav component
+// Memoized MobileNav component with proper RTL fixes
 const MobileNav = memo(function MobileNav({ 
   isOpen, 
   setIsOpen, 
@@ -154,7 +154,7 @@ const MobileNav = memo(function MobileNav({
       transition={{ duration: 0.3, ease: "easeInOut" }}
       dir={direction}
     >
-      <div className="container mx-auto px-4 py-6">
+      <div className={`container mx-auto px-4 py-6 ${isRTL ? 'text-right' : 'text-left'}`}>
         <nav className="space-y-4">
           {navItems.map((item, index) => (
             <motion.div
@@ -165,8 +165,8 @@ const MobileNav = memo(function MobileNav({
               className="space-y-2"
             >
               <div
-                className={`flex items-center justify-between py-3 text-lg font-medium text-white hover:text-accent transition-colors duration-200 cursor-pointer ${
-                  isRTL ? 'flex-row-reverse text-right' : 'text-left'
+                className={`flex items-center py-3 text-lg font-medium text-white hover:text-accent transition-colors duration-200 cursor-pointer ${
+                  isRTL ? 'text-right flex-row-reverse justify-start' : 'text-left justify-between'
                 }`}
                 onClick={(e) => {
                   if (item.subNavItems.length > 0) {
@@ -176,19 +176,28 @@ const MobileNav = memo(function MobileNav({
                   }
                 }}
               >
-                <span className={isRTL ? 'font-arabic' : ''}>{item.label}</span>
-                {item.subNavItems.length > 0 && (
-                  <motion.div 
-                    animate={{ rotate: openSubNav === item.id ? 180 : 0 }} 
-                    transition={{ duration: 0.2 }}
-                    className={isRTL ? 'ml-2' : 'mr-2'}
-                  >
-                    <ChevronDown className="h-5 w-5" />
-                  </motion.div>
-                )}
+                {
+                  isRTL ? (
+                    <>
+                      {item.subNavItems.length > 0 && (
+                        <ChevronDown className="h-5 w-5" />
+                      )}
+                      <span className={`${isRTL ? 'font-arabic' : ''} flex-1`}>{item.label}</span>
+                    </>
+                  ) : (
+                    <>
+                      <span className={`${isRTL ? 'font-arabic' : ''} flex-1`}>{item.label}</span>
+                      {item.subNavItems.length > 0 && (
+                        <ChevronDown className="h-5 w-5" />
+                      )}
+                    </>
+                  )
+                }
+               
+
               </div>
 
-              {/* Mobile Submenu */}
+              {/* Mobile Submenu with fixed RTL */}
               <AnimatePresence>
                 {item.subNavItems.length > 0 && openSubNav === item.id && (
                   <motion.div
@@ -212,28 +221,45 @@ const MobileNav = memo(function MobileNav({
                         {subItem.isInternal ? (
                           <button
                             onClick={() => handleSubNavClick(subItem)}
-                            className={`w-full flex items-center justify-between py-2 text-white/80 hover:text-accent transition-colors duration-200 ${
-                              isRTL ? 'flex-row-reverse text-right' : 'text-left'
-                            }`}
+                            className={`w-full flex items-center justify-between py-2 text-white/80 hover:text-accent transition-colors duration-200 `}
                           >
-                            <span className={`text-base ${isRTL ? 'font-arabic' : ''}`}>{subItem.label}</span>
-                            <div className={`flex items-center gap-2 ${isRTL ? 'flex-row-reverse' : ''}`}>
-                              {subItem.source === "section" && <div className="w-2 h-2 rounded-full bg-accent" />}
-                            </div>
+                            {/* Fixed: Proper RTL layout for subitem text and indicator */}
+                            {isRTL ? (
+                              <>
+                                <div className="flex items-center gap-2">
+                                  {subItem.source === "section" && <div className="w-2 h-2 rounded-full bg-accent" />}
+                                </div>
+                                <span className="text-base font-arabic">{subItem.label}</span>
+                              </>
+                            ) : (
+                              <>
+                                <span className="text-base">{subItem.label}</span>
+                                <div className="flex items-center gap-2">
+                                  {subItem.source === "section" && <div className="w-2 h-2 rounded-full bg-accent" />}
+                                </div>
+                              </>
+                            )}
                           </button>
                         ) : (
                           <Link
                             href={subItem.href}
                             target={subItem.isDynamicUrl ? "_self" : "_self"}
                             className={`flex items-center justify-between py-2 text-white/80 hover:text-accent transition-colors duration-200 ${
-                              isRTL ? 'flex-row-reverse text-right' : 'text-left'
+                              isRTL ? 'text-right' : 'text-left'
                             }`}
                             onClick={() => setIsOpen(false)}
                           >
-                            <span className={`text-base ${isRTL ? 'font-arabic' : ''}`}>{subItem.label}</span>
-                            <div className={`flex items-center gap-2 ${isRTL ? 'flex-row-reverse' : ''}`}>
-                              {subItem.source === "section" && <div className="w-2 h-2 rounded-full bg-accent" />}
-                            </div>
+                            {isRTL ? (
+                              <>
+                              
+                                <span className="text-base font-arabic">{subItem.label}</span>
+                              </>
+                            ) : (
+                              <>
+                                <span className="text-base">{subItem.label}</span>
+                              
+                              </>
+                            )}
                           </Link>
                         )}
                       </motion.div>
@@ -244,13 +270,13 @@ const MobileNav = memo(function MobileNav({
             </motion.div>
           ))}
 
-          {/* Mobile Controls */}
+          {/* Mobile Controls with fixed RTL */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: navItems.length * 0.1 + 0.2 }}
             className={`flex items-center gap-4 pt-6 border-t border-white/20 ${
-              isRTL ? 'flex-row-reverse justify-end' : 'justify-start'
+              isRTL ? 'justify-end' : 'justify-start'
             }`}
           >
             <ThemeToggle />

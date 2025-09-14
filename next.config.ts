@@ -9,7 +9,6 @@ const nextConfig: NextConfig = {
   },
   
   images: {
-
     remotePatterns: [
       {
         protocol: 'https',
@@ -50,6 +49,22 @@ const nextConfig: NextConfig = {
 
   compress: true,
   poweredByHeader: false,
+
+  // Add rewrite rules for VCard URLs
+  async rewrites() {
+    return [
+      // Rewrite /vcard/name.vcf to /api/vcard/name
+      {
+        source: '/vcard/:name.vcf',
+        destination: '/api/vcard/:name',
+      },
+      // Optional: Also handle without .vcf extension
+      {
+        source: '/vcard/:name',
+        destination: '/api/vcard/:name',
+      },
+    ];
+  },
 
   async headers() {
     return [
@@ -93,6 +108,20 @@ const nextConfig: NextConfig = {
           {
             key: 'Cache-Control',
             value: 'public, max-age=31536000, immutable',
+          },
+        ],
+      },
+      // Add specific headers for VCF files
+      {
+        source: '/api/vcard/:path*',
+        headers: [
+          {
+            key: 'Content-Type',
+            value: 'text/vcard; charset=utf-8',
+          },
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=3600', // Cache for 1 hour
           },
         ],
       },

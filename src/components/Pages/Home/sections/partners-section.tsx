@@ -7,7 +7,9 @@ import { useLanguage } from "@/contexts/language-context"
 import { useState, useRef, useEffect } from "react"
 import { useSectionLogic } from "@/hooks/useSectionLogic"
 import { useSectionContent } from "@/hooks/useSectionContent"
+import { motion } from 'framer-motion';
 import { FadeIn } from "@/utils/OptimizedAnimations"
+import { fadeIn } from '../../../ui/framer-motion';
 
 export default function PartnersSection({ websiteId, sectionId }) {
   const { ref, isInView } = useScrollAnimation()
@@ -40,7 +42,12 @@ export default function PartnersSection({ websiteId, sectionId }) {
   })
 
   return (
-    <section id="partners" className="relative w-full py-20 overflow-hidden">
+    <section 
+      id="partners" 
+      className="relative w-full py-20 overflow-hidden"
+      dir="ltr"
+      style={{ direction: 'ltr' }}
+    >
       {/* Background Elements */}
       <div className="absolute inset-0 bg-gradient-to-br from-wtheme-background via-wtheme-background to-primary/5"></div>
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(var(--primary),0.1)_0%,transparent_50%)]"></div>
@@ -78,7 +85,7 @@ export default function PartnersSection({ websiteId, sectionId }) {
             <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-wtheme-text relative">
               <span className="relative inline-block">
                 {content.sectionTitle}
-                <FadeIn className="absolute -bottom-2 left-0 h-1 bg-gradient-to-r from-primary to-primary/60 rounded-full" />
+                <motion.div className="absolute -bottom-2 left-0 h-1 bg-gradient-to-r from-primary to-primary/60 rounded-full" />
               </span>
             </h2>
             <p className="max-w-3xl text-lg text-wtheme-text/70 leading-relaxed">
@@ -103,7 +110,7 @@ export default function PartnersSection({ websiteId, sectionId }) {
           <div className="inline-flex items-center space-x-2 text-wtheme-text/60">
             <div className="flex space-x-1">
               {[...Array(5)].map((_, i) => (
-                <FadeIn
+                <motion.div
                   key={i}
                   className="w-1 h-1 bg-primary/60 rounded-full"
                 />
@@ -227,6 +234,7 @@ function PartnersCarousel({ partners, isInView, containerRef }: PartnersCarousel
     background: linear-gradient(135deg, rgba(var(--primary), 0.02) 0%, transparent 50%, rgba(var(--primary), 0.02) 100%);
     border-radius: 24px;
     padding: 32px 0;
+    direction: ltr !important;
     mask-image: linear-gradient(
       to right,
       transparent 0%,
@@ -249,6 +257,7 @@ function PartnersCarousel({ partners, isInView, containerRef }: PartnersCarousel
     will-change: transform;
     animation: scroll-ltr ${config.duration}s linear infinite;
     animation-play-state: ${isPaused ? "paused" : "running"};
+    direction: ltr !important;
   }
 
   .marquee-content:hover {
@@ -267,13 +276,21 @@ function PartnersCarousel({ partners, isInView, containerRef }: PartnersCarousel
 `}
 </style>
 
-      <FadeIn className="marquee-container relative w-full">
+      <FadeIn 
+        className="marquee-container relative w-full"
+        style={{ direction: 'ltr' }}
+        dir="ltr"
+      >
         {/* Background Pattern */}
         <div className="absolute inset-0 opacity-30">
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(var(--primary),0.1)_0%,transparent_50%)]"></div>
         </div>
 
-        <div className="marquee-content">
+        <div 
+          className="marquee-content"
+          style={{ direction: 'ltr' }}
+          dir="ltr"
+        >
           {duplicatedPartners.map((partner, index) => (
             <div 
               key={`partner-${index}`} 
@@ -334,6 +351,8 @@ function PartnerLogo({ partner, index, heightClass, screenSize }: PartnerLogoPro
         group cursor-pointer
         relative overflow-hidden
       `}
+      style={{ direction: 'ltr' }}
+      dir="ltr"
     >
       {/* Animated Background */}
       <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>

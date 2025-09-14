@@ -267,7 +267,7 @@ export default function HeroSection({ sectionId, websiteId }: HeroSectionProps) 
                 aria-label="Previous slide"
               >
                 <svg className="w-5 h-5 lg:w-6 lg:h-6 xl:w-7 xl:h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={direction === 'rtl' ? "M9 5l7 7-7 7" : "M15 19l-7-7 7-7"} />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={direction === 'rtl' ? "M15 19l-7-7 7-7" : "M15 19l-7-7 7-7"} />
                 </svg>
               </button>
             </div>
@@ -280,7 +280,7 @@ export default function HeroSection({ sectionId, websiteId }: HeroSectionProps) 
                 aria-label="Next slide"
               >
                 <svg className="w-5 h-5 lg:w-6 lg:h-6 xl:w-7 xl:h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={direction === 'rtl' ? "M15 19l-7-7 7-7" : "M9 5l7 7-7 7"} />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={direction === 'rtl' ? "M9 5l7 7-7 7" : "M9 5l7 7-7 7"} />
                 </svg>
               </button>
             </div>

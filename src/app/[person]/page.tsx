@@ -14,7 +14,7 @@ export default function PersonPage({ params }: PersonPageProps) {
   const availableSlugs = getAvailablePersonSlugs();
   
   // Check if the person exists
-  if (!availableSlugs.includes(params.person)) {
+  if (!availableSlugs.includes(params?.person)) {
     notFound();
   }
 
