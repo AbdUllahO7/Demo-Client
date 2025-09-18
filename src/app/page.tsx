@@ -17,6 +17,7 @@ import IndustrySolutionsSection from "@/components/Pages/Home/sections/IndustryS
 import FeaturesSection from "@/components/Pages/Home/sections/FeaturesSection/features-section";
 import { useWebSite } from "@/lib/webSite/use-WebSite";
 import { useSections } from "@/lib/section/use-Section";
+import { useLanguages } from "@/lib/languages/use-language";
 import { useScrollToSection } from "@/hooks/use-scroll-to-section";
 import { SectionSkeleton } from "@/components/Skeleton/SectionSkeleton";
 import ProductsSection from "@/components/Pages/Home/sections/ProductsSection/ProductsSection";
@@ -30,21 +31,54 @@ const getOriginalSubName = (subName: string): string => {
 };
 
 export default function LandingPage() {
-  const { direction } = useLanguage();
+  const { direction, updateAvailableLanguages } = useLanguage();
   const { useGetWebsitesByUserId } = useWebSite();
   const { useGetByWebsiteId } = useSections();
+  const { useGetByWebsite: useGetWebsiteLanguages } = useLanguages();
   const scrollToSection = useScrollToSection();
 
   const { data: websites, isLoading: websitesLoading, error: websitesError } = useGetWebsitesByUserId();
   const websiteId = websites && websites.length > 0 ? websites[0].id : undefined;
+  
   const { data: sectionsData, isLoading: sectionsIsLoading, error: sectionsError } = useGetByWebsiteId(
     websiteId || "",
     false,
   );
 
-  if (websiteId) {
-    localStorage.setItem("websiteId", websiteId);
-  }
+  // Get languages for this website
+  const { data: languages, isLoading: languagesLoading } = useGetWebsiteLanguages(
+    websiteId || "",
+    { isActive: true }
+  );
+
+  // Set websiteId in localStorage and update available languages
+  useEffect(() => {
+    if (websiteId) {
+      localStorage.setItem("websiteId", websiteId);
+      console.log('Website ID set in localStorage:', websiteId); // Debug log
+    }
+  }, [websiteId]);
+
+  // Update available languages when languages data is loaded
+  useEffect(() => {
+    if (languages?.data && !languagesLoading && websiteId) {
+      const activeLanguages = languages.data
+        .filter((lang: any) => lang.isActive)
+        .map((lang: any) => lang.languageID);
+      
+      // Common RTL languages - you can extend this
+      const commonRTLLanguages = ['ar', 'he', 'fa', 'ur', 'ps', 'sd', 'ku', 'dv'];
+      const rtl = activeLanguages.filter((langId: string) => 
+        commonRTLLanguages.includes(langId.toLowerCase())
+      );
+      
+      console.log('Updating available languages from LandingPage:', activeLanguages); // Debug log
+      console.log('RTL languages detected:', rtl); // Debug log
+      
+      // Update the language context with available languages
+      updateAvailableLanguages(activeLanguages, rtl);
+    }
+  }, [languages, languagesLoading, websiteId, updateAvailableLanguages]);
 
   // Set smooth scrolling globally
   useEffect(() => {
@@ -101,7 +135,7 @@ export default function LandingPage() {
   };
 
   // Handle loading and error states
-  if (websitesLoading || sectionsIsLoading) {
+  if (websitesLoading || sectionsIsLoading || languagesLoading) {
     return (
       <div className="flex min-h-screen flex-col" dir={direction}>
         <SectionSkeleton variant="default" className="py-20" />
