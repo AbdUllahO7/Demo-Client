@@ -11,6 +11,22 @@ export function ThemeToggle() {
   const { colorMode, setColorMode } = useWebsiteTheme()
   const { t, language } = useLanguage()
 
+  const getTranslation = (key: 'light' | 'dark') => {
+    const translations = {
+      light: {
+        en: 'Light',
+        ar: 'فاتح',
+        tr: 'Açık'
+      },
+      dark: {
+        en: 'Dark',
+        ar: 'داكن',
+        tr: 'Koyu'
+      }
+    }
+    return translations[key][language as 'en' | 'ar' | 'tr'] || translations[key].en
+  }
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -22,10 +38,10 @@ export function ThemeToggle() {
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
         <DropdownMenuItem onClick={() => setColorMode("light")}>
-          {language === 'en' ? 'Light' : 'فاتح'}
+          {getTranslation('light')}
         </DropdownMenuItem>
         <DropdownMenuItem onClick={() => setColorMode("dark")}>
-          {language === 'en' ? 'Dark' : 'داكن'}
+          {getTranslation('dark')}
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
