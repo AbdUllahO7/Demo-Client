@@ -9,11 +9,9 @@ import { useSectionLogic } from "@/hooks/useSectionLogic"
 import { useSectionContent } from "@/hooks/useSectionContent"
 import { motion } from 'framer-motion';
 import { FadeIn } from "@/utils/OptimizedAnimations"
-import { fadeIn } from '../../../ui/framer-motion';
 
 export default function PartnersSection({ websiteId, sectionId }) {
   const { ref, isInView } = useScrollAnimation()
-  const { t, language } = useLanguage()
   const containerRef = useRef<HTMLDivElement>(null)
 
   const { content } = useSectionLogic({
@@ -37,9 +35,11 @@ export default function PartnersSection({ websiteId, sectionId }) {
     sectionId,
     websiteId,
     fieldMappings: ContentItemsMappings,
-    maxItemsPerSubsection: 13,
+    maxItemsPerSubsection: 50,
     filter: featureFilter,
   })
+
+  console.log("Partners Section Content Items:", contentItems)
 
   return (
     <section 
@@ -274,7 +274,7 @@ function PartnersCarousel({ partners, isInView, containerRef }: PartnersCarousel
     }
   }
 `}
-</style>
+  </style>
 
       <FadeIn 
         className="marquee-container relative w-full"
