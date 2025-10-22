@@ -9,8 +9,7 @@ export const dynamic = 'force-dynamic';
 // Available VCF files mapping
 const vcardFiles = {
   'isa': 'İsa_Alomer (1).vcf',
-  'onur': 'onur.vcf', // if you have this file
-  // Add more mappings as needed
+  'Ahmad_Hamdan':'Ahmad_Hamdan.vcf'
 };
 
 export default function VCardPage({ params }) {

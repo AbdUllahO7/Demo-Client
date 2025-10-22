@@ -61,11 +61,38 @@ export function WebsiteThemeProvider({ children }: WebsiteThemeProviderProps) {
   const { useGetWebsitesByUserId } = useWebSite();
   const { data: websitesResponse, isLoading: websitesLoading, error: websitesError } =
     useGetWebsitesByUserId();
-
+  const [isMounted, setIsMounted] = useState(false);
+    useEffect(() => {
+    setIsMounted(true);
+    resetToDefaultTheme(colorMode);
+  }, []);
+  
   const websites = websitesResponse?.data || [];
+  
 
+   const [currentWebsiteId, setCurrentWebsiteId] = useState<string | null>(() => {
+    // This function runs ONCE during initialization, before first render
+    if (typeof window !== 'undefined') {
+      const stored = localStorage.getItem('websiteId');
+      if (stored) return stored;
+    }
+    return null;
+  });
+ useEffect(() => {
+    const storedWebsiteId = getStoredWebsiteId();
+    const firstWebsiteId = websites.length > 0 ? websites[0]._id : null;
+
+    // Only update if we don't have a websiteId yet
+    if (!currentWebsiteId && firstWebsiteId) {
+      setCurrentWebsiteId(firstWebsiteId);
+      setStoredWebsiteId(firstWebsiteId);
+    } else if (currentWebsiteId && !storedWebsiteId) {
+      setStoredWebsiteId(currentWebsiteId);
+    }
+
+    setIsInitialized(true);
+  }, [websites, currentWebsiteId]);
   // Initialize states - IMPORTANT: Don't set a default here, let useEffect handle it
-  const [currentWebsiteId, setCurrentWebsiteId] = useState<string | null>(null);
   const [isInitialized, setIsInitialized] = useState(false);
   const [colorMode, setColorMode] = useState<'light' | 'dark'>(() => {
     // Initialize with the stored value or default to 'dark' on first render
@@ -160,6 +187,21 @@ export function WebsiteThemeProvider({ children }: WebsiteThemeProviderProps) {
     colorMode,
     setColorMode: handleSetColorMode,
   };
+ useEffect(() => {
+    if (themeData?.data && isMounted) {
+      applyThemeToCSS(themeData.data, colorMode);
+    }
+  }, [themeData, colorMode, isMounted]);
+   if (!isInitialized || (isLoading && !activeTheme)) {
+    return (
+      <div className="fixed inset-0 bg-background flex items-center justify-center">
+        <div className="animate-pulse text-muted-foreground">
+          Loading theme...
+        </div>
+      </div>
+    );
+  }
+
 
   return (
     <WebsiteThemeContext.Provider value={contextValue}>

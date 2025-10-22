@@ -3,7 +3,6 @@
 import type React from "react"
 import Image from "next/image"
 import { useScrollAnimation } from "@/hooks/use-scroll-animation"
-import { useLanguage } from "@/contexts/language-context"
 import { useState, useRef, useEffect } from "react"
 import { useSectionLogic } from "@/hooks/useSectionLogic"
 import { useSectionContent } from "@/hooks/useSectionContent"

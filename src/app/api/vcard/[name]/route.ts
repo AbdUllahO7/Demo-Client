@@ -7,7 +7,7 @@ import path from 'path';
 
 const vcardFiles: Record<string, string> = {
   'isa': 'İsa_Alomer (1).vcf',
-  'onur': 'onur.vcf',
+  'Ahmad_Hamdan':'Ahmad_Hamdan.vcf'
 };
 
 interface RouteParams {
