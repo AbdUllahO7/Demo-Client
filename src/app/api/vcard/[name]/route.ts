@@ -1,5 +1,5 @@
 // File: app/api/vcard/[name]/route.ts
-// Forces VCF to open in contacts app using data URL
+// Forces VCF to open in contacts app using data URL with DYNAMIC content
 
 import { NextRequest, NextResponse } from 'next/server';
 import { readFile } from 'fs/promises';
@@ -16,6 +16,64 @@ interface RouteParams {
   };
 }
 
+// Helper function to parse VCF content
+function parseVCard(vcfContent: string) {
+  const lines = vcfContent.split('\n');
+  const data: {
+    fullName?: string;
+    organization?: string;
+    title?: string;
+    phone?: string;
+    email?: string;
+  } = {};
+
+  lines.forEach(line => {
+    // Full Name
+    if (line.startsWith('FN:')) {
+      data.fullName = line.substring(3).trim();
+    }
+    // Organization
+    else if (line.startsWith('ORG:')) {
+      data.organization = line.substring(4).trim();
+    }
+    // Title (handle both plain and encoded)
+    else if (line.startsWith('TITLE')) {
+      if (line.includes('ENCODING=QUOTED-PRINTABLE')) {
+        // Extract the encoded part
+        const encodedPart = line.split(':')[1];
+        if (encodedPart) {
+          data.title = decodeQuotedPrintable(encodedPart.trim());
+        }
+      } else {
+        data.title = line.split(':')[1]?.trim();
+      }
+    }
+    // Phone
+    else if (line.startsWith('TEL')) {
+      const phonePart = line.split(':')[1];
+      if (phonePart) {
+        data.phone = phonePart.trim();
+      }
+    }
+    // Email
+    else if (line.startsWith('EMAIL')) {
+      const emailPart = line.split(':')[1];
+      if (emailPart) {
+        data.email = emailPart.trim();
+      }
+    }
+  });
+
+  return data;
+}
+
+// Helper function to decode quoted-printable encoding
+function decodeQuotedPrintable(str: string): string {
+  return str.replace(/=([0-9A-F]{2})/g, (match, hex) => {
+    return String.fromCharCode(parseInt(hex, 16));
+  });
+}
+
 export async function GET(request: NextRequest, { params }: RouteParams) {
   const { name } = params;
   const cleanName = name.replace('.vcf', '');
@@ -27,6 +85,9 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
   try {
     const filePath = path.join(process.cwd(), 'public', 'assets', vcardFiles[cleanName]);
     const fileContent = await readFile(filePath, 'utf-8');
+
+    // Parse VCF content to extract contact information
+    const contactData = parseVCard(fileContent);
 
     // Create HTML that forces VCF to open in contacts app
     const htmlContent = `
@@ -95,9 +156,10 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
         <div class="spinner"></div>
         <h2>Opening Contact Card</h2>
         <div class="contact-info">
-            <strong>İsa Alomer</strong><br>
-            Operations Manager, iDIGITEK<br>
-            📞 +90 531 732 47 31
+            <strong>${contactData.fullName || 'Contact'}</strong><br>
+            ${contactData.title ? `${contactData.title}${contactData.organization ? ', ' : ''}` : ''}${contactData.organization || ''}<br>
+            ${contactData.phone ? `📞 ${contactData.phone}<br>` : ''}
+            ${contactData.email ? `📧 ${contactData.email}` : ''}
         </div>
         
         <p>Tap the button below to add contact:</p>
