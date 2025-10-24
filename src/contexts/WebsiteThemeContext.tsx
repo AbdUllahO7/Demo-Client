@@ -3,7 +3,7 @@
 
 import { WebSiteTheme } from '@/api/types/WebSite/useWebSiteTheme';
 import { useWebSiteThemes } from '@/lib/webSite/use-Theme';
-import { useWebSite } from '@/lib/webSite/use-WebSite'; // Adjust path as needed
+import { useWebSite } from '@/lib/webSite/use-WebSite';
 import React, { createContext, useContext, useEffect, useState } from 'react';
 
 interface WebsiteThemeContextType {
@@ -23,176 +23,166 @@ interface WebsiteThemeProviderProps {
   children: React.ReactNode;
 }
 
-// Helper function to safely access localStorage
-function getStoredWebsiteId(): string | null {
-  if (typeof window !== 'undefined') {
-    return localStorage.getItem('websiteId');
-  }
-  return null;
-}
-
-function setStoredWebsiteId(id: string): void {
-  if (typeof window !== 'undefined') {
-    localStorage.setItem('websiteId', id);
-  }
-}
-
-// Fixed: This function should ONLY return what's actually in localStorage or default to 'dark'
-function getStoredColorMode(): 'light' | 'dark' {
-  if (typeof window !== 'undefined') {
-    const stored = localStorage.getItem('colorMode') as 'light' | 'dark' | null;
-    // If nothing is stored, set 'dark' as default AND store it
-    if (!stored) {
-      localStorage.setItem('colorMode', 'dark');
-      return 'dark';
-    }
-    return stored;
-  }
-  return 'dark';
-}
-
-function setStoredColorMode(mode: 'light' | 'dark'): void {
-  if (typeof window !== 'undefined') {
-    localStorage.setItem('colorMode', mode);
-  }
-}
-
 export function WebsiteThemeProvider({ children }: WebsiteThemeProviderProps) {
-  const { useGetWebsitesByUserId } = useWebSite();
-  const { data: websitesResponse, isLoading: websitesLoading, error: websitesError } =
-    useGetWebsitesByUserId();
   const [isMounted, setIsMounted] = useState(false);
-    useEffect(() => {
-    setIsMounted(true);
-    resetToDefaultTheme(colorMode);
-  }, []);
-  
-  const websites = websitesResponse?.data || [];
-  
-
-   const [currentWebsiteId, setCurrentWebsiteId] = useState<string | null>(() => {
-    // This function runs ONCE during initialization, before first render
-    if (typeof window !== 'undefined') {
-      const stored = localStorage.getItem('websiteId');
-      if (stored) return stored;
-    }
-    return null;
-  });
- useEffect(() => {
-    const storedWebsiteId = getStoredWebsiteId();
-    const firstWebsiteId = websites.length > 0 ? websites[0]._id : null;
-
-    // Only update if we don't have a websiteId yet
-    if (!currentWebsiteId && firstWebsiteId) {
-      setCurrentWebsiteId(firstWebsiteId);
-      setStoredWebsiteId(firstWebsiteId);
-    } else if (currentWebsiteId && !storedWebsiteId) {
-      setStoredWebsiteId(currentWebsiteId);
-    }
-
-    setIsInitialized(true);
-  }, [websites, currentWebsiteId]);
-  // Initialize states - IMPORTANT: Don't set a default here, let useEffect handle it
   const [isInitialized, setIsInitialized] = useState(false);
-  const [colorMode, setColorMode] = useState<'light' | 'dark'>(() => {
-    // Initialize with the stored value or default to 'dark' on first render
-    if (typeof window !== 'undefined') {
-      return getStoredColorMode();
-    }
-    return 'dark';
-  });
 
-  // Initialize websiteId ONLY - colorMode is already set correctly
+  // ✅ Initialize states as null - will be set in useEffect
+  const [colorMode, setColorMode] = useState<'light' | 'dark'>('dark');
+  const webSiteIdLocal = '683b2432d6fa6b23f0af80ae'; // Temporary placeholder
+  const [currentWebsiteId, setCurrentWebsiteId] = useState<string | null>(webSiteIdLocal);
+
+  // Fetch websites
+  const { useGetWebsitesByUserId } = useWebSite();
+  const { data: websitesResponse, isLoading: websitesLoading } = useGetWebsitesByUserId();
+  const websites = websitesResponse?.data || [];
+
+  // ✅ CRITICAL FIX: Read from localStorage AFTER component mounts
   useEffect(() => {
-    const storedWebsiteId = getStoredWebsiteId();
-    const websiteId = websites.length > 0 ? websites[0]._id : null;
+    setIsMounted(true);
+    
+    // Read from localStorage only on client-side after mount
+    const storedColorMode = localStorage.getItem('colorMode') as 'light' | 'dark' | null;
+    if (storedColorMode) {
+      setColorMode(storedColorMode);
+    } else {
+      localStorage.setItem('colorMode', 'dark');
+    }
 
+    const storedWebsiteId = localStorage.getItem('websiteId');
+    console.log('📦 Read from localStorage on mount:', storedWebsiteId);
+    
     if (storedWebsiteId) {
       setCurrentWebsiteId(storedWebsiteId);
-    } else if (websiteId) {
-      setCurrentWebsiteId(websiteId);
-      setStoredWebsiteId(websiteId);
+    }
+  }, []);
+
+  // ✅ Initialize websiteId after websites are loaded
+  useEffect(() => {
+    if (!isMounted || websitesLoading) return;
+
+    const storedWebsiteId = localStorage.getItem('websiteId');
+    const firstWebsiteId = websites.length > 0 ? websites[0]._id : null;
+
+    console.log('🔍 Initialization check:', {
+      storedWebsiteId,
+      firstWebsiteId,
+      currentWebsiteId,
+      websitesCount: websites.length
+    });
+
+    // Priority: current state > stored ID > first website ID
+    if (currentWebsiteId) {
+      // Already have a websiteId, verify it's valid
+      const isValid = websites.some(w => w._id === currentWebsiteId);
+      if (isValid) {
+        localStorage.setItem('websiteId', currentWebsiteId);
+        setIsInitialized(true);
+        return;
+      }
+    }
+
+    if (storedWebsiteId && websites.some(w => w._id === storedWebsiteId)) {
+      // Stored ID is valid
+      console.log('✅ Using stored websiteId:', storedWebsiteId);
+      setCurrentWebsiteId(storedWebsiteId);
+    } else if (firstWebsiteId) {
+      // No valid stored ID, use first website
+      console.log('✅ Using first website:', firstWebsiteId);
+      setCurrentWebsiteId(firstWebsiteId);
+      localStorage.setItem('websiteId', firstWebsiteId);
     }
 
     setIsInitialized(true);
-  }, [websites]);
+  }, [websites, websitesLoading, isMounted, currentWebsiteId]);
 
-  // Sync localStorage when colorMode changes
-  useEffect(() => {
-    if (currentWebsiteId) {
-      setStoredWebsiteId(currentWebsiteId);
-    }
-    setStoredColorMode(colorMode);
-  }, [currentWebsiteId, colorMode]);
-
+  // Fetch active theme - only when websiteId is available
   const { useGetActiveTheme } = useWebSiteThemes();
+  const { 
+    data: themeData, 
+    isLoading: themeLoading, 
+    error, 
+    refetch 
+  } = useGetActiveTheme(
+    currentWebsiteId || '', 
+    {
+      enabled: !!currentWebsiteId && isInitialized && isMounted,
+      retry: 2,
+    }
+  );
 
-  // Fetch active theme
-  interface ThemeResponse {
-    data: WebSiteTheme;
-  }
-  const { data: themeData, isLoading, error, refetch } = useGetActiveTheme(currentWebsiteId || '', {
-    enabled: !!currentWebsiteId && isInitialized,
-    retry: 1,
-    onError: (err: any) => {
-      console.error('❌ Theme fetch error:', err.message, { websiteId: currentWebsiteId });
-    },
+  console.log('🎨 Theme Debug:', { 
+    currentWebsiteId, 
+    isInitialized, 
+    isMounted,
+    themeLoading,
+    hasThemeData: !!themeData?.data,
+    queryEnabled: !!currentWebsiteId && isInitialized && isMounted
   });
 
-  const [activeTheme, setActiveTheme] = useState<WebSiteTheme | null>(null);
-
-  // Extract theme from API response
+  // ✅ Apply theme when data changes
   useEffect(() => {
-    if (themeData?.data) {
-      setActiveTheme(themeData.data);
-    } else if (!currentWebsiteId) {
-      setActiveTheme(null);
+    if (!isMounted || !isInitialized) {
+      console.log('⏳ Waiting for initialization...');
+      return;
     }
-  }, [themeData, currentWebsiteId, isLoading, isInitialized]);
 
-  // Apply theme to CSS
-  useEffect(() => {
-    if (!isInitialized) return;
-
-    if (activeTheme) {
-      applyThemeToCSS(activeTheme, colorMode);
-    } else {
+    if (themeData?.data) {
+      console.log('✅ Applying theme:', themeData.data._id);
+      applyThemeToCSS(themeData.data, colorMode);
+    } else if (!themeLoading) {
+      console.log('⚠️ No theme data, using defaults');
       resetToDefaultTheme(colorMode);
     }
-  }, [activeTheme, isInitialized, colorMode]);
+  }, [themeData, colorMode, isMounted, isInitialized, themeLoading]);
+
+  // Sync color mode to localStorage
+  useEffect(() => {
+    if (isMounted) {
+      localStorage.setItem('colorMode', colorMode);
+    }
+  }, [colorMode, isMounted]);
+
+  // Sync websiteId to localStorage
+  useEffect(() => {
+    if (currentWebsiteId && isMounted) {
+      console.log('💾 Saving to localStorage:', currentWebsiteId);
+      localStorage.setItem('websiteId', currentWebsiteId);
+    }
+  }, [currentWebsiteId, isMounted]);
 
   const refreshTheme = () => {
     if (currentWebsiteId) {
+      console.log('🔄 Refreshing theme for:', currentWebsiteId);
       refetch();
     }
   };
 
   const handleSetWebsiteId = (id: string) => {
+    console.log('🔧 Setting new websiteId:', id);
     setCurrentWebsiteId(id);
+    localStorage.setItem('websiteId', id);
   };
 
   const handleSetColorMode = (mode: 'light' | 'dark') => {
+    console.log('🌓 Setting color mode:', mode);
     setColorMode(mode);
-    // Immediately sync to localStorage
-    setStoredColorMode(mode);
+    localStorage.setItem('colorMode', mode);
   };
 
   const contextValue: WebsiteThemeContextType = {
-    activeTheme,
-    isLoading: isLoading || websitesLoading || !isInitialized,
-    error: error?.message || websitesError?.message || null,
+    activeTheme: themeData?.data || null,
+    isLoading: websitesLoading || themeLoading || !isInitialized || !isMounted,
+    error: error?.message || null,
     refreshTheme,
     setWebsiteId: handleSetWebsiteId,
     currentWebsiteId,
     colorMode,
     setColorMode: handleSetColorMode,
   };
- useEffect(() => {
-    if (themeData?.data && isMounted) {
-      applyThemeToCSS(themeData.data, colorMode);
-    }
-  }, [themeData, colorMode, isMounted]);
-   if (!isInitialized || (isLoading && !activeTheme)) {
+
+  // Show loading state only on initial load
+  if (!isMounted || !isInitialized) {
     return (
       <div className="fixed inset-0 bg-background flex items-center justify-center">
         <div className="animate-pulse text-muted-foreground">
@@ -201,7 +191,6 @@ export function WebsiteThemeProvider({ children }: WebsiteThemeProviderProps) {
       </div>
     );
   }
-
 
   return (
     <WebsiteThemeContext.Provider value={contextValue}>
@@ -225,6 +214,8 @@ function applyThemeToCSS(theme: WebSiteTheme, mode: 'light' | 'dark') {
 
   const root = document.documentElement;
   const colors = theme.colors[mode];
+
+  console.log('🎨 Applying CSS variables for mode:', mode);
 
   // Apply color variables
   root.style.setProperty('--website-theme-primary', colors.primary);
@@ -267,19 +258,22 @@ function applyThemeToCSS(theme: WebSiteTheme, mode: 'light' | 'dark') {
     root.style.setProperty('--website-theme-primary-900', `rgb(${darken(primaryRGB, 0.4)})`);
   }
 
-  // Update theme class - ensure dark class is applied by default
+  // Update theme class
   document.body.className = document.body.className.replace(/website-theme-\w+/g, '');
   document.body.classList.add(`website-theme-${theme._id}`);
   document.body.classList.toggle('dark', mode === 'dark');
+  
+  console.log('✅ Theme applied successfully');
 }
 
-// Function to reset to default theme - updated with better dark mode defaults
+// Function to reset to default theme
 function resetToDefaultTheme(mode: 'light' | 'dark') {
   if (typeof window === 'undefined') return;
 
+  console.log('🔄 Resetting to default theme, mode:', mode);
+
   const root = document.documentElement;
   
-  // Updated default colors - using the Dark Mode preset from your COLOR_PRESETS
   const defaultColors = mode === 'light' ? {
     primary: '#bb86fc',
     secondary: '#03dac6',
@@ -295,7 +289,6 @@ function resetToDefaultTheme(mode: 'light' | 'dark') {
     error: '#cf6679',
     info: '#17a2b8',
   } : {
-    // Dark mode defaults using the "Dark Mode" preset
     primary: '#bb86fc',
     secondary: '#03dac6',
     accent: '#cf6679',
@@ -316,7 +309,7 @@ function resetToDefaultTheme(mode: 'light' | 'dark') {
     root.style.setProperty(`--website-theme-${key.replace(/([A-Z])/g, '-$1').toLowerCase()}`, value);
   });
 
-  // Apply default fonts (Modern Sans preset)
+  // Apply default fonts
   root.style.setProperty('--website-theme-font-heading', 'Inter, sans-serif');
   root.style.setProperty('--website-theme-font-heading-weight', '700');
   root.style.setProperty('--website-theme-font-heading-size', '2rem');
@@ -342,16 +335,9 @@ function resetToDefaultTheme(mode: 'light' | 'dark') {
     root.style.setProperty('--website-theme-primary-900', `rgb(${darken(primaryRGB, 0.4)})`);
   }
 
-  // Remove theme class and apply dark mode by default
+  // Remove theme class and apply dark mode
   document.body.className = document.body.className.replace(/website-theme-\w+/g, '');
   document.body.classList.toggle('dark', mode === 'dark');
-  
-  // Add a default dark class to body if no specific theme is active
-  if (mode === 'dark') {
-    document.body.classList.add('dark');
-  } else {
-    document.body.classList.remove('dark');
-  }
 }
 
 // Utility functions for color manipulation

@@ -6,14 +6,12 @@
   :root {
     --website-theme-primary: #E91E63;
     --website-theme-background: #ffffff;
-    --website-theme-text: #000000;
     --website-theme-font-heading: 'Inter', sans-serif;
     --website-theme-font-body: 'Inter', sans-serif;
   }
 
   .dark {
     --website-theme-background: #121212;
-    --website-theme-text: #ffffff;
   }
 }
 
@@ -28,7 +26,6 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     background-color: var(--website-theme-background);
-    color: var(--website-theme-text);
   }
   
   img {
@@ -43,7 +40,6 @@
   }
   
   .text-wtheme-text {
-    color: var(--website-theme-text);
   }
   
   .text-primary {
@@ -65,13 +61,11 @@
   }
   
   .prose {
-    color: var(--website-theme-text);
     max-width: none;
     line-height: 1.7;
   }
   
   .prose h1, .prose h2, .prose h3, .prose h4 {
-    color: var(--website-theme-text);
     font-weight: 600;
     margin-top: 1.5em;
     margin-bottom: 0.75em;

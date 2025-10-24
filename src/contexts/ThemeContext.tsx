@@ -20,30 +20,30 @@ interface ThemeProviderProps {
 export function ThemeProvider({ children, websiteId }: ThemeProviderProps) {
   const { useGetActiveTheme } = useWebSiteThemes()
   const { data: themeData, isLoading, error, refetch } = useGetActiveTheme(websiteId)
-  const [activeTheme, setActiveTheme] = useState<WebSiteTheme | null>(null)
-  // Extract theme from API response
-  useEffect(() => {
+  console.log('ThemeProvider render:', { websiteId, isLoading, hasData: !!themeData?.data })
+  console.log("websiteId",websiteId)
+useEffect(() => {
+    console.log('themeData changed:', themeData)
     if (themeData?.data) {
-      setActiveTheme(themeData.data)
+      console.log('Applying theme:', themeData.data)
+      applyThemeToCSS(themeData.data)
     }
   }, [themeData])
-
-  // Apply theme to CSS custom properties
-  useEffect(() => {
-    if (activeTheme) {
-      applyThemeToCSS(activeTheme)
-    }
-  }, [activeTheme])
 
   const refreshTheme = () => {
     refetch()
   }
 
   const contextValue: ThemeContextType = {
-    activeTheme,
+    activeTheme: themeData?.data || null,
     isLoading,
     error: error?.message || null,
     refreshTheme
+  }
+
+  // Wait for theme to load before rendering children
+  if (isLoading) {
+    return <div>Loading theme...</div> // Or your loading component
   }
 
   return (

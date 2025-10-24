@@ -258,12 +258,12 @@ export default function HeroSection({ sectionId, websiteId }: HeroSectionProps) 
           </div>
 
           {/* Desktop Navigation - Outside content area */}
-          <div className="hidden md:block">
+          <div className="hidden md:block ">
             {/* Left Arrow */}
             <div className="absolute left-4 lg:left-6 xl:left-8 top-1/2 -translate-y-1/2">
               <button
                 onClick={prevSlide}
-                className="pointer-events-auto flex items-center justify-center w-12 h-12 lg:w-14 lg:h-14 xl:w-16 xl:h-16 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full text-white hover:bg-white/20 hover:border-white/30 transition-all duration-300 shadow-lg hover:shadow-xl"
+                className="pointer-events-auto text-wtheme-text flex items-center justify-center w-12 h-12 lg:w-14 lg:h-14 xl:w-16 xl:h-16 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full  hover:bg-white/20 hover:border-white/30 transition-all duration-300 shadow-lg hover:shadow-xl"
                 aria-label="Previous slide"
               >
                 <svg className="w-5 h-5 lg:w-6 lg:h-6 xl:w-7 xl:h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -276,7 +276,7 @@ export default function HeroSection({ sectionId, websiteId }: HeroSectionProps) 
             <div className="absolute right-4 lg:right-6 xl:right-8 top-1/2 -translate-y-1/2">
               <button
                 onClick={nextSlide}
-                className="pointer-events-auto flex items-center justify-center w-12 h-12 lg:w-14 lg:h-14 xl:w-16 xl:h-16 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full text-white hover:bg-white/20 hover:border-white/30 transition-all duration-300 shadow-lg hover:shadow-xl"
+                className="pointer-events-auto flex text-wtheme-text items-center justify-center w-12 h-12 lg:w-14 lg:h-14 xl:w-16 xl:h-16 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full text-white hover:bg-white/20 hover:border-white/30 transition-all duration-300 shadow-lg hover:shadow-xl"
                 aria-label="Next slide"
               >
                 <svg className="w-5 h-5 lg:w-6 lg:h-6 xl:w-7 xl:h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -316,7 +316,7 @@ export default function HeroSection({ sectionId, websiteId }: HeroSectionProps) 
             {currentSlide + 1} / {slides.length}
           </span>
         </div>
-      )}
+      )}  
 
       {/* Swipe indicator for mobile */}
       <div className="md:hidden absolute bottom-20 sm:bottom-24 left-1/2 -translate-x-1/2 z-30 opacity-70">

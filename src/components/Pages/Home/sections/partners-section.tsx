@@ -167,49 +167,49 @@ function PartnersCarousel({ partners, isInView, containerRef }: PartnersCarousel
 
   // Responsive configuration
   const getResponsiveConfig = () => {
-    switch (screenSize) {
-      case "mobile":
-        return {
-          logoWidth: "w-28 sm:w-32",
-          logoHeight: "h-16",
-          padding: "px-2",
-          duration: Math.max(partners.length * 5, 30),
-          gradientWidth: "w-8",
-        }
-      case "sm":
-        return {
-          logoWidth: "w-32 sm:w-36",
-          logoHeight: "h-18",
-          padding: "px-3",
-          duration: Math.max(partners.length * 4, 25),
-          gradientWidth: "w-10",
-        }
-      case "md":
-        return {
-          logoWidth: "w-36 md:w-40",
-          logoHeight: "h-20",
-          padding: "px-4",
-          duration: Math.max(partners.length * 3.5, 22),
-          gradientWidth: "w-12",
-        }
-      case "lg":
-        return {
-          logoWidth: "w-40 lg:w-44",
-          logoHeight: "h-22",
-          padding: "px-5",
-          duration: Math.max(partners.length * 3, 20),
-          gradientWidth: "w-16",
-        }
-      default:
-        return {
-          logoWidth: "w-44 xl:w-48",
-          logoHeight: "h-24",
-          padding: "px-6",
-          duration: Math.max(partners.length * 2.5, 18),
-          gradientWidth: "w-20",
-        }
+  switch (screenSize) {
+        case "mobile":
+          return {
+            logoWidth: "w-36 sm:w-40",  // زيادة من 28/32
+            logoHeight: "h-24",          // زيادة من 16
+            padding: "px-2",
+            duration: Math.max(partners.length * 5, 30),
+            gradientWidth: "w-8",
+          }
+        case "sm":
+          return {
+            logoWidth: "w-40 sm:w-44",  // زيادة من 32/36
+            logoHeight: "h-28",          // زيادة من 18
+            padding: "px-3",
+            duration: Math.max(partners.length * 4, 25),
+            gradientWidth: "w-10",
+          }
+        case "md":
+          return {
+            logoWidth: "w-44 md:w-48",  // زيادة من 36/40
+            logoHeight: "h-32",          // زيادة من 20
+            padding: "px-4",
+            duration: Math.max(partners.length * 3.5, 22),
+            gradientWidth: "w-12",
+          }
+        case "lg":
+          return {
+            logoWidth: "w-48 lg:w-52",  // زيادة من 40/44
+            logoHeight: "h-36",          // زيادة من 22
+            padding: "px-5",
+            duration: Math.max(partners.length * 3, 20),
+            gradientWidth: "w-16",
+          }
+        default:
+          return {
+            logoWidth: "w-52 xl:w-56",  // زيادة من 44/48
+            logoHeight: "h-40",          // زيادة من 24
+            padding: "px-6",
+            duration: Math.max(partners.length * 2.5, 18),
+            gradientWidth: "w-20",
+          }
+      }
     }
-  }
 
   const config = getResponsiveConfig()
 
@@ -319,6 +319,8 @@ interface PartnerLogoProps {
 }
 
 function PartnerLogo({ partner, index, heightClass, screenSize }: PartnerLogoProps) {
+  const [imageOrientation, setImageOrientation] = useState<'landscape' | 'portrait' | 'loading'>('loading')
+
   const getImageSize = () => {
     switch (screenSize) {
       case "mobile":
@@ -334,14 +336,22 @@ function PartnerLogo({ partner, index, heightClass, screenSize }: PartnerLogoPro
     }
   }
 
-  const imageConfig = getImageSize()
+ const imageConfig = getImageSize()
 
-  return (
+ // Handle image load to determine orientation
+  const handleImageLoad = (e: React.SyntheticEvent<HTMLImageElement>) => {
+    const img = e.currentTarget
+    const isLandscape = img.naturalWidth > img.naturalHeight
+    setImageOrientation(isLandscape ? 'landscape' : 'portrait')
+  }
+
+
+return (
     <div
       className={`
         partner-logo flex items-center justify-center 
-        rounded-2xl border border-white/10 
-        bg-gradient-to-br from-white/5 to-white/[0.02]
+        rounded-2xl 
+      
         backdrop-blur-sm
         p-4 sm:p-5 md:p-6 lg:p-7
         shadow-lg hover:shadow-2xl
@@ -364,8 +374,10 @@ function PartnerLogo({ partner, index, heightClass, screenSize }: PartnerLogoPro
         alt={partner.image || `Partner ${index + 1}`}
         width={imageConfig.width}
         height={imageConfig.height}
+        onLoad={handleImageLoad}
         className={`
-          h-auto ${imageConfig.maxHeight} w-auto max-w-full 
+          ${imageOrientation === 'landscape' ? 'w-full h-auto' : imageOrientation === 'portrait' ? 'h-full w-auto' : 'w-auto h-auto'}
+          ${imageConfig.maxHeight} max-w-full 
           object-contain filter
           transition-all duration-700 ease-out
           group-hover:scale-110 relative z-10 bg-white
